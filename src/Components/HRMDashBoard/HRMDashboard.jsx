@@ -7,8 +7,8 @@ import CardActionArea from '@mui/material/CardActionArea';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import HailIcon from '@mui/icons-material/Hail';
-import Diversity3Icon from "@mui/icons-material/Diversity3";
-import MovingIcon from "@mui/icons-material/Moving";
+import Meeting from "./Meeting";
+// import Absent from "./Absent";
 
 const cards = [
   {
@@ -20,32 +20,14 @@ const cards = [
   {
     id: 2,
     icon:<HailIcon/>,
-    title: 'On Leave Employee',
+    title: 'Total Presents',
     description: '55',
   },
   {
     id: 3,
     icon:<WorkOutlineIcon/>,
-    title: 'Total Vacancies',
+    title: 'Total Absents',
     description: '37',
-  },
-  {
-    id: 4,
-    icon:<Diversity3Icon/>,
-    title: 'New joining Today',
-    description: '1',
-  },
-  {
-    id: 5,
-    icon:<Diversity3Icon/>,
-    title: 'New Joining This Week',
-    description: '20',
-  },
-  {
-    id: 6,
-    icon:<MovingIcon/>,
-    title: 'Total Strength Today',
-    description: '258',
   },
 
 ];
@@ -53,12 +35,14 @@ const cards = [
 function SelectActionCard() {
   const [selectedCard, setSelectedCard] = React.useState(0);
   return (
+    <>
     <Box
       sx={{
         width: '100%',
         display: 'grid',
         gridTemplateColumns: 'repeat(3,1fr)',
         gap: 2,
+        pr: '20%',
       }}
     >
       {cards.map((card, index) => (
@@ -104,6 +88,21 @@ function SelectActionCard() {
         </Card>
       ))}
     </Box>
+    <Box sx={{ display: 'flex', mt: 4, gap: 2, pr: '20%', }}>
+      <Box>
+        <Meeting />
+      </Box>
+      <Box>
+        <Meeting />
+      </Box>
+    </Box>
+    <Box sx={{ mt: 4 , pr:'55%'}}>
+      <Meeting />
+    </Box>
+    <Box sx={{ mt: 4 }}>
+      <Meeting />
+    </Box>
+    </>
   );
 }
 
