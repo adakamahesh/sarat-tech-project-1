@@ -7,6 +7,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableVirtuoso } from 'react-virtuoso';
+import Typography from '@mui/material/Typography';
 import Chance from 'chance';
 
 const chance = new Chance(42);
@@ -89,13 +90,14 @@ function rowContent(_index, row) {
 
 export default function ReactVirtualizedTable() {
   return (
-    <Paper style={{ height: 400, width: '100%' }}>
-      <TableVirtuoso
-        data={rows}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
-      />
+    <Paper style={{ height: 450, width: '100%' }}>
+    <Typography>Total Employees</Typography>
+    <TableVirtuoso
+      data={rows}
+      components={VirtuosoTableComponents}
+      fixedHeaderContent={fixedHeaderContent}
+      itemContent={rowContent}
+    />
     </Paper>
   );
 }
