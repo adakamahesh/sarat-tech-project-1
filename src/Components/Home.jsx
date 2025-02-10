@@ -8,8 +8,7 @@ import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import HRMDashBoard from "./HRMDashBoard/HRMDashboard"
-// import TopBarRight from "./TopBarRight";
+import HRMDashBoard from "./HRMDashBoard/HRMDashboard";
 
 const NAVIGATION = [
   {
@@ -186,52 +185,40 @@ function useDemoRouter(initialPath) {
   const [pathname, setPathname] = React.useState(initialPath);
   const [activeSegments, setActiveSegments] = React.useState([]);
 
-  const router = React.useMemo(() => ({
-    pathname,
-    searchParams: new URLSearchParams(),
-    navigate: (path, segments = []) => {
-      setPathname(String(path));
-      setActiveSegments(segments);
-    },
-  }), [pathname, ]);
+  const router = React.useMemo(
+    () => ({
+      pathname,
+      searchParams: new URLSearchParams(),
+      navigate: (path, segments = []) => {
+        setPathname(String(path));
+        setActiveSegments(segments);
+      },
+    }),
+    [pathname]
+  );
 
   return { router, activeSegments, setActiveSegments };
 }
 
 export default function DashboardLayoutBasic(props) {
   const { window } = props;
-  const { router, activeSegments, setActiveSegments } = useDemoRouter("/dashboard");
-
-  const handleNavigation = (path, segment) => {
-    let updatedSegments = [...activeSegments];
-
-    if (updatedSegments.includes(segment)) {
-      updatedSegments = updatedSegments.filter(s => s !== segment);
-    } else {
-      updatedSegments.push(segment);
-    }
-
-    router.navigate(path, updatedSegments);
-    setActiveSegments(updatedSegments);
-  };
+  const { router } = useDemoRouter("/dashboard");
 
   // Remove this const when copying and pasting into your project.
   const demoWindow = window ? window() : undefined;
 
   return (
-    <>
-      <AppProvider
-        navigation={NAVIGATION}
-        router={router}
-        theme={demoTheme}
-        window={demoWindow}
-      >
-        <DashboardLayout >
-          <PageContainer>
-            <HRMDashBoard />
-          </PageContainer>
-        </DashboardLayout>
-      </AppProvider>
-    </>
+    <AppProvider
+      navigation={NAVIGATION}
+      router={router}
+      theme={demoTheme}
+      window={demoWindow}
+    >
+      <DashboardLayout>
+        <PageContainer>
+          <HRMDashBoard />
+        </PageContainer>
+      </DashboardLayout>
+    </AppProvider>
   );
 }

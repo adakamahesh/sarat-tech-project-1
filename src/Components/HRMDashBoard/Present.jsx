@@ -25,6 +25,7 @@ const columns = [
     label: 'S.No.',
     dataKey: 'serialNumber',
   },
+    
   {
     width: 100,
     label: 'First Name',
@@ -37,11 +38,10 @@ const columns = [
   },
 ];
 
-const rows = Array.from({ length: 8 }, (_, index) => ({
-  serialNumber: index + 1, // Add serial number
-  ...createData(index),
-}));
-
+const rows = Array.from({ length: 42 }, (_, index) => ({
+    serialNumber: index + 1, // Add serial number
+    ...createData(index),
+  }));
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
     <TableContainer component={Paper} {...props} ref={ref} />

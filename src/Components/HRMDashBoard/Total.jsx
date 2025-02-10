@@ -37,10 +37,10 @@ const columns = [
   },
 ];
 
-const rows = Array.from({ length: 8 }, (_, index) => ({
-  serialNumber: index + 1, // Add serial number
-  ...createData(index),
-}));
+const rows = Array.from({ length: 50 }, (_, index) => ({
+    serialNumber: index + 1, // Add serial number
+    ...createData(index),
+  }));
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (

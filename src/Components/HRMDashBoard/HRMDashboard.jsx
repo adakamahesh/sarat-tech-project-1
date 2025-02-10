@@ -8,57 +8,72 @@ import PersonIcon from '@mui/icons-material/Person';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import HailIcon from '@mui/icons-material/Hail';
 import Meeting from "./Meeting";
-// import Absent from "./Absent";
+// import Calender from "./Calender";
+import Absent from "./Absent";
+import Total from "./Total";
+import Present from  "./Present";
 
 const cards = [
   {
     id: 1,
     icon:<PersonIcon/>,
     title: 'Total Employee',
-    description: '313', 
+    description: '50', 
   },
   {
     id: 2,
     icon:<HailIcon/>,
     title: 'Total Presents',
-    description: '55',
+    description: '42',
   },
   {
     id: 3,
     icon:<WorkOutlineIcon/>,
     title: 'Total Absents',
-    description: '37',
+    description: '8',
   },
 
 ];
 
-function SelectActionCard() {
-  const [selectedCard, setSelectedCard] = React.useState(0);
+export default function SelectActionCard() {
+  const [selectedCard, setSelectedCard] = React.useState(null);
+
+  const renderComponent = () => {
+    switch (selectedCard) {
+      case 1:
+        return <Total />;
+      case 2:
+        return <Present />;
+      case 3:
+        return <Absent />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <>
     <Box
-      sx={{
-        width: '100%',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3,1fr)',
-        gap: 2,
-        pr: '20%',
-      }}
-    >
-      {cards.map((card, index) => (
-        <Card>
-          <CardActionArea
-            onClick={() => setSelectedCard(index)}
-            data-active={selectedCard === index ? '' : undefined}
-            sx={{
-              height: '100%',
-              '&[data-active]': {
-                backgroundColor: 'action.selected',
-                '&:hover': {
-                  backgroundColor: 'action.selectedHover',
+        sx={{
+          width: "100%",
+          display: "grid",
+          gridTemplateColumns: "repeat(3,1fr)",
+          gap: 2,
+          pr: "20%",
+        }}
+      >
+      {cards.map((card) => (
+          <Card key={card.id}>
+            <CardActionArea
+              onClick={() => setSelectedCard(prev => prev === card.id ? null : card.id)}
+              data-active={selectedCard === card.id ? "" : undefined}
+              sx={{
+                height: "100%",
+                "&[data-active]": {
+                  backgroundColor: "action.selected",
+                  "&:hover": { backgroundColor: "action.selectedHover" },
                 },
-              },
-            }}
+              }}
           >
             <CardContent sx={{ height: '100%', display:'flex', alignItems:'center',gap:2 }}>
               <Box 
@@ -87,6 +102,9 @@ function SelectActionCard() {
           </CardActionArea>
         </Card>
       ))}
+    <Box sx={{ width:"315%",mt: 4}}>
+      {renderComponent()}
+    </Box>
     </Box>
     <Box sx={{ display: 'flex', mt: 4, gap: 2, pr: '20%', }}>
       <Box>
@@ -96,8 +114,13 @@ function SelectActionCard() {
         <Meeting />
       </Box>
     </Box>
-    <Box sx={{ mt: 4 , pr:'55%'}}>
-      <Meeting />
+    <Box sx={{ display: 'flex', mt: 4, gap: 2, }}>
+      <Box>
+        <Meeting />
+      </Box>
+      <Box>
+        <Meeting/>
+      </Box>
     </Box>
     <Box sx={{ mt: 4 }}>
       <Meeting />
@@ -105,5 +128,3 @@ function SelectActionCard() {
     </>
   );
 }
-
-export default SelectActionCard;
