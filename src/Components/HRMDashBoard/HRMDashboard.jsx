@@ -12,6 +12,7 @@ import Meeting from "./Meeting";
 import Absent from "./Absent";
 import Total from "./Total";
 import Present from  "./Present";
+import Announcement  from './Announcement';
 
 const cards = [
   {
@@ -115,15 +116,15 @@ export default function SelectActionCard() {
       </Box>
     </Box>
     <Box sx={{ display: 'flex', mt: 4, gap: 2, }}>
-      <Box>
+      <Box sx={{ flex: 0.45, display: 'flex', alignItems: 'stretch' }}>
         <Meeting />
       </Box>
-      <Box>
+      <Box  sx={{ flex: 0.55, display: 'flex', alignItems: 'stretch' }}>
         <Meeting/>
       </Box>
     </Box>
     <Box sx={{ mt: 4 }}>
-      <Meeting />
+      <Announcement/>
     </Box>
     </>
   );
