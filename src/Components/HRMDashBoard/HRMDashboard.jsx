@@ -13,7 +13,7 @@ import Absent from "./Absent";
 import Total from "./Total";
 import Present from  "./Present";
 import Announcement  from './Announcement';
-
+import OverTime from './OverTime'
 const cards = [
   {
     id: 1,
@@ -107,15 +107,15 @@ export default function SelectActionCard() {
       {renderComponent()}
     </Box>
     </Box>
-    <Box sx={{ display: 'flex', mt: 4, gap: 2, pr: '20%', }}>
-      <Box>
+    <Box sx={{ display: 'flex', mt: 4, gap: 2, mr: '20%', }}>
+      <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch' }}>
         <Meeting />
       </Box>
-      <Box>
-        <Meeting />
+      <Box sx={{ width: '50%', display: 'flex', alignItems: 'stretch' }}>
+        <OverTime/>
       </Box>
     </Box>
-    <Box sx={{ display: 'flex', mt: 4, gap: 2, }}>
+    <Box sx={{ display: 'flex' ,mt: 4,gap: 2, }}>
       <Box sx={{ flex: 0.45, display: 'flex', alignItems: 'stretch' }}>
         <Meeting />
       </Box>
