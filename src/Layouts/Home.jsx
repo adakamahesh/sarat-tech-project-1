@@ -8,7 +8,7 @@ import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
-import HRMDashBoard from "./HRMDashBoard/HRMDashboard";
+import HRMDashBoard from "../Components/HRMDashBoard/HRMDashboard";
 
 const NAVIGATION = [
   {
@@ -21,12 +21,12 @@ const NAVIGATION = [
     icon: <DashboardIcon />,
     children: [
       {
-        segment: "sales",
+        segment: "HRMDashboard",
         title: "HRM DashBoard",
         icon: <HorizontalRuleIcon />,
       },
       {
-        segment: "traffic",
+        segment: "EmployeeDashboard",
         title: "Employee Dashboard",
         icon: <HorizontalRuleIcon />,
       },
@@ -181,39 +181,10 @@ const demoTheme = extendTheme({
   },
 });
 
-function useDemoRouter(initialPath) {
-  const [pathname, setPathname] = React.useState(initialPath);
-  const [activeSegments, setActiveSegments] = React.useState([]);
-
-  const router = React.useMemo(
-    () => ({
-      pathname,
-      searchParams: new URLSearchParams(),
-      navigate: (path, segments = []) => {
-        setPathname(String(path));
-        setActiveSegments(segments);
-      },
-    }),
-    [pathname]
-  );
-
-  return { router, activeSegments, setActiveSegments };
-}
-
 export default function DashboardLayoutBasic(props) {
-  const { window } = props;
-  const { router } = useDemoRouter("/dashboard");
-
-  // Remove this const when copying and pasting into your project.
-  const demoWindow = window ? window() : undefined;
 
   return (
-    <AppProvider
-      navigation={NAVIGATION}
-      router={router}
-      theme={demoTheme}
-      window={demoWindow}
-    >
+    <AppProvider navigation={NAVIGATION} theme={demoTheme} window={window || undefined}>
       <DashboardLayout>
         <PageContainer>
           <HRMDashBoard />
