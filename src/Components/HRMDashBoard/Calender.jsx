@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { Box, Typography } from '@mui/material';
-import { LocalizationProvider } from '@mui/x-date-pickers-pro/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers-pro/AdapterDayjs';
-import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
-import { enUS } from '@mui/x-date-pickers/locales';
+import React, { useState } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 
-export default function DateRangeCalendarCalendarsProp() {
+const MyCalendar = () => {
+  const [date, setDate] = useState(new Date());
+
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={enUS.components.MuiLocalizationProvider.defaultProps.localeText}>
-      <Box>
-        <Typography>1 calendar</Typography>
-        <DateRangeCalendar calendars={1} />
-      </Box>
-    </LocalizationProvider>
+    <div>
+      <h2>React Calendar</h2>
+      <Calendar onChange={setDate} value={date} />
+      <p>Selected Date: {date.toDateString()}</p>
+    </div>
   );
-}
+};
+
+export default MyCalendar;

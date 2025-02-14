@@ -8,12 +8,14 @@ import PersonIcon from '@mui/icons-material/Person';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import HailIcon from '@mui/icons-material/Hail';
 import Meeting from "./Meeting";
-// import Calender from "./Calender";
+import Calender from "./Calender";
 import Absent from "./Absent";
 import Total from "./Total";
 import Present from  "./Present";
 import Announcement  from './Announcement';
 import OverTime from './OverTime'
+import OnLeave from './OnLeave'
+
 const cards = [
   {
     id: 1,
@@ -107,23 +109,23 @@ export default function SelectActionCard() {
       {renderComponent()}
     </Box>
     </Box>
-    <Box sx={{ display: 'flex', mt: 4, gap: 2, mr: '20%', }}>
-      <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch' }}>
-        <Meeting />
+    <Box sx={{ display: 'flex', mt: 4, gap: 2, mr: '20%' }}>
+      <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
+        <OnLeave />
       </Box>
-      <Box sx={{ width: '50%', display: 'flex', alignItems: 'stretch' }}>
+      <Box sx={{ width: '50%', display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
         <OverTime/>
       </Box>
     </Box>
     <Box sx={{ display: 'flex' ,mt: 4,gap: 2, }}>
-      <Box sx={{ flex: 0.45, display: 'flex', alignItems: 'stretch' }}>
+      <Box sx={{ flex: 0.45, display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
         <Meeting />
       </Box>
-      <Box  sx={{ flex: 0.55, display: 'flex', alignItems: 'stretch' }}>
-        <Meeting/>
+      <Box  sx={{ flex: 0.55, display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
+        <Calender/>
       </Box>
     </Box>
-    <Box sx={{ mt: 4 }}>
+    <Box sx={{ mt: 4,border: '1px solid rgb(237,237,237)' }}>
       <Announcement/>
     </Box>
     </>
