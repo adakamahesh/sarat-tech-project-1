@@ -34,6 +34,7 @@ const App = () => {
     { path: "/Recruitment", component: <Home /> },
     { path: "/Apps", component: <Home /> },
     { path: "/PayRoll", component: <Home /> },
+    { path:"/home", component: <Home/>}
   ];
   
   return (

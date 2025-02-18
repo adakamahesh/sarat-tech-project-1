@@ -13,8 +13,9 @@ import Absent from "./Absent";
 import Total from "./Total";
 import Present from  "./Present";
 import Announcement  from './Announcement';
-import OverTime from './OverTime'
-import OnLeave from './OnLeave'
+import OverTime from './OverTime';
+import OnLeave from './OnLeave';
+import { Divider } from "@mui/material";
 
 const cards = [
   {
@@ -22,18 +23,21 @@ const cards = [
     icon:<PersonIcon/>,
     title: 'Total Employee',
     description: '50', 
+    backgroundColor: "#2196F3", // Blue
   },
   {
     id: 2,
     icon:<HailIcon/>,
     title: 'Total Presents',
     description: '42',
+    backgroundColor: "#4CAF50", // Green
   },
   {
     id: 3,
     icon:<WorkOutlineIcon/>,
     title: 'Total Absents',
     description: '8',
+    backgroundColor: "orange", // red
   },
 
 ];
@@ -56,17 +60,26 @@ export default function HRMDashboard() {
 
   return (
     <>
+    <Box sx={{ display: "flex", width: "100%" }}>
+    <Box sx={{
+      width: "75%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}>
     <Box
         sx={{
           width: "100%",
           display: "grid",
           gridTemplateColumns: "repeat(3,1fr)",
           gap: 2,
-          pr: "20%",
         }}
       >
       {cards.map((card) => (
-          <Card key={card.id}>
+          <Card key={card.id} sx={{ backgroundColor: card.backgroundColor, color: "white" }}>
             <CardActionArea
               onClick={() => setSelectedCard(prev => prev === card.id ? null : card.id)}
               data-active={selectedCard === card.id ? "" : undefined}
@@ -109,13 +122,31 @@ export default function HRMDashboard() {
       {renderComponent()}
     </Box>
     </Box>
-    <Box sx={{ display: 'flex', mt: 4, gap: 2, mr: '20%' }}>
+    <Divider/> 
+    <Box sx={{ display: 'flex', mt: 2, gap: 2 }}>
       <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
         <OnLeave />
       </Box>
       <Box sx={{ width: '50%', display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
         <OverTime/>
       </Box>
+    </Box>
+    </Box>
+    <Box
+    sx={{
+      width: "25%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}
+  >
+    <Typography variant="h6">Quotation and Answers</Typography>
+    <Divider /> 
+    {/* Add any content here */}
+  </Box>
     </Box>
     <Box sx={{ display: 'flex' ,mt: 4,gap: 2, }}>
       <Box sx={{ flex: 0.45, display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>

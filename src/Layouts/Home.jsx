@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useLocation } from 'react-router-dom'; // Add this line
 import { extendTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -12,10 +13,8 @@ import logo from "../assets/images/st_logo.png";
 import EmployeeDashboard from "../Components/EmployeeDashboard/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
 import HRMDashboard from "../Components/HRMDashBoard/HRMDashboard";
-import { useLocation } from "react-router-dom";
 
 export default function DashboardLayoutBasic(props) {
-
   const createNavigation = (navigate) => [
     {
       kind: "header",
@@ -186,9 +185,9 @@ export default function DashboardLayoutBasic(props) {
       },
     },
   });
-  const location = useLocation();
 
-  const currentPage = location.pathname.split("/").pop();
+  const location = useLocation();  // Using useLocation to get the current URL
+  const currentPage = location.pathname.split("/").pop();  // Extracting the last part of the path to render the correct page
 
   const renderComponent = () => {
     switch (currentPage) {
@@ -203,6 +202,7 @@ export default function DashboardLayoutBasic(props) {
 
   const navigate = useNavigate();
   const NAVIGATION = createNavigation(navigate);
+
   return (
     <AppProvider
       navigation={NAVIGATION}
