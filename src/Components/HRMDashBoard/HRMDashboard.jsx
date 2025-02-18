@@ -37,7 +37,7 @@ const cards = [
     icon:<WorkOutlineIcon/>,
     title: 'Total Absents',
     description: '8',
-    backgroundColor: "orange", // red
+    backgroundColor: "red", // red
   },
 
 ];

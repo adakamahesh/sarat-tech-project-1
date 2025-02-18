@@ -11,20 +11,23 @@ import Calender from "./Calender";
 import Total from "./Total";
 import Present from  "./Present";
 import Announcement  from './Announcement';
-import AttendanceLeave from './AttendanceLeave'
+import AttendanceLeave from './AttendanceLeave';
+import { Divider } from "@mui/material";
 
 const cards = [
   {
     id: 1,
     icon:<PersonIcon/>,
-    title: 'Total Employee',
+    title: 'Total Leave Ticket',
     description: '50', 
+    backgroundColor: "#2196F3", // Blue
   },
   {
     id: 2,
     icon:<HailIcon/>,
-    title: 'Total Presents',
+    title: 'Ticket Resolved',
     description: '42',
+    backgroundColor: "#4CAF50", // Green
   },
 ];
 
@@ -44,17 +47,25 @@ export default function EmployeeDashboard() {
 
   return (
     <>
+    <Box sx={{ display: "flex", width: "100%" }}>
+    <Box sx={{
+      width: "75%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}>
     <Box
         sx={{
-          width: "100%",
           display: "grid",
           gridTemplateColumns:  "repeat(2, 1fr)",
           gap: 2,
-          pr: "20%",
         }}
       >
       {cards.map((card) => (
-          <Card key={card.id}>
+          <Card key={card.id} sx={{ backgroundColor: card.backgroundColor, color: "white" }}>
             <CardActionArea
               onClick={() => setSelectedCard(prev => prev === card.id ? null : card.id)}
               data-active={selectedCard === card.id ? "" : undefined}
@@ -97,7 +108,8 @@ export default function EmployeeDashboard() {
       {renderComponent()}
     </Box>
     </Box>
-    <Box sx={{ display: 'flex', mt: 4, gap: 2, mr: '20%' }}>
+    <Divider />
+    <Box sx={{ display: 'flex', mt: 4, gap: 2 }}>
       <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch',border: '1px solid rgb(237,237,237)' }}>
         <AttendanceLeave />
       </Box>
@@ -105,11 +117,54 @@ export default function EmployeeDashboard() {
         <Meeting/>
       </Box>
     </Box>
-    <Box sx={{ mt: 4,border: '1px solid rgb(237,237,237)',width: "70%", }}>
+    </Box>
+    <Box sx={{
+      width: "25%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}
+    >
+    <Typography variant="h6">Notifications</Typography>
+    <Divider />
+    {/* Add any content here */}
+    </Box>
+    </Box>
+    <Box sx={{ display: "flex",mt: 2, width: "100%"}}>
+    <Box sx={{
+      width: "65%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}>
+    <Box sx={{ mt: 4,border: '1px solid rgb(237,237,237)' }}>
       <Announcement/>
     </Box>
-    <Box sx={{ mt: 4,pr:"30%",border: '1px solid rgb(237,237,237)',width: "70%", }}>
+    <Box sx={{ mt: 4,pr:"30%",border: '1px solid rgb(237,237,237)' }}>
       <Calender/>
+    </Box>
+    </Box>
+    <Box
+    sx={{
+      width: "35%", // Adjust width to fit properly
+      display: "flex",
+      flexDirection: "column",
+      gap: 2,
+      ml: 2, // Adds spacing from left section
+      border: "1px solid rgb(237,237,237)",
+      p: 2,
+    }}
+    >
+    <Typography variant="h6">Live Chat</Typography>
+    <Divider /> 
+    {/* Add any content here */}
+    </Box>
     </Box>
     </>
   );
