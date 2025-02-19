@@ -13,6 +13,7 @@ import logo from "../assets/images/st_logo.png";
 import EmployeeDashboard from "../Components/EmployeeDashboard/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
 import HRMDashboard from "../Components/HRMDashBoard/HRMDashboard";
+import Logout from "../Components/LoginSignup/Logout";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -170,6 +171,10 @@ export default function DashboardLayoutBasic(props) {
       title: "Integrations",
       icon: <LayersIcon />,
     },
+    {
+
+      icon:<Logout/>,
+    }
   ];
 
   const demoTheme = extendTheme({
