@@ -2,7 +2,6 @@ import * as React from "react";
 import { useLocation } from 'react-router-dom'; // Add this line
 import { extendTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import LayersIcon from "@mui/icons-material/Layers";
@@ -15,6 +14,9 @@ import { useNavigate } from "react-router-dom";
 import HRMDashboard from "../Components/HRMDashBoard/HRMDashboard";
 import Employee from "../Components/Employee/Employee";
 import Logout from "../Components/LoginSignup/Logout";
+import EmployeeProfile from "../Components/EmployeeProfile/EmployeeProfil";
+import GroupsIcon from '@mui/icons-material/Groups';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -40,102 +42,121 @@ export default function DashboardLayoutBasic(props) {
       ],
     },
     {
-      segment: "HRM",
-      title: "HRM",
-      icon: <ShoppingCartIcon />,
+      segment: "Employee",
+      title: "Employee",
+      icon: <GroupsIcon />,
       children: [
         {
-          segment: "Employee",
-          title: "Employee",
+          segment: "Profile",
+          title: "Profile",
           icon: <HorizontalRuleIcon />,
         },
         {
-          segment: "EmployeeProfile",
-          title: "Employee Profile",
+          segment: "Employees",
+          title: "Employees",
           icon: <HorizontalRuleIcon />,
         },
         {
-          segment: "designations",
-          title: "Designations",
+          segment: "ShiftRequests",
+          title: "Shift Requests",
           icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "AdminAttendance",
-          title: "Admin Attendance",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "EmployeeAttendance",
-          title: "Employee Attendance",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "EmployeeLeaves",
-          title: "Employee Leaves",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "holidays",
-          title: "Holidays",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "overtime",
-          title: "Overtime",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "warning",
-          title: "Warning",
-          icon: <HorizontalRuleIcon />,
-        },
+        }
       ],
     },
     {
       segment: "Recruitment",
       title: "Recruitment",
-      icon: <BarChartIcon />,
+      icon: <GroupAddIcon />,
       children: [
         {
-          segment: "Dashboard",
-          title: "Dashboard",
+          segment: "RecruitmentDashboard",
+          title: "Recruitment Dashboard",
           icon: <HorizontalRuleIcon />,
         },
         {
           segment: "RecruitmentPipeline",
-          title: "RecruitmentPipeline",
+          title: "Recruitment Pipeline",
           icon: <HorizontalRuleIcon />,
         },
         {
-          segment: "Candidates",
-          title: "Candidates",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "Interview",
-          title: "Interview",
-          icon: <HorizontalRuleIcon />,
-        },
-        {
-          segment: "Recruitment",
-          title: "Recruitment",
+          segment: "Applicant",
+          title: "Applicant",
           icon: <HorizontalRuleIcon />,
         },
       ],
     },
     {
-      segment: "Apps",
-      title: "Apps",
+      segment: "OnBoarding",
+      title: "On Boarding",
       icon: <BarChartIcon />,
       children: [
         {
-          segment: "Chat",
-          title: "Chat",
+          segment: "OnBoardingView",
+          title: "On Boarding View",
           icon: <HorizontalRuleIcon />,
         },
         {
-          segment: "Calendar",
-          title: "Calendar",
+          segment: "CandidatesView",
+          title: "Candidates View",
+          icon: <HorizontalRuleIcon />,
+        },
+      ],
+    },
+    {
+      segment: "Attendance",
+      title: "Attendance",
+      icon: <BarChartIcon />,
+      children: [
+        {
+          segment: "AttendanceDashboard",
+          title: "Attendance Dashboard",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "Attendances",
+          title: "Attendances",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "WorkRecord",
+          title: "Work Record",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "AttendanceActivity",
+          title: "Attendance Activity",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "EmployeeLate",
+          title: "Employee Late",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "MyAttendances",
+          title: "My Attendances",
+          icon: <HorizontalRuleIcon />,
+        },
+      ],
+    },
+    {
+      segment: "Leave",
+      title: "Leave",
+      icon: <BarChartIcon />,
+      children: [
+        {
+          segment: "LeaveDashboard",
+          title: "Leave Dashboard",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "LeaveRequest",
+          title: "Leave Request",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "LeaveType",
+          title: "Leave Type",
           icon: <HorizontalRuleIcon />,
         },
       ],
@@ -146,8 +167,13 @@ export default function DashboardLayoutBasic(props) {
       icon: <BarChartIcon />,
       children: [
         {
-          segment: "Dashboard",
-          title: "Dashboard",
+          segment: "PayrollDashboard",
+          title: "Payroll Dashboard",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "Context",
+          title: "Context",
           icon: <HorizontalRuleIcon />,
         },
         {
@@ -165,12 +191,51 @@ export default function DashboardLayoutBasic(props) {
           title: "Payslips",
           icon: <HorizontalRuleIcon />,
         },
+        {
+          segment: "Traveling",
+          title: "Traveling",
+          icon: <HorizontalRuleIcon />,
+        },
       ],
     },
     {
-      segment: "integrations",
-      title: "Integrations",
+      segment: "OffBoarding",
+      title: "Off Boarding",
+      icon: <BarChartIcon />,
+      children: [
+        {
+          segment: "ExitProcess",
+          title: "Exit Process",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "ResignationLater",
+          title: "Resignation Later",
+          icon: <HorizontalRuleIcon />,
+        },
+      ],
+    },
+    {
+      segment: "HelpDesk",
+      title: "Help Desk",
       icon: <LayersIcon />,
+    },
+    {
+      segment: "Configuration",
+      title: "Configuration",
+      icon: <BarChartIcon />,
+      children: [
+        {
+          segment: "Holidays",
+          title: "Holidays",
+          icon: <HorizontalRuleIcon />,
+        },
+        {
+          segment: "CompanyLeaves",
+          title: "Company Leaves",
+          icon: <HorizontalRuleIcon />,
+        },
+      ],
     },
     {
 
@@ -205,10 +270,12 @@ export default function DashboardLayoutBasic(props) {
         return <HRMDashboard />;
       case "EmployeeDashboard":
         return <EmployeeDashboard />;
-      case "HRM":
-        return <Employee/>;
       case "Employee":
         return <Employee/>;
+      case "Employees":
+        return <Employee/>;
+      case "Profile":
+        return <EmployeeProfile/>
       default:
         return null;
     }
