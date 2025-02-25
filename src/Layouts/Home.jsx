@@ -13,6 +13,7 @@ import logo from "../assets/images/st_logo.png";
 import EmployeeDashboard from "../Components/EmployeeDashboard/EmployeeDashboard";
 import { useNavigate } from "react-router-dom";
 import HRMDashboard from "../Components/HRMDashBoard/HRMDashboard";
+import Employee from "../Components/Employee/Employee";
 import Logout from "../Components/LoginSignup/Logout";
 
 export default function DashboardLayoutBasic(props) {
@@ -22,7 +23,7 @@ export default function DashboardLayoutBasic(props) {
       title: "Main items",
     },
     {
-      segment: "dashboard",
+      segment: "Dashboard",
       title: "Dashboard",
       icon: <DashboardIcon />,
       children: [
@@ -44,7 +45,7 @@ export default function DashboardLayoutBasic(props) {
       icon: <ShoppingCartIcon />,
       children: [
         {
-          segment: "employee",
+          segment: "Employee",
           title: "Employee",
           icon: <HorizontalRuleIcon />,
         },
@@ -196,10 +197,18 @@ export default function DashboardLayoutBasic(props) {
 
   const renderComponent = () => {
     switch (currentPage) {
+      case "home":
+        return <HRMDashboard/>;
+      case "Dashboard":
+        return <HRMDashboard/>;
       case "HRMDashboard":
         return <HRMDashboard />;
       case "EmployeeDashboard":
         return <EmployeeDashboard />;
+      case "HRM":
+        return <Employee/>;
+      case "Employee":
+        return <Employee/>;
       default:
         return null;
     }
