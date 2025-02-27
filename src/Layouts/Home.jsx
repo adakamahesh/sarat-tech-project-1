@@ -2,9 +2,7 @@ import * as React from "react";
 import { useLocation } from 'react-router-dom'; // Add this line
 import { extendTheme } from "@mui/material/styles";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import BarChartIcon from "@mui/icons-material/BarChart";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
-import LayersIcon from "@mui/icons-material/Layers";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
@@ -15,8 +13,16 @@ import HRMDashboard from "../Components/HRMDashBoard/HRMDashboard";
 import Employee from "../Components/Employee/Employee";
 import Logout from "../Components/LoginSignup/Logout";
 import EmployeeProfile from "../Components/EmployeeProfile/EmployeeProfil";
+import RecruitmentDashboard from "../Components/RecruitmentDashboard/RecruitmentDashboard"
 import GroupsIcon from '@mui/icons-material/Groups';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
+import LogoutIcon from '@mui/icons-material/Logout';
+import LoginIcon from '@mui/icons-material/Login';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import FolderCopyIcon from '@mui/icons-material/FolderCopy';
+import EventBusyIcon from '@mui/icons-material/EventBusy';
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -88,7 +94,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "OnBoarding",
       title: "On Boarding",
-      icon: <BarChartIcon />,
+      icon: <LoginIcon />,
       children: [
         {
           segment: "OnBoardingView",
@@ -105,7 +111,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "Attendance",
       title: "Attendance",
-      icon: <BarChartIcon />,
+      icon: <HowToRegIcon />,
       children: [
         {
           segment: "AttendanceDashboard",
@@ -142,7 +148,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "Leave",
       title: "Leave",
-      icon: <BarChartIcon />,
+      icon: <EventBusyIcon />,
       children: [
         {
           segment: "LeaveDashboard",
@@ -164,7 +170,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "PayRoll",
       title: "PayRoll",
-      icon: <BarChartIcon />,
+      icon: <FolderCopyIcon />,
       children: [
         {
           segment: "PayrollDashboard",
@@ -201,7 +207,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "OffBoarding",
       title: "Off Boarding",
-      icon: <BarChartIcon />,
+      icon: <LogoutIcon />,
       children: [
         {
           segment: "ExitProcess",
@@ -218,12 +224,12 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "HelpDesk",
       title: "Help Desk",
-      icon: <LayersIcon />,
+      icon: <HeadsetMicIcon />,
     },
     {
       segment: "Configuration",
       title: "Configuration",
-      icon: <BarChartIcon />,
+      icon: <ConstructionIcon/>,
       children: [
         {
           segment: "Holidays",
@@ -275,7 +281,9 @@ export default function DashboardLayoutBasic(props) {
       case "Employees":
         return <Employee/>;
       case "Profile":
-        return <EmployeeProfile/>
+        return <EmployeeProfile/>;
+      case "RecruitmentDashboard":
+        return <RecruitmentDashboard/>;
       default:
         return null;
     }
