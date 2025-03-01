@@ -23,6 +23,8 @@ import ConstructionIcon from '@mui/icons-material/Construction';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
+import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
+import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -284,6 +286,10 @@ export default function DashboardLayoutBasic(props) {
         return <EmployeeProfile/>;
       case "RecruitmentDashboard":
         return <RecruitmentDashboard/>;
+      case "AttendanceDashboard":
+        return <AttendanceDashboard/>;
+      case "LeaveDashboard":
+        return <LeaveDashboard/>
       default:
         return null;
     }
