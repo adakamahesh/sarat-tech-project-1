@@ -1,71 +1,76 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableContainer from '@mui/material/TableContainer';
-import Paper from '@mui/material/Paper';
-import { TableHead, TableRow, TableCell, Avatar, Box, Typography, Button } from "@mui/material";
+import * as React from "react";
+import { Box, Typography, IconButton, Card, CardContent, TextField, Button } from "@mui/material";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 
-export default function AccessibleTable() {
-  // Define employee object
-  const employee = {
-    name: "Mahesh Babu",
-    profileImage: "/default-profile.png",
-    role:"UI/UX Design Team",
-    employeeid:"Employee ID :501",
-    dateofjoin:"Date of Join : 27-01-2025",
-    Phone:"+91 9248184693",
-    email:"amb@gmail.com",
-    birthday:"06-09-2002",
-    address:"100 Terminal, Fort Lauderdale, Miami 33315, United States",
-    gender:"Male",
+export default function PersonalInfoCard() {
+  const [isEditing, setIsEditing] = React.useState(false);
+  
+  const [personalDetails, setPersonalDetails] = React.useState({
+    dateOfBirth: "1990-05-15",
+    gender: "Male",
+    address: "123 Main Street, Mumbai, India",
+    qualification: "Bachelor's in Computer Science",
+    experience: "5 Years",
+    maritalStatus: "Married",
+    children: "2",
+    emergencyContactName: "John Doe",
+    emergencyContact: "+91 9876543210",
+  });
+
+  const handleChange = (e) => {
+    setPersonalDetails({ ...personalDetails, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="caption table">
-        <TableHead>
-          <TableRow>
-            <TableCell align="left" colSpan={5} sx={{ fontSize: "25px" }}>
-            <Box sx={{display:"flex",justifyContent:"space-between"}}>    
-            <Box>
-              <Box> 
-                <Typography variant="h6">Personal Information</Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                {/* Profile Image */}
-                <Avatar
-                  src={employee.profileImage}
-                  alt={employee.name}
-                  sx={{ width: 60, height: 60 }}
-                />
-                {/* Name & Info */}
-                <Box>
-                  <Typography variant="h5">{employee.name}</Typography>
-                  <Typography variant="h5" color="textSecondary">{employee.role}</Typography>
-                  <Typography variant="body2">{employee.employeeid}</Typography>
-                  <Typography variant="body2" color="textSecondary">{employee.dateofjoin}</Typography>
-                </Box>
-              </Box>
-              <Box  sx={{ ml: "10%" }}>
-                <Button variant="contained" color="primary" sx={{mt:3}}>Send Message</Button>
+    <Box>
+      <Card sx={{ maxWidth: 600, p: 3, boxShadow: 3, position: "relative" }}>
+        {!isEditing && (
+          <IconButton sx={{ position: "absolute", top: 10, right: 10, color: "gray" }} onClick={() => setIsEditing(true)}>
+            <EditNoteIcon />
+          </IconButton>
+        )}
+
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Personal Information
+          </Typography>
+
+          {isEditing ? (
+            <Box display="flex" flexDirection="column" gap={2}>
+              <TextField label="Date of Birth" name="dateOfBirth" value={personalDetails.dateOfBirth} onChange={handleChange} fullWidth />
+              <TextField label="Gender" name="gender" value={personalDetails.gender} onChange={handleChange} fullWidth />
+              <TextField label="Address" name="address" value={personalDetails.address} onChange={handleChange} fullWidth />
+              <TextField label="Qualification" name="qualification" value={personalDetails.qualification} onChange={handleChange} fullWidth />
+              <TextField label="Experience" name="experience" value={personalDetails.experience} onChange={handleChange} fullWidth />
+              <TextField label="Marital Status" name="maritalStatus" value={personalDetails.maritalStatus} onChange={handleChange} fullWidth />
+              <TextField label="Children" name="children" value={personalDetails.children} onChange={handleChange} fullWidth />
+              <TextField label="Emergency Contact Name" name="emergencyContactName" value={personalDetails.emergencyContactName} onChange={handleChange} fullWidth />
+              <TextField label="Emergency Contact" name="emergencyContact" value={personalDetails.emergencyContact} onChange={handleChange} fullWidth />
+              
+              <Box display="flex" justifyContent="space-between" mt={2}>
+                <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+                <Button variant="outlined" color="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
               </Box>
             </Box>
-            <Box>
-                <Typography variant="h6">Phone:</Typography>
-                <Typography variant="body2">{employee.Phone}</Typography>
-                <Typography variant="h6">Email:</Typography>
-                <Typography variant="body2">{employee.email}</Typography>
-                <Typography variant="h6">Birthday:</Typography>
-                <Typography variant="body2">{employee.birthday}</Typography>
-                <Typography variant="h6">Address:</Typography>  
-                <Typography variant="body2">{employee.address}</Typography>  
-                <Typography variant="h6">Gender:</Typography>
-                <Typography variant="body2">{employee.gender}</Typography>
+          ) : (
+            <Box display="flex" flexDirection="column" gap={1}>
+              <Typography><strong>Date of Birth:</strong> {personalDetails.dateOfBirth}</Typography>
+              <Typography><strong>Gender:</strong> {personalDetails.gender}</Typography>
+              <Typography><strong>Address:</strong> {personalDetails.address}</Typography>
+              <Typography><strong>Qualification:</strong> {personalDetails.qualification}</Typography>
+              <Typography><strong>Experience:</strong> {personalDetails.experience}</Typography>
+              <Typography><strong>Marital Status:</strong> {personalDetails.maritalStatus}</Typography>
+              <Typography><strong>Children:</strong> {personalDetails.children}</Typography>
+              <Typography><strong>Emergency Contact Name:</strong> {personalDetails.emergencyContactName}</Typography>
+              <Typography><strong>Emergency Contact:</strong> {personalDetails.emergencyContact}</Typography>
             </Box>
-            </Box>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-      </Table>
-    </TableContainer>
+          )}
+        </CardContent>
+      </Card>
+    </Box>
   );
 }
