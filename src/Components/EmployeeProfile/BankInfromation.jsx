@@ -1,10 +1,16 @@
 import * as React from "react";
 import { Box, Typography, IconButton, Card, CardContent, TextField, Button } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import StoreIcon from "@mui/icons-material/Store";
+import CodeIcon from "@mui/icons-material/Code";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PublicIcon from "@mui/icons-material/Public";
 
 export default function BankInfoCard() {
   const [isEditing, setIsEditing] = React.useState(false);
-  
+
   const [bankDetails, setBankDetails] = React.useState({
     bankName: "State Bank of India",
     accountNumber: "1234567890",
@@ -32,7 +38,7 @@ export default function BankInfoCard() {
         )}
 
         <CardContent>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h6" fontWeight="bold" gutterBottom>
             Bank Information
           </Typography>
 
@@ -44,7 +50,7 @@ export default function BankInfoCard() {
               <TextField label="Bank Code" name="bankCode" value={bankDetails.bankCode} onChange={handleChange} fullWidth />
               <TextField label="Bank Address" name="bankAddress" value={bankDetails.bankAddress} onChange={handleChange} fullWidth />
               <TextField label="Country" name="country" value={bankDetails.country} onChange={handleChange} fullWidth />
-              
+
               <Box display="flex" justifyContent="space-between" mt={2}>
                 <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
                 <Button variant="outlined" color="secondary" onClick={() => setIsEditing(false)}>Cancel</Button>
@@ -52,12 +58,20 @@ export default function BankInfoCard() {
             </Box>
           ) : (
             <Box display="flex" flexDirection="column" gap={1}>
-              <Typography><strong>Bank Name:</strong> {bankDetails.bankName}</Typography>
-              <Typography><strong>Account Number:</strong> {bankDetails.accountNumber}</Typography>
-              <Typography><strong>Branch:</strong> {bankDetails.branch}</Typography>
-              <Typography><strong>Bank Code:</strong> {bankDetails.bankCode}</Typography>
-              <Typography><strong>Bank Address:</strong> {bankDetails.bankAddress}</Typography>
-              <Typography><strong>Country:</strong> {bankDetails.country}</Typography>
+              {[
+                { icon: <AccountBalanceIcon />, label: "Bank Name", value: bankDetails.bankName },
+                { icon: <CreditCardIcon />, label: "Account Number", value: bankDetails.accountNumber },
+                { icon: <StoreIcon />, label: "Branch", value: bankDetails.branch },
+                { icon: <CodeIcon />, label: "Bank Code", value: bankDetails.bankCode },
+                { icon: <LocationOnIcon />, label: "Bank Address", value: bankDetails.bankAddress },
+                { icon: <PublicIcon />, label: "Country", value: bankDetails.country },
+              ].map((item, index) => (
+                <Box key={index} display="flex" alignItems="center" gap={1}>
+                  <Box sx={{ color: "gray" }}>{item.icon}</Box>
+                  <Typography sx={{ color: "gray" }}>{item.label}:</Typography>
+                  <Typography sx={{ color: "black" }}>{item.value}</Typography>
+                </Box>
+              ))}
             </Box>
           )}
         </CardContent>
