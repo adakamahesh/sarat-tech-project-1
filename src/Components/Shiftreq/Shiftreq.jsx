@@ -3,20 +3,20 @@ import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,T
   TableSortLabel,Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,
 } from '@mui/material';
 
-function createData(id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift , WorkEmail, DateOfJoining) {
-  return { id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift, WorkEmail, DateOfJoining };
+function createData(id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift, WorkType, ReportingManager, Company, WorkEmail, DateOfJoining) {
+  return { id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift, WorkType, ReportingManager, Company, WorkEmail, DateOfJoining };
 }
 
 const initialRows = [
-  createData(1, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 501, "FrontEnd Developer", 'IT Dept', "Day Shift", "amb@gmail.com", "2025-01-28"),
-  createData(2, 'Vasu', 'vasu@gmail.com', 9700784065, 502, "Backend Developer", 'IT Dept', "Night Shift", "vasu@gmail.com", "2024-12-15"),
-  createData(3, 'Praveen', 'praveen@gmail.com', 9700784065, 503, "UI/UX Designer", 'Design', "Day Shift", "praveen@gmail.com", "2024-10-10"),
-  createData(4, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 504, "FrontEnd Developer", 'IT Dept', "Day Shift", "amb@gmail.com", "2025-01-28"),
-  createData(5, 'Vasu', 'vasu@gmail.com', 9700784065, 505, "Backend Developer", 'IT Dept', "Night Shift", "vasu@gmail.com", "2024-12-15"),
-  createData(6, 'Praveen', 'praveen@gmail.com', 9700784065, 506, "UI/UX Designer", 'Design', "Day Shift", "praveen@gmail.com", "2024-10-10"),
-  createData(7, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 507, "FrontEnd Developer", 'IT Dept', "Day Shift", "amb@gmail.com", "2025-01-28"),
-  createData(8, 'Vasu', 'vasu@gmail.com', 9700784065, 508, "Backend Developer", 'IT Dept', "Night Shift",  "vasu@gmail.com", "2024-12-15"),
-  createData(9, 'Praveen', 'praveen@gmail.com', 9700784065, 509, "UI/UX Designer", 'Design', "Day Shift",  "praveen@gmail.com", "2024-10-10"),
+  createData(1, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 501, "FrontEnd Developer", 'IT Dept', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "amb@gmail.com", "2025-01-28"),
+  createData(2, 'Vasu', 'vasu@gmail.com', 9700784065, 502, "Backend Developer", 'IT Dept', "Night Shift", "Remote", 'Mahii', 'Sarat Tech', "vasu@gmail.com", "2024-12-15"),
+  createData(3, 'Praveen', 'praveen@gmail.com', 9700784065, 503, "UI/UX Designer", 'Design', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "praveen@gmail.com", "2024-10-10"),
+  createData(4, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 504, "FrontEnd Developer", 'IT Dept', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "amb@gmail.com", "2025-01-28"),
+  createData(5, 'Vasu', 'vasu@gmail.com', 9700784065, 505, "Backend Developer", 'IT Dept', "Night Shift", "Remote", 'Mahii', 'Sarat Tech', "vasu@gmail.com", "2024-12-15"),
+  createData(6, 'Praveen', 'praveen@gmail.com', 9700784065, 506, "UI/UX Designer", 'Design', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "praveen@gmail.com", "2024-10-10"),
+  createData(7, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 507, "FrontEnd Developer", 'IT Dept', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "amb@gmail.com", "2025-01-28"),
+  createData(8, 'Vasu', 'vasu@gmail.com', 9700784065, 508, "Backend Developer", 'IT Dept', "Night Shift", "Remote", 'Mahii', 'Sarat Tech', "vasu@gmail.com", "2024-12-15"),
+  createData(9, 'Praveen', 'praveen@gmail.com', 9700784065, 509, "UI/UX Designer", 'Design', "Day Shift", "Office", 'Mahii', 'Sarat Tech', "praveen@gmail.com", "2024-10-10"),
 ];
 
 export default function EmployeeTable() {
@@ -29,7 +29,7 @@ export default function EmployeeTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [newEmployee, setNewEmployee] = React.useState({
-    Employee: '', Email: '', Phone: '',BadgeId:'', JobPosition: '',Department:'',shift:'', WorkEmail:'', DateOfJoining: ''
+    Employee: '', Email: '', Phone: '',BadgeId:'', JobPosition: '', DateOfJoining: ''
   });
 
   const handleRequestSort = (property) => {
@@ -52,7 +52,7 @@ export default function EmployeeTable() {
   const handleAddEmployee = () => {
     if (newEmployee.Employee && newEmployee.Email) {
       setRows([...rows, createData(rows.length + 1, newEmployee.Employee, newEmployee.Email, newEmployee.Phone, rows.length + 500, newEmployee.JobPosition, 'IT Dept', "Day Shift", "Office", 'Mahii', 'Sarat Tech', newEmployee.Email, newEmployee.DateOfJoining)]);
-      setNewEmployee({ Employee: '', Email: '', Phone: '',BadgeId:'', JobPosition: '',Department:'',shift:'', WorkEmail:'', DateOfJoining: '' });
+      setNewEmployee({ Employee: '', Email: '', Phone: '',BadgeId:'', JobPosition: '', DateOfJoining: '' });
       handleClose();
     }
   };
@@ -82,19 +82,16 @@ export default function EmployeeTable() {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+                <TableCell>
                   <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
                     Employee
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>BadgeId</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Job Position</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Department</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>shift</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}> WorkEmail</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+                <TableCell>Email</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>BadgeId</TableCell>
+                <TableCell>Job Position</TableCell>
+                <TableCell>
                   <TableSortLabel active={orderBy === 'DateOfJoining'} direction={order} onClick={() => handleRequestSort('DateOfJoining')}>
                     Date of Joining
                   </TableSortLabel>
@@ -104,15 +101,12 @@ export default function EmployeeTable() {
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Employee}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Email}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Phone}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.BadgeId}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.JobPosition}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Department}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.shift}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.WorkEmail}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.DateOfJoining}</TableCell>
+                  <TableCell>{row.Employee}</TableCell>
+                  <TableCell>{row.Email}</TableCell>
+                  <TableCell>{row.Phone}</TableCell>
+                  <TableCell>{row.BadgeId}</TableCell>
+                  <TableCell>{row.JobPosition}</TableCell>
+                  <TableCell>{row.DateOfJoining}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -137,10 +131,7 @@ export default function EmployeeTable() {
               <TextField name="Email" label="Email" variant="outlined" size="small" value={newEmployee.Email} onChange={handleInputChange} />
               <TextField name="Phone" label="Phone" variant="outlined" size="small" value={newEmployee.Phone} onChange={handleInputChange} />
               <TextField name="BadgeId" label="BadgeId" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="JobPosition" label="JobPosition" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="shift" label="shift" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="WorkEmail" label="WorkEmail" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
+              <TextField name="JobPosition" label="Job Position" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
               <TextField name="DateOfJoining" label="Date of Joining" variant="outlined" size="small" type="date" InputLabelProps={{ shrink: true }} value={newEmployee.DateOfJoining} onChange={handleInputChange} />
               <Button variant="contained" onClick={handleAddEmployee}>Add</Button>
             </Box>

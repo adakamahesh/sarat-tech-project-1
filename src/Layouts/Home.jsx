@@ -25,6 +25,7 @@ import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
 import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
+import ShiftRequests from "../Components/Shiftreq/Shiftreq";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -290,6 +291,8 @@ export default function DashboardLayoutBasic(props) {
         return <AttendanceDashboard/>;
       case "LeaveDashboard":
         return <LeaveDashboard/>
+      case "ShiftRequests":
+        return <ShiftRequests/>
       default:
         return null;
     }
