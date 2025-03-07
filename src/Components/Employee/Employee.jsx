@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
   TableSortLabel,Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,
 } from '@mui/material';
+import { Avatar } from '@mui/material';
 
 function createData(id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift , WorkEmail, DateOfJoining) {
   return { id, Employee, Email, Phone, BadgeId, JobPosition, Department, shift, WorkEmail, DateOfJoining };
@@ -82,6 +83,7 @@ export default function EmployeeTable() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>BadgeId</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
                   <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
                     Employee
@@ -89,7 +91,6 @@ export default function EmployeeTable() {
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Email</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>BadgeId</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Job Position</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Department</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>shift</TableCell>
@@ -104,10 +105,19 @@ export default function EmployeeTable() {
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Employee}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.BadgeId}</TableCell>
+                  <TableCell sx={{ 
+                     textAlign: 'left',
+                     display: 'flex', 
+                     alignItems: 'center',
+                     gap: 1, 
+                     justifyContent: 'flex-start'
+                    }}>
+                    <Avatar sx={{ bgcolor: 'gray' }}>{row.Employee[0]}</Avatar>
+                    {row.Employee}
+                  </TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.Email}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.Phone}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.BadgeId}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.JobPosition}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.Department}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.shift}</TableCell>
@@ -128,21 +138,21 @@ export default function EmployeeTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose}  maxWidth="sm" fullWidth>
         <Card sx={{ p: 2, minWidth: 300 }}>
-          <CardContent>
+          <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
             <Typography variant="h6">Add Employee</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
               <TextField name="Employee" label="Employee Name" variant="outlined" size="small" value={newEmployee.Employee} onChange={handleInputChange} />
               <TextField name="Email" label="Email" variant="outlined" size="small" value={newEmployee.Email} onChange={handleInputChange} />
               <TextField name="Phone" label="Phone" variant="outlined" size="small" value={newEmployee.Phone} onChange={handleInputChange} />
               <TextField name="BadgeId" label="BadgeId" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="JobPosition" label="JobPosition" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="shift" label="shift" variant="outlined" size="small" value={newEmployee.BadgeId} onChange={handleInputChange} />
-              <TextField name="WorkEmail" label="WorkEmail" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
+              <TextField name="JobPosition" label="JobPosition" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
+              <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.Department} onChange={handleInputChange} />
+              <TextField name="shift" label="shift" variant="outlined" size="small" value={newEmployee.shift} onChange={handleInputChange} />
+              <TextField name="WorkEmail" label="WorkEmail" variant="outlined" size="small" value={newEmployee.WorkEmail} onChange={handleInputChange} />
               <TextField name="DateOfJoining" label="Date of Joining" variant="outlined" size="small" type="date" InputLabelProps={{ shrink: true }} value={newEmployee.DateOfJoining} onChange={handleInputChange} />
-              <Button variant="contained" onClick={handleAddEmployee}>Add</Button>
+              <Button variant="contained" onClick={handleAddEmployee}>Add Employee</Button>
             </Box>
           </CardContent>
         </Card>
