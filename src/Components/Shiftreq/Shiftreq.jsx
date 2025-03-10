@@ -96,6 +96,16 @@ export default function EmployeeTable() {
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Request Start</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}> Request Till</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}> Description</TableCell>
+                <TableCell sx={{ 
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    position: 'sticky',
+                    right: 0, 
+                    background: 'white',
+                    zIndex: 2 
+                }}>
+                    Confirmation
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -119,6 +129,14 @@ export default function EmployeeTable() {
                   <TableCell sx={{ textAlign: 'center' }}>{row.RequestStart}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.RequestTill}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.Description}</TableCell>
+                  <TableCell sx={{ textAlign: 'center',position: 'sticky', right: 0,background: 'white',zIndex: 1, whiteSpace: 'nowrap' }}>
+                    <Button variant="contained" sx={{ bgcolor: 'green', color: 'white', mx: 1 }} onClick={() => alert(`Accepted ${row.BadgeId}`)}>
+                        Accept
+                    </Button>
+                    <Button variant="contained" sx={{ bgcolor: 'red', color: 'white', mx: 1 }} onClick={() => alert(`Rejected ${row.BadgeId}`)}>
+                        Reject
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
