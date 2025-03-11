@@ -26,6 +26,7 @@ import EventBusyIcon from '@mui/icons-material/EventBusy';
 import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
 import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
+import Applicant from "../Components/Applicant/Applicant";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -290,9 +291,11 @@ export default function DashboardLayoutBasic(props) {
       case "AttendanceDashboard":
         return <AttendanceDashboard/>;
       case "LeaveDashboard":
-        return <LeaveDashboard/>
+        return <LeaveDashboard/>;
       case "ShiftRequests":
-        return <ShiftRequests/>
+        return <ShiftRequests/>;
+      case "Applicant":
+        return <Applicant/>;
       default:
         return null;
     }
