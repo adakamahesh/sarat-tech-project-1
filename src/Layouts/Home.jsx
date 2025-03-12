@@ -28,7 +28,8 @@ import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
 import Applicant from "../Components/Applicant/Applicant";
 import CandidatesView from "../Components/CandidatesView/CandidatwsView";
-import AttendanceActivity from "../Components/AttendanceActivity/AttendanceActivity"
+import AttendanceActivity from "../Components/AttendanceActivity/AttendanceActivity";
+import EmployeeLate from "../Components/EmployeeLate/EmployeeLate";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -302,6 +303,8 @@ export default function DashboardLayoutBasic(props) {
         return <CandidatesView/>;
       case "AttendanceActivity":
         return <AttendanceActivity/>;
+      case "EmployeeLate":
+        return <EmployeeLate/>;
       default:
         return null;
     }
