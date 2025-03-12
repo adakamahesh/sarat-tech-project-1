@@ -27,6 +27,7 @@ import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
 import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
 import Applicant from "../Components/Applicant/Applicant";
+import CandidatesView from "../Components/CandidatesView/CandidatwsView";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -296,6 +297,8 @@ export default function DashboardLayoutBasic(props) {
         return <ShiftRequests/>;
       case "Applicant":
         return <Applicant/>;
+      case "CandidatesView":
+        return <CandidatesView/>;
       default:
         return null;
     }
