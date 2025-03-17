@@ -31,6 +31,8 @@ import CandidatesView from "../Components/CandidatesView/CandidatwsView";
 import AttendanceActivity from "../Components/AttendanceActivity/AttendanceActivity";
 import EmployeeLate from "../Components/EmployeeLate/EmployeeLate";
 import MyAttendances from "../Components/MyAttendances/MyAttendances";
+import Holidays from "../Components/Configuration/Holidays/Holidays";
+import CompanyLeaves from "../Components/Configuration/CompanyLeaves/CompanyLeaves";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -308,6 +310,10 @@ export default function DashboardLayoutBasic(props) {
         return <EmployeeLate/>;
       case "MyAttendances":
         return <MyAttendances/>;
+      case "Holidays":
+        return <Holidays/>;
+      case "CompanyLeaves":
+        return <CompanyLeaves/>;
       default:
         return null;
     }

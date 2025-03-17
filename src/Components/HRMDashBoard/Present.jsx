@@ -8,41 +8,21 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { TableVirtuoso } from 'react-virtuoso';
 import Typography from '@mui/material/Typography';
-import Chance from 'chance';
+import axios from 'axios';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
-const chance = new Chance(42);
-
-function createData(id) {
-  return {
-    id,
-    firstName: chance.first(),
-    lastName: chance.last(),
-  };
-}
 
 const columns = [
-  {
-    width: 50,
-    label: 'S.No.',
-    dataKey: 'serialNumber',
-  },
-    
-  {
-    width: 100,
-    label: 'First Name',
-    dataKey: 'firstName',
-  },
-  {
-    width: 100,
-    label: 'Last Name',
-    dataKey: 'lastName',
-  },
+  { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
+  { width: 100, label: 'Employee ID', dataKey: 'employeeId' },
+  { width: 100, label: 'First Name', dataKey: 'firstName' },
+  { width: 100, label: 'Last Name', dataKey: 'lastName' },
 ];
 
-const rows = Array.from({ length: 42 }, (_, index) => ({
-    serialNumber: index + 1, // Add serial number
-    ...createData(index),
-  }));
+
+
+
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
     <TableContainer component={Paper} {...props} ref={ref} />
@@ -76,28 +56,58 @@ function fixedHeaderContent() {
 function rowContent(_index, row) {
   return (
     <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
-        >
-          {row[column.dataKey]}
-        </TableCell>
-      ))}
+       {columns.map((column) => (
+              <TableCell key={column.dataKey} align={column.numeric ? 'right' : 'left'}>
+                {row[column.dataKey]}
+              </TableCell>
+            ))}
     </React.Fragment>
   );
 }
 
 export default function ReactVirtualizedTable() {
+    const [employees, setEmployees] = React.useState([]);
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+
+    React.useEffect(() => {
+        axios
+          .get("http://192.168.1.50:8084/attendance/today/present/employees")
+          .then((response) => {
+            const employeeData = response.data.map((employee, index) => ({
+              serialNumber: index + 1,
+              employeeId: employee.employeeId,
+              firstName: employee.firstName,
+              lastName: employee.lastName,
+            }));
+            setEmployees(employeeData);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching absent employee data:", error);
+            setError("Failed to load employees");
+            setLoading(false);
+          });
+      }, []);
+
   return (
     <Paper style={{ height: 450, width: '100%' }}>
     <Typography>Total Presents</Typography>
-    <TableVirtuoso
-      data={rows}
-      components={VirtuosoTableComponents}
-      fixedHeaderContent={fixedHeaderContent}
-      itemContent={rowContent}
-    />
+    {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
+        <TableVirtuoso
+          data={employees}
+          components={VirtuosoTableComponents}
+          fixedHeaderContent={fixedHeaderContent}
+          itemContent={rowContent}
+        />
+      )}
+
     </Paper>
   );
 }
