@@ -81,7 +81,7 @@ export default function HolidayTable() {
         <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
           <Typography variant="h6">Holiday</Typography>
           <TextField label="Search HolidayName" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
+          <TextField select label="Filter by Start Date" variant="outlined" size="small" value={filter} onChange={handleFilter}>
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.StartDate))].map((job) => (
               <MenuItem key={job} value={job}>{job}</MenuItem>
