@@ -5,19 +5,16 @@ import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,T
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from "@mui/icons-material/EditNote";
 
-function createData(id, HolidayName, StartDate, EndDate, Recurring) {
-    return { id, HolidayName, StartDate, EndDate, Recurring };
+function createData(id, BasedOnWeek, BasedOnWeekDay) {
+    return { id,BasedOnWeek , BasedOnWeekDay };
   }
   
   const initialRows = [
-    createData(1, 'New Year', '2025-01-01', '2025-01-01', 'Yes'),
-    createData(2, 'Christmas', '2024-12-25', '2024-12-25', 'Yes'),
-    createData(3, 'Independence Day', '2024-07-04', '2024-07-04', 'No'),
-    createData(4, 'Labor Day', '2024-09-02', '2024-09-02', 'No'),
-    createData(5, 'Thanksgiving', '2024-11-28', '2024-11-28', 'Yes'),
+    createData(1,'All',"Saturday"),
+    createData(2,'All',"SunDay"),
   ];
   
-export default function HolidayTable() {
+export default function CompanyLeavesTable() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('');
   const [search, setSearch] = React.useState('');
@@ -30,8 +27,8 @@ export default function HolidayTable() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const [rowToDelete, setRowToDelete] = React.useState(null);
   const [open, setOpen] = React.useState(false);
-  const [newHolidayName, setNewHolidayName] = React.useState({
-    HolidayName: '', StartDate: '',EndDate:'', Recurring:''
+  const [newBasedOnWeek, setNewBasedOnWeek] = React.useState({
+    BasedOnWeek: '', BasedOnWeekDay: ''
   });
 
   const handleRequestSort = (property) => {
@@ -60,30 +57,30 @@ export default function HolidayTable() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleAddHolidayName = () => {
-    if (newHolidayName.HolidayName && newHolidayName.StartDate) {
-      setRows([...rows, createData(rows.length + 1, newHolidayName.HolidayName, newHolidayName.StartDate, newHolidayName.EndDate, newHolidayName.Recurring, rows.length + 500)]);
-      setNewHolidayName({ HolidayName: '', StartDate: '', EndDate: '',Recurring:''});
+  const handleAddBasedOnWeek = () => {
+    if (newBasedOnWeek.BasedOnWeek && newBasedOnWeek.BasedOnWeekDay) {
+      setRows([...rows, createData(rows.length + 1, newBasedOnWeek.BasedOnWeek, newBasedOnWeek.BasedOnWeekDay, rows.length + 500)]);
+      setNewBasedOnWeek({BasedOnWeek: '', BasedOnWeekDay: ''});
       handleClose();
     }
   };
 
-  const handleInputChange = (event) => setNewHolidayName({ ...newHolidayName, [event.target.name]: event.target.value });
+  const handleInputChange = (event) => setNewBasedOnWeek({ ...newBasedOnWeek, [event.target.name]: event.target.value });
 
   const filteredRows = rows.filter((row) =>
-    row.HolidayName.toLowerCase().includes(search.toLowerCase()) &&
-    (filter ? row.StartDate === filter : true)
+    row.BasedOnWeek.toLowerCase().includes(search.toLowerCase()) &&
+    (filter ? row.BasedOnWeekDay === filter : true)
   );
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
         <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
-          <Typography variant="h6">Holiday</Typography>
-          <TextField label="Search HolidayName" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
+          <Typography variant="h6">Company Leaves</Typography>
+          <TextField label="Search BasedOnWeek" variant="outlined" size="small" value={search} onChange={handleSearch} />
+          <TextField select label="Filter by WeekDay" variant="outlined" size="small" value={filter} onChange={handleFilter}>
             <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map((row) => row.StartDate))].map((job) => (
+            {[...new Set(rows.map((row) => row.BasedOnWeekDay))].map((job) => (
               <MenuItem key={job} value={job}>{job}</MenuItem>
             ))}
           </TextField>
@@ -94,23 +91,19 @@ export default function HolidayTable() {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                  <TableSortLabel active={orderBy === 'HolidayName'} direction={order} onClick={() => handleRequestSort('HolidayName')}>
-                    Holiday Name
+                  <TableSortLabel active={orderBy === 'BasedOnWeek'} direction={order} onClick={() => handleRequestSort('BasedOnWeek')}>
+                  Based On Week
                   </TableSortLabel>
                 </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>StartDate</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>EndDate</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Recrring</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Based On WeekDay</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.HolidayName}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.StartDate}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.EndDate}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Recurring}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.BasedOnWeek}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.BasedOnWeekDay}</TableCell>
                   <TableCell sx={{  textAlign: 'center',position: 'sticky', right: 0,background: 'white',zIndex: 1, whiteSpace: 'nowrap'  }}>
                     {editId === row.id ? (
                       <Button variant="contained" color="success" size="small" onClick={handleSave}>Save</Button>
@@ -143,13 +136,11 @@ export default function HolidayTable() {
       <Dialog open={open} onClose={handleClose}  maxWidth="sm" fullWidth>
         <Card sx={{ p: 2, minWidth: 300 }}>
           <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-            <Typography variant="h6">Add HolidayName</Typography>
+            <Typography variant="h6">Add Company Leaves</Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              <TextField name="HolidayName" label="HolidayName" variant="outlined" size="small" value={newHolidayName.HolidayName} onChange={handleInputChange} />
-              <TextField name="StartDate" label="Start Date" variant="outlined" size="small" value={newHolidayName.StartDate} onChange={handleInputChange} />
-              <TextField name="EndDate" label="End Date" variant="outlined" size="small" value={newHolidayName.EndDate} onChange={handleInputChange} />
-              <TextField name="Recurring" label="Recurring" variant="outlined" size="small" value={newHolidayName.Recurring} onChange={handleInputChange} />
-              <Button variant="contained" onClick={handleAddHolidayName}>Add HolidayName</Button>
+              <TextField name="BasedOnWeek" label="Based On Week" variant="outlined" size="small" value={newBasedOnWeek.BasedOnWeek} onChange={handleInputChange} />
+              <TextField name="BasedOnWeekDay" label="Based On WeekDay" variant="outlined" size="small" value={newBasedOnWeek.BasedOnWeekDay} onChange={handleInputChange} />
+              <Button variant="contained" onClick={handleAddBasedOnWeek}>Add Based On Week</Button>
             </Box>
           </CardContent>
         </Card>
