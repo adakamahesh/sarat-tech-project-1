@@ -91,8 +91,8 @@ export default function ReactVirtualizedTable() {
       }, []);
 
   return (
-    <Paper style={{ height: 450, width: '100%' }}>
-    <Typography>Total Presents</Typography>
+    <Paper style={{ height: 450, width: '130%', padding:'10px',overflow: 'hidden' }}>
+    <Typography sx={{ fontWeight: 'bold' }}>Total Presents</Typography>
     {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
           <CircularProgress />

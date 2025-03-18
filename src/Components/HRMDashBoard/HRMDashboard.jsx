@@ -16,6 +16,7 @@ import Present from "./Present";
 import Announcement from './Announcement';
 import OverTime from './OverTime';
 import OnLeave from './OnLeave';
+import LeaveReq from './LeaveReq';
 import { Divider, CircularProgress } from "@mui/material";
 
 export default function HRMDashboard() {
@@ -25,6 +26,7 @@ export default function HRMDashboard() {
   const [error, setError] = React.useState(null);
   const [todayPresent, setTodayPresent] = React.useState(0);
   const [todayAbsent, setTodayAbsent] = React.useState(0);
+  const [LeaveRequest, setLeaveRequest] = React.useState(0);
 
   React.useEffect(() => {
     const fetchData = () => {
@@ -34,7 +36,9 @@ export default function HRMDashboard() {
             axios.get("http://192.168.1.50:8084/attendance/today/present")
                 .then(response => setTodayPresent(response.data)),
             axios.get("http://192.168.1.50:8084/attendance/today/absent")
-                .then(response => setTodayAbsent(response.data))
+                .then(response => setTodayAbsent(response.data)),
+            axios.get("http://192.168.1.50:8084/attendance/today/absent")
+                .then(response => setLeaveRequest(response.data))
         ])
         .then(() => setLoading(false))
         .catch(() => {
@@ -76,6 +80,13 @@ export default function HRMDashboard() {
       description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : todayAbsent),
       backgroundColor: "red",
     },
+    {
+      id: 4,
+      icon: <HailIcon />,
+      title: "Leave Request",
+      description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : LeaveRequest),
+      backgroundColor: "#4CAF50",
+    },
   ];
 
   const renderComponent = () => {
@@ -86,6 +97,8 @@ export default function HRMDashboard() {
         return <Present />;
       case 3:
         return <Absent />;
+      case 4:
+        return <LeaveReq/>;
       default:
         return null;
     }
@@ -95,7 +108,7 @@ export default function HRMDashboard() {
     <>
       <Box sx={{ display: "flex", width: "100%" }}>
         <Box sx={{ width: "75%", display: "flex", flexDirection: "column", gap: 2, ml: 2, border: "1px solid rgb(237,237,237)", p: 2 }}>
-          <Box sx={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 2 }}>
+          <Box sx={{ width: "100%", display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 1 }}>
             {cards.map((card) => (
               <Card key={card.id} sx={{ backgroundColor: card.backgroundColor, color: "white" }}>
                 <CardActionArea onClick={() => setSelectedCard(prev => prev === card.id ? null : card.id)}>

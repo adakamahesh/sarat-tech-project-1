@@ -88,8 +88,8 @@ export default function ReactVirtualizedTable() {
   }, []);
 
   return (
-    <Paper style={{ height: 450, width: '100%' }}>
-      <Typography >
+    <Paper style={{ height: 450, width: '130%', padding:'10px',overflow: 'hidden' }}>
+      <Typography sx={{ fontWeight: 'bold' }}>
         Absent Employees
       </Typography>
       {loading ? (
