@@ -36,7 +36,7 @@ const App = () => {
     { path: "/Leave/LeaveRequest", component: <Home /> },
     { path: "/Leave/LeaveType", component: <Home /> },
     { path: "/PayRoll/PayrollDashboard", component: <Home /> },
-    { path: "/PayRoll/Context", component: <Home /> },
+    { path: "/PayRoll/Contract", component: <Home /> },
     { path: "/PayRoll/Allowances", component: <Home /> },
     { path: "/PayRoll/Deduction", component: <Home /> },
     { path: "/PayRoll/Payslips", component: <Home /> },

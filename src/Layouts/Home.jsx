@@ -33,7 +33,8 @@ import EmployeeLate from "../Components/EmployeeLate/EmployeeLate";
 import MyAttendances from "../Components/MyAttendances/MyAttendances";
 import Holidays from "../Components/Configuration/Holidays/Holidays";
 import CompanyLeaves from "../Components/Configuration/CompanyLeaves/CompanyLeaves";
-import ResignationLater from "../Components/Offboarding/ResignationLatters/ResignationLatter"
+import Contract from "../Components/PayRoll/Contract/Contract";
+import ResignationLater from "../Components/Offboarding/ResignationLatters/ResignationLatter";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -189,8 +190,8 @@ export default function DashboardLayoutBasic(props) {
           icon: <HorizontalRuleIcon />,
         },
         {
-          segment: "Context",
-          title: "Context",
+          segment: "Contract",
+          title: "Contract",
           icon: <HorizontalRuleIcon />,
         },
         {
@@ -317,6 +318,8 @@ export default function DashboardLayoutBasic(props) {
         return <CompanyLeaves/>;
       case "ResignationLater":
         return <ResignationLater/>;
+      case "Contract":
+        return <Contract/>;
       default:
         return null;
     }
