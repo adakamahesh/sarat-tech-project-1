@@ -24,7 +24,7 @@ import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
 import FolderCopyIcon from '@mui/icons-material/FolderCopy';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
 import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
-import LeaveDashboard from "../Components/LeaveDashboard/LeaveDashboard";
+import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
 import Applicant from "../Components/Applicant/Applicant";
 import CandidatesView from "../Components/CandidatesView/CandidatwsView";
@@ -300,7 +300,7 @@ export default function DashboardLayoutBasic(props) {
       case "AttendanceDashboard":
         return <AttendanceDashboard/>;
       case "LeaveDashboard":
-        return <LeaveDashboard/>;
+        return <Dashboard/>;
       case "ShiftRequests":
         return <ShiftRequests/>;
       case "Applicant":
