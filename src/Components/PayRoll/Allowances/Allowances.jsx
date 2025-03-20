@@ -25,12 +25,12 @@ const columns = [
   ];
 
   const initialRows = [
-    createData(1,'1', 'Mahesh Babu', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','0.5','Approved'),
-    createData(2,'2', 'Vasu', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','1.0','Approved'),
-    createData(3,'3', 'Praveen', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','1.0','Approved'),
-    createData(4,'4', 'Ganesh', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','1.0','Approved'),
-    createData(5,'5', 'Siva', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','1.0','Approved'),
-    createData(6,'6', 'Naveen', 'Half Day Leave', 'Dec. 30,2024', 'Feb. 28,2024','1.0','Approved'),
+    createData(1,'iioo', '', 'Aiden Murphy(PEP25)', 'No', 'No','','No',"","OverTime",""),
+    createData(2,'Basic pay', '', '', 'Yes', 'No','','No',"","Basic Pay","50.0"),
+    createData(3,'', '', '', 'Yes', 'No','','No',"","OverTime",""),
+    createData(4,'', '', '', 'No', 'No','','No',"","Basic Pay","50.0"),
+    createData(5,'Basic pay', '', '', 'Yes', 'No','','No',"","OverTime",""),
+    createData(6,'iioo', '', '', 'No', 'No','','No',"","Basic Pay","50.0"),
   ];
   
 export default function HolidayTable() {
@@ -95,7 +95,7 @@ export default function HolidayTable() {
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
         <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
-          <Typography variant="h6">Resignations</Typography>
+          <Typography variant="h6">Allowances</Typography>
           <TextField label="Search SpecificEmployee" variant="outlined" size="small" value={search} onChange={handleSearch} />
           <TextField select label="Filter by Start Date" variant="outlined" size="small" value={filter} onChange={handleFilter}>
             <MenuItem value="">All</MenuItem>
