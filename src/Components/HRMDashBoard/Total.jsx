@@ -12,6 +12,7 @@ import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
+const API_URL=process.env.REACT_APP_BASE_URL;
 const columns = [
   { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
   { width: 100, label: 'Employee ID', dataKey: 'employeeId' },
@@ -68,7 +69,7 @@ export default function ReactVirtualizedTable() {
 
   React.useEffect(() => {
     axios
-      .get("http://192.168.1.50:8084/api/employees/active")
+      .get(`${API_URL}api/employees/active`)
       .then((response) => {
         const employeeData = response.data.map((employee, index) => ({
           serialNumber: index + 1,

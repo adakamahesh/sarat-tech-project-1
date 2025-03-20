@@ -19,6 +19,7 @@ import OnLeave from './OnLeave';
 import LeaveReq from './LeaveReq';
 import { Divider, CircularProgress } from "@mui/material";
 
+const API_URL=process.env.REACT_APP_BASE_URL;
 export default function HRMDashboard() {
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [totalEmployees, setTotalEmployees] = React.useState(0);
@@ -31,13 +32,13 @@ export default function HRMDashboard() {
   React.useEffect(() => {
     const fetchData = () => {
         Promise.all([
-            axios.get("http://192.168.1.50:8084/api/employees/count/active")
+            axios.get(`${API_URL}api/employees/count/active`)
                 .then(response => setTotalEmployees(response.data)),
-            axios.get("http://192.168.1.50:8084/attendance/today/present")
+            axios.get(`${API_URL}attendance/today/present`)
                 .then(response => setTodayPresent(response.data)),
-            axios.get("http://192.168.1.50:8084/attendance/today/absent")
+            axios.get(`${API_URL}attendance/today/absent`)
                 .then(response => setTodayAbsent(response.data)),
-            axios.get("http://192.168.1.50:8084/attendance/today/absent")
+            axios.get(`${API_URL}attendance/today/absent`)
                 .then(response => setLeaveRequest(response.data))
         ])
         .then(() => setLoading(false))
