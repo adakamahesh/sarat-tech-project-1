@@ -37,6 +37,7 @@ import Contract from "../Components/PayRoll/Contract/Contract";
 import ResignationLater from "../Components/Offboarding/ResignationLatters/ResignationLatter";
 import Payslips from "../Components/PayRoll/Payslip/Payslip";
 import LeaveRequest from "../Components/Leaves/LeaveRequest/LeaveRequest";
+import Allowances from "../Components/PayRoll/Allowances/Allowances";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -325,7 +326,9 @@ export default function DashboardLayoutBasic(props) {
       case "Payslips":
         return <Payslips/>;
       case "LeaveRequest":
-        return <LeaveRequest/>
+        return <LeaveRequest/>;
+      case "Allowances":
+        return <Allowances/>;
       default:
         return null;
     }
