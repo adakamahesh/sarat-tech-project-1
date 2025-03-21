@@ -181,6 +181,11 @@ export default function DashboardLayoutBasic(props) {
           title: "Leave Type",
           icon: <HorizontalRuleIcon />,
         },
+        {
+          segment: "AssignedLeave",
+          title: "Assigned Leave",
+          icon: <HorizontalRuleIcon />,
+        },
       ],
     },
     {
