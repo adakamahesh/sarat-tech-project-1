@@ -28,6 +28,7 @@ import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
 import Applicant from "../Components/Applicant/Applicant";
 import CandidatesView from "../Components/OnBoarding/CandidatesView/CandidatesView";
+import OnBoardingView from "../Components/OnBoarding/OnBoardingView/OnBoardingView";
 import AttendanceActivity from "../Components/AttendanceActivity/AttendanceActivity";
 import EmployeeLate from "../Components/EmployeeLate/EmployeeLate";
 import MyAttendances from "../Components/MyAttendances/MyAttendances";
@@ -337,6 +338,8 @@ export default function DashboardLayoutBasic(props) {
         return <Allowances/>;
       case "Deduction":
         return <Deduction/>;
+      case "OnBoardingView":
+        return <OnBoardingView/>;
       default:
         return null;
     }
