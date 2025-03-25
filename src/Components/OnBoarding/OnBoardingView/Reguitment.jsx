@@ -74,7 +74,7 @@ export default function CustomizedAccordions() {
   ];
 
   const accordionData = [
-    { id: "panel1", title: "Manager" },
+    { id: "panel1", title: "Recruitment" },
     { id: "panel2", title: "Django Developer" },
     { id: "panel3", title: "Orientation" },
     { id: "panel4", title: "Assign Team" },

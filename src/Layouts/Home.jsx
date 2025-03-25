@@ -26,7 +26,8 @@ import EventBusyIcon from '@mui/icons-material/EventBusy';
 import AttendanceDashboard from "../Components/Attendance/AttendanceDashboard";
 import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import ShiftRequests from "../Components/Shiftreq/Shiftreq";
-import Applicant from "../Components/Applicant/Applicant";
+import Applicant from "../Components/Recruitment/Applicant/Applicant";
+import RecruitmentPipeline from "../Components/Recruitment/RecruitmentPipeline/RecruitmentPipeline";
 import CandidatesView from "../Components/OnBoarding/CandidatesView/CandidatesView";
 import OnBoardingView from "../Components/OnBoarding/OnBoardingView/OnBoardingView";
 import AttendanceActivity from "../Components/AttendanceActivity/AttendanceActivity";
@@ -314,6 +315,8 @@ export default function DashboardLayoutBasic(props) {
         return <ShiftRequests/>;
       case "Applicant":
         return <Applicant/>;
+      case "RecruitmentPipeline":
+        return <RecruitmentPipeline/>;
       case "CandidatesView":
         return <CandidatesView/>;
       case "AttendanceActivity":
