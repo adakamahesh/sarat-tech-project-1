@@ -41,7 +41,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function CustomizedAccordions() {
+export default function CustomizedAccordions({subAccordionList}) {
   const [expanded, setExpanded] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState({});
   const [selectAll, setSelectAll] = React.useState(false);
@@ -73,15 +73,9 @@ export default function CustomizedAccordions() {
     { Candidate: "Jane Smith", Email: "jane@example.com", JobPosition: "Project Manager", Mobile: "+9876543210", JoiningDate: "05-03-2025", PortalStatus: "Inactive", TaskStatus: "Completed", Stage: "Hired" }
   ];
 
-  const accordionData = [
-    { id: "panel1", title: "Applied" },
-    { id: "panel2", title: "Initial" },
-    { id: "panel3", title: "Hired" },
-    ];
-
   return (
     <div>
-      {accordionData.map(({ id, title }) => (
+      {subAccordionList.map(({ id, title }) => (
         <Accordion key={id} expanded={expanded === id} onChange={handleChange(id)}>
           <AccordionSummary aria-controls={`${id}-content`} id={`${id}-header`} expanded={expanded === id}>
             <Typography component="span">{title}</Typography>
