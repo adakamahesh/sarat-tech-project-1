@@ -42,6 +42,7 @@ import LeaveRequest from "../Components/Leaves/LeaveRequest/LeaveRequest";
 import Allowances from "../Components/PayRoll/Allowances/Allowances";
 import Deduction from "../Components/PayRoll/Deductions/Dedutions";
 import ExitProcess from "../Components/Offboarding/ExitProcess/ExitProcess";
+import AssignedLeave from "../Components/Leaves/AssignedLeave/AssignedLeave";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -346,6 +347,8 @@ export default function DashboardLayoutBasic(props) {
         return <OnBoardingView/>;
       case "ExitProcess":
         return <ExitProcess/>;
+      case "AssignedLeave":
+        return <AssignedLeave/>;
       default:
         return null;
     }
