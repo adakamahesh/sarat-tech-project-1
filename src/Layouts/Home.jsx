@@ -32,7 +32,7 @@ import CandidatesView from "../Components/OnBoarding/CandidatesView/CandidatesVi
 import OnBoardingView from "../Components/OnBoarding/OnBoardingView/OnBoardingView";
 import AttendanceActivity from "../Components/Attendance/AttendanceActivity/AttendanceActivity";
 import EmployeeLate from "../Components/Attendance/EmployeeLate/EmployeeLate";
-import MyAttendances from "../Components/MyAttendances/MyAttendances";
+import MyAttendances from "../Components/Attendance/MyAttendances/MyAttendances";
 import Holidays from "../Components/Configuration/Holidays/Holidays";
 import CompanyLeaves from "../Components/Configuration/CompanyLeaves/CompanyLeaves";
 import Contract from "../Components/PayRoll/Contract/Contract";
