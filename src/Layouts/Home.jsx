@@ -44,6 +44,7 @@ import Deduction from "../Components/PayRoll/Deductions/Dedutions";
 import ExitProcess from "../Components/Offboarding/ExitProcess/ExitProcess";
 import AssignedLeave from "../Components/Leaves/AssignedLeave/AssignedLeave";
 import HelpDesk from "../Components/HelpDesk/HelpDesk";
+import PayRollDashBoard from "../Components/PayRoll/PayRollDashBoard/PayRollDashBoard";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -199,7 +200,7 @@ export default function DashboardLayoutBasic(props) {
       icon: <FolderCopyIcon />,
       children: [
         {
-          segment: "PayrollDashboard",
+          segment: "PayRollDashBoard",
           title: "Payroll Dashboard",
           icon: <HorizontalRuleIcon />,
         },
@@ -352,6 +353,8 @@ export default function DashboardLayoutBasic(props) {
         return <AssignedLeave/>;
       case "HelpDesk":
         return <HelpDesk/>;
+      case "PayRollDashBoard":
+        return <PayRollDashBoard/>;
       default:
         return null;
     }
