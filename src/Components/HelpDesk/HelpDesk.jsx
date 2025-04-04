@@ -43,7 +43,7 @@ const AIChatBox = () => {
         className="chat-container bg-white shadow rounded p-3"
         style={{ width: "80%" }}
       >
-        <h5 className="text-center mb-3">Help Desk Chat Box</h5>
+        <h5 className="text-center mb-3">Help Desk Chat Bot</h5>
         <div
           className="chat-box border rounded p-2 d-flex flex-column"
           style={{ height: "400px", overflowY: "auto" }}
