@@ -45,6 +45,7 @@ import ExitProcess from "../Components/Offboarding/ExitProcess/ExitProcess";
 import AssignedLeave from "../Components/Leaves/AssignedLeave/AssignedLeave";
 import HelpDesk from "../Components/HelpDesk/HelpDesk";
 import PayRollDashBoard from "../Components/PayRoll/PayRollDashBoard/PayRollDashBoard";
+import WorkRecord from "../Components/Attendance/WorkRecord/WorkRecord";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -355,6 +356,8 @@ export default function DashboardLayoutBasic(props) {
         return <HelpDesk/>;
       case "PayRollDashBoard":
         return <PayRollDashBoard/>;
+      case "WorkRecord":
+        return <WorkRecord/>;
       default:
         return null;
     }
