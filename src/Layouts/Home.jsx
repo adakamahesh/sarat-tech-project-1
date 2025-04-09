@@ -47,6 +47,7 @@ import HelpDesk from "../Components/HelpDesk/HelpDesk";
 import PayRollDashBoard from "../Components/PayRoll/PayRollDashBoard/PayRollDashBoard";
 import WorkRecord from "../Components/Attendance/WorkRecord/WorkRecord";
 import Attendances from "../Components/Attendance/Attendances/Attendances";
+import LeaveType from "../Components/Leaves/LeaveType/LeaveType";
 
 export default function DashboardLayoutBasic(props) {
   const createNavigation = (navigate) => [
@@ -361,6 +362,8 @@ export default function DashboardLayoutBasic(props) {
         return <PayRollDashBoard/>;
       case "WorkRecord":
         return <WorkRecord/>;
+      case "LeaveType":
+        return <LeaveType/>;
       default:
         return null;
     }
