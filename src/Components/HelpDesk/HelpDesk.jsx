@@ -1,9 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const AIChatBox = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isSmall = windowWidth <= 576;
+  const isMedium = windowWidth <= 768;
 
   const sendMessage = () => {
     if (!input.trim()) return;
@@ -37,16 +47,32 @@ const AIChatBox = () => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
+  const containerStyle = {
+    width: isSmall ? "100%" : isMedium ? "90%" : "80%",
+    maxWidth: "700px",
+    minHeight: isSmall ? "100vh" : "500px",
+    padding: isSmall || isMedium ? "1rem" : "1.5rem",
+    borderRadius: isSmall ? "0" : "0.5rem",
+  };
+
+  const chatBoxStyle = {
+    height: isSmall ? "300px" : isMedium ? "350px" : "400px",
+    overflowY: "auto",
+  };
+
+  const headingStyle = {
+    fontSize: isSmall ? "1rem" : "1.25rem",
+  };
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div
-        className="chat-container bg-white shadow rounded p-3"
-        style={{ width: "80%" }}
-      >
-        <h5 className="text-center mb-3">Help Desk Chat Bot</h5>
+      <div className="bg-white shadow p-3" style={containerStyle}>
+        <h5 className="text-center mb-3" style={headingStyle}>
+          Help Desk Chat Bot
+        </h5>
         <div
           className="chat-box border rounded p-2 d-flex flex-column"
-          style={{ height: "400px", overflowY: "auto" }}
+          style={chatBoxStyle}
         >
           {messages.map((msg, index) => (
             <div
