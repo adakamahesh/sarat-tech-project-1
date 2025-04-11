@@ -227,11 +227,6 @@ export default function DashboardLayoutBasic(props) {
           title: "Payslips",
           icon: <HorizontalRuleIcon />,
         },
-        {
-          segment: "Traveling",
-          title: "Traveling",
-          icon: <HorizontalRuleIcon />,
-        },
       ],
     },
     {

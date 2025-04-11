@@ -9,58 +9,67 @@ import {
   Button,
 } from "@mui/material";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import PersonIcon from "@mui/icons-material/Person";
-import HomeIcon from "@mui/icons-material/Home";
-import SchoolIcon from "@mui/icons-material/School";
-import WorkIcon from "@mui/icons-material/Work";
-import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
-import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
-import CallIcon from "@mui/icons-material/Call";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import CreditCardIcon from "@mui/icons-material/CreditCard";
+import StoreIcon from "@mui/icons-material/Store";
+import CodeIcon from "@mui/icons-material/Code";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PublicIcon from "@mui/icons-material/Public";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
-
-export default function Personalinf() {
+export default function BankInformation() {
   const [isEditing, setIsEditing] = useState(false);
-  const [personalDetails, setPersonalDetails] = useState({
-    dateOfBirth: "",
-    gender: "",
-    address: "",
-    qualification: "",
-    experience: "",
-    maritalStatus: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
+  const [bankDetails, setBankDetails] = useState({
+    bankDetailId: null,
+    bankName: "",
+    accountNumber: "",
+    branch: "",
+    ifsc: "",
+    bankCode: "",
+    bankAddress: "",
+    country: "",
+    accountType: "",
   });
 
   useEffect(() => {
-    const fetchPersonalDetails = async () => {
+    const fetchBankDetails = async () => {
       const employeeId = localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
-        const response = await fetch(`${API_URL}api/employees/${employeeId}`);
+        const response = await fetch(`${API_URL}bank-details`);
         const data = await response.json();
-        setPersonalDetails(data);
+        const employeeData = data.find(
+          (item) => item.employeeId === +employeeId
+        );
+        if (employeeData) {
+          setBankDetails(employeeData);
+        }
       } catch (error) {
-        console.error("Error fetching personal info:", error);
+        console.error("Error fetching bank details:", error);
       }
     };
 
-    fetchPersonalDetails();
+    fetchBankDetails();
   }, []);
 
   const handleChange = (e) => {
-    setPersonalDetails({ ...personalDetails, [e.target.name]: e.target.value });
+    setBankDetails({ ...bankDetails, [e.target.name]: e.target.value });
   };
 
   const handleSave = async () => {
     const employeeId = localStorage.getItem("employeeId");
+    // const isUpdate = bankDetails.bankDetailId;
+    // const url = isUpdate
+    //   ? `${API_URL}bank-details/${bankDetails.bankDetailId}`
+    //   : `${API_URL}bank-details`;
     try {
-      await fetch(`${API_URL}api/employees/${employeeId}`, {
+      await fetch(`${API_URL}bank-details/${employeeId}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(personalDetails),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bankDetails),
       });
       setIsEditing(false);
     } catch (error) {
@@ -82,64 +91,64 @@ export default function Personalinf() {
 
         <CardContent>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
-            Personal Information
+            Bank Information
           </Typography>
 
           {isEditing ? (
             <Box display="flex" flexDirection="column" gap={2}>
               <TextField
-                label="Date of Birth"
-                name="dateOfBirth"
-                value={personalDetails.dateOfBirth}
+                label="Bank Name"
+                name="bankName"
+                value={bankDetails.bankName}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Gender"
-                name="gender"
-                value={personalDetails.gender}
+                label="Account Number"
+                name="accountNumber"
+                value={bankDetails.accountNumber}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Address"
-                name="address"
-                value={personalDetails.address}
+                label="Branch"
+                name="branch"
+                value={bankDetails.branch}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Qualification"
-                name="qualification"
-                value={personalDetails.qualification}
+                label="IFSC"
+                name="ifsc"
+                value={bankDetails.ifsc}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Experience"
-                name="experience"
-                value={personalDetails.experience}
+                label="Bank Code"
+                name="bankCode"
+                value={bankDetails.bankCode}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Marital Status"
-                name="maritalStatus"
-                value={personalDetails.maritalStatus}
+                label="Bank Address"
+                name="bankAddress"
+                value={bankDetails.bankAddress}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Emergency Contact Name"
-                name="emergencyContactName"
-                value={personalDetails.emergencyContactName}
+                label="Country"
+                name="country"
+                value={bankDetails.country}
                 onChange={handleChange}
                 fullWidth
               />
               <TextField
-                label="Emergency Contact"
-                name="emergencyContactNumber"
-                value={personalDetails.emergencyContactNumber}
+                label="Account Type"
+                name="accountType"
+                value={bankDetails.accountType}
                 onChange={handleChange}
                 fullWidth
               />
@@ -165,44 +174,35 @@ export default function Personalinf() {
             <Box display="flex" flexDirection="column" gap={1}>
               {[
                 {
-                  icon: <CalendarTodayIcon />,
-                  label: "Date of Birth",
-                  value: personalDetails.dateOfBirth,
+                  icon: <AccountBalanceIcon />,
+                  label: "Bank Name",
+                  value: bankDetails.bankName,
                 },
                 {
-                  icon: <PersonIcon />,
-                  label: "Gender",
-                  value: personalDetails.gender,
+                  icon: <CreditCardIcon />,
+                  label: "Account Number",
+                  value: bankDetails.accountNumber,
                 },
                 {
-                  icon: <HomeIcon />,
-                  label: "Address",
-                  value: personalDetails.address,
+                  icon: <StoreIcon />,
+                  label: "Branch",
+                  value: bankDetails.branch,
+                },
+                { icon: <CodeIcon />, label: "IFSC", value: bankDetails.ifsc },
+                {
+                  icon: <CodeIcon />,
+                  label: "Bank Code",
+                  value: bankDetails.bankCode,
                 },
                 {
-                  icon: <SchoolIcon />,
-                  label: "Qualification",
-                  value: personalDetails.qualification,
+                  icon: <LocationOnIcon />,
+                  label: "Bank Address",
+                  value: bankDetails.bankAddress,
                 },
                 {
-                  icon: <WorkIcon />,
-                  label: "Experience",
-                  value: personalDetails.experience,
-                },
-                {
-                  icon: <FamilyRestroomIcon />,
-                  label: "Marital Status",
-                  value: personalDetails.maritalStatus,
-                },
-                {
-                  icon: <ContactPhoneIcon />,
-                  label: "Emergency Contact Name",
-                  value: personalDetails.emergencyContactName,
-                },
-                {
-                  icon: <CallIcon />,
-                  label: "Emergency Contact",
-                  value: personalDetails.emergencyContactNumber,
+                  icon: <PublicIcon />,
+                  label: "Country",
+                  value: bankDetails.country,
                 },
               ].map((item, index) => (
                 <Box key={index} display="flex" alignItems="center" gap={1}>

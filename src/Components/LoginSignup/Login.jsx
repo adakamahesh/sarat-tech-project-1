@@ -1,7 +1,7 @@
 // import React, { useState } from "react";
-// import { 
-//   TextField, Button, Typography, Container, Box, Grid, 
-//   Link, IconButton, InputAdornment, Paper 
+// import {
+//   TextField, Button, Typography, Container, Box, Grid,
+//   Link, IconButton, InputAdornment, Paper
 // } from "@mui/material";
 // import { Visibility, VisibilityOff } from "@mui/icons-material";
 // import { useNavigate } from "react-router-dom";
@@ -90,13 +90,22 @@
 // export default Login;
 
 import React, { useState } from "react";
-import { 
-  TextField, Button, Typography, Container, Box, Grid, 
-  Link, IconButton, InputAdornment, Paper 
+import {
+  TextField,
+  Button,
+  Typography,
+  Container,
+  Box,
+  Grid,
+  Link,
+  IconButton,
+  InputAdornment,
+  Paper,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
+const API_URL=process.env.REACT_APP_BASE_URL;
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -106,19 +115,20 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.1.50:8084/api/v1/user/login", {
+      const response = await fetch(`${API_URL}api/v1/user/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username: email, password }),
       });
-  
+
       const data = await response.json();
       console.log("Login Response:", data);
-  
+
       if (data.status) {
         localStorage.setItem("isAuthenticated", "true");
+        localStorage.setItem("employeeId", data.employeeId);
         navigate("/home");
       } else {
         setError(data.message || "Login failed!");
@@ -163,7 +173,10 @@ const Login = () => {
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                <IconButton
+                  onClick={() => setShowPassword(!showPassword)}
+                  edge="end"
+                >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
               </InputAdornment>
@@ -172,12 +185,21 @@ const Login = () => {
         />
 
         <Box textAlign="right" sx={{ mt: 1 }}>
-          <Link component="button" variant="body2" onClick={() => navigate("/forgot-password")}>
+          <Link
+            component="button"
+            variant="body2"
+            onClick={() => navigate("/forgot-password")}
+          >
             Forgot Password?
           </Link>
         </Box>
         <Grid item xs={6}>
-          <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={handleLogin}
+          >
             Login
           </Button>
         </Grid>
@@ -187,4 +209,3 @@ const Login = () => {
 };
 
 export default Login;
-
