@@ -7,30 +7,37 @@ import CardActionArea from '@mui/material/CardActionArea';
 import PersonIcon from '@mui/icons-material/Person';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import HailIcon from '@mui/icons-material/Hail';
+import Payslip from "./Payslip";
 
 const cards = [
   {
     id: 1,
     icon:<PersonIcon/>,
-    title: 'Requests to Approve',
+    title: 'Paid',
     description: '5', 
     backgroundColor: "#2196F3", // Blue
   },
   {
     id: 2,
     icon:<HailIcon/>,
-    title: 'Approved Leaves In This Month',
+    title: 'confirmation',
     description: '2',
     backgroundColor: "#4CAF50", // Green
   },
   {
     id: 3,
     icon:<WorkOutlineIcon/>,
-    title: 'Rejected Leaves In This Month',
+    title: 'Review ongoing',
     description: '3',
     backgroundColor: "red", // red
   },
-
+  {
+    id: 3,
+    icon:<WorkOutlineIcon/>,
+    title: 'Draft',
+    description: '0',
+    backgroundColor: "orange", // red
+  },
 ];
 
 export default function HRMDashboard() {
@@ -43,7 +50,7 @@ export default function HRMDashboard() {
         sx={{
           width: "100%",
           display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
+          gridTemplateColumns: "repeat(4,1fr)",
           gap: 2,
         }}
       >
@@ -87,6 +94,9 @@ export default function HRMDashboard() {
           </CardActionArea>
         </Card>
       ))}
+    </Box>
+    <Box sx={{mt:4}}>
+      <Payslip/>
     </Box>
     </>
   );
