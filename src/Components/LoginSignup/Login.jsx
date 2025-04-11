@@ -1,100 +1,8 @@
-// import React, { useState } from "react";
-// import {
-//   TextField, Button, Typography, Container, Box, Grid,
-//   Link, IconButton, InputAdornment, Paper
-// } from "@mui/material";
-// import { Visibility, VisibilityOff } from "@mui/icons-material";
-// import { useNavigate } from "react-router-dom";
-
-// const Login = () => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [showPassword, setShowPassword] = useState(false);
-//   const [error, setError] = useState("");
-//   const navigate = useNavigate();
-
-//   const handleLogin = () => {
-//     if (email === "adakamahesh@gmail.com" && password === "Mahesh@123") {
-//       localStorage.setItem("isAuthenticated", "true");
-//       navigate("/home");
-//     } else {
-//       setError("Invalid email or password!");
-//     }
-//   };
-
-//   return (
-//     <Container maxWidth="sm">
-//       <Paper elevation={3} sx={{ p: 4, mt: 8, textAlign: "center" }}>
-//         <Typography variant="h5" gutterBottom>
-//           Login
-//         </Typography>
-
-//         {error && (
-//           <Typography color="error" sx={{ mb: 2 }}>
-//             {error}
-//           </Typography>
-//         )}
-
-//         <TextField
-//           fullWidth
-//           label="Email"
-//           type="email"
-//           variant="outlined"
-//           margin="normal"
-//           value={email}
-//           onChange={(e) => setEmail(e.target.value)}
-//         />
-
-//         <TextField
-//           fullWidth
-//           label="Password"
-//           type={showPassword ? "text" : "password"}
-//           variant="outlined"
-//           margin="normal"
-//           value={password}
-//           onChange={(e) => setPassword(e.target.value)}
-//           InputProps={{
-//             endAdornment: (
-//               <InputAdornment position="end">
-//                 <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-//                   {showPassword ? <VisibilityOff /> : <Visibility />}
-//                 </IconButton>
-//               </InputAdornment>
-//             ),
-//           }}
-//         />
-
-//         <Box textAlign="right" sx={{ mt: 1 }}>
-//           <Link component="button" variant="body2" onClick={() => navigate("/forgot-password")}>
-//             Forgot Password?
-//           </Link>
-//         </Box>
-
-//         <Grid container spacing={2} sx={{ mt: 2 }}>
-//           <Grid item xs={6}>
-//             <Button variant="contained" color="primary" fullWidth onClick={handleLogin}>
-//               Login
-//             </Button>
-//           </Grid>
-//           <Grid item xs={6}>
-//             <Button variant="contained" color="primary" fullWidth onClick={() => navigate("/signup")}>
-//               Signup
-//             </Button>
-//           </Grid>
-//         </Grid>
-//       </Paper>
-//     </Container>
-//   );
-// };
-
-// export default Login;
-
 import React, { useState } from "react";
 import {
   TextField,
   Button,
   Typography,
-  Container,
   Box,
   Grid,
   Link,
@@ -104,8 +12,10 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import LoginBg from "../../assets/images/login.jpg";
 
-const API_URL=process.env.REACT_APP_BASE_URL;
+const API_URL = process.env.REACT_APP_BASE_URL;
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -140,18 +50,61 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Paper elevation={3} sx={{ p: 4, mt: 8, textAlign: "center" }}>
-        <Typography variant="h5" gutterBottom>
+    <Box
+      sx={{
+        backgroundImage: `url(${LoginBg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        px: 2,
+      }}
+    >
+      <Paper
+        elevation={0}
+        sx={{
+          width: {
+            xs: "90%",    // Mobile
+            sm: 400,      // Tablets
+            md: 480,      // Medium screens
+            lg: 500,      // Desktops
+          },
+          p: {
+            xs: 3,
+            sm: 4,
+          },
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
+        {/* Login Heading */}
+        <Typography
+          variant="h5"
+          gutterBottom
+          color="white"
+          sx={{
+            fontSize: {
+              xs: "1.5rem",
+              sm: "2rem",
+            },
+          }}
+        >
           Login
         </Typography>
 
+        {/* Error Message */}
         {error && (
           <Typography color="error" sx={{ mb: 2 }}>
             {error}
           </Typography>
         )}
 
+        {/* Email Input */}
         <TextField
           fullWidth
           label="Username"
@@ -160,8 +113,10 @@ const Login = () => {
           margin="normal"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          sx={{ input: { color: "white" }, label: { color: "white" } }}
         />
 
+        {/* Password Input */}
         <TextField
           fullWidth
           label="Password"
@@ -170,12 +125,14 @@ const Login = () => {
           margin="normal"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          sx={{ input: { color: "white" }, label: { color: "white" } }}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
                   onClick={() => setShowPassword(!showPassword)}
                   edge="end"
+                  sx={{ color: "white" }}
                 >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
@@ -184,27 +141,37 @@ const Login = () => {
           }}
         />
 
+        {/* Forgot Password */}
         <Box textAlign="right" sx={{ mt: 1 }}>
           <Link
             component="button"
             variant="body2"
             onClick={() => navigate("/forgot-password")}
+            sx={{ color: "#f0f0f0", textDecoration: "underline" }}
           >
             Forgot Password?
           </Link>
         </Box>
-        <Grid item xs={6}>
+
+        {/* Login Button */}
+        <Grid item xs={12} sx={{ mt: 3 }}>
           <Button
-            variant="contained"
-            color="primary"
-            fullWidth
             onClick={handleLogin}
+            fullWidth
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              color: "white",
+              border: "1px solid white",
+              "&:hover": {
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+              },
+            }}
           >
             Login
           </Button>
         </Grid>
       </Paper>
-    </Container>
+    </Box>
   );
 };
 
