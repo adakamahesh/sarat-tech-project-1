@@ -52,42 +52,59 @@ const AIChatBox = () => {
     maxWidth: "700px",
     minHeight: isSmall ? "100vh" : "500px",
     padding: isSmall || isMedium ? "1rem" : "1.5rem",
-    borderRadius: isSmall ? "0" : "0.5rem",
+    borderRadius: isSmall ? "0" : "0.75rem",
+    backgroundColor: "#ffffff",
   };
 
   const chatBoxStyle = {
-    height: isSmall ? "300px" : isMedium ? "350px" : "400px",
+    height: isSmall ? "320px" : isMedium ? "350px" : "400px",
     overflowY: "auto",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "0.5rem",
+    padding: "1rem",
+    boxShadow: "inset 0 0 5px rgba(0, 0, 0, 0.1)",
   };
 
   const headingStyle = {
-    fontSize: isSmall ? "1rem" : "1.25rem",
+    fontSize: isSmall ? "1.1rem" : "1.5rem",
+    fontWeight: "bold",
+    color: "#0d6efd",
+    borderBottom: "1px solid #dee2e6",
+    paddingBottom: "0.5rem",
   };
 
+  const messageStyle = (sender) => ({
+    maxWidth: "75%",
+    padding: "0.5rem 1rem",
+    borderRadius: "1rem",
+    marginBottom: "0.5rem",
+    alignSelf: sender === "user" ? "flex-end" : "flex-start",
+    backgroundColor: sender === "user" ? "#0d6efd" : "#6c757d",
+    color: "#fff",
+    textAlign: sender === "user" ? "right" : "left",
+  });
+
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <div className="bg-white shadow p-3" style={containerStyle}>
-        <h5 className="text-center mb-3" style={headingStyle}>
+    <div
+      className="d-flex justify-content-center align-items-center vh-100"
+      style={{
+        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
+      }}
+    >
+      <div style={containerStyle} className="shadow">
+        <div className="text-center mb-3" style={headingStyle}>
           Help Desk Chat Bot
-        </h5>
-        <div
-          className="chat-box border rounded p-2 d-flex flex-column"
-          style={chatBoxStyle}
-        >
+        </div>
+
+        <div style={chatBoxStyle} className="d-flex flex-column mb-3">
           {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`p-2 rounded mt-2 ${msg.sender === "user" ? "bg-primary text-white ms-auto" : "bg-secondary text-white me-auto"}`}
-              style={{
-                maxWidth: "75%",
-                textAlign: msg.sender === "user" ? "right" : "left",
-              }}
-            >
+            <div key={index} style={messageStyle(msg.sender)}>
               {msg.text}
             </div>
           ))}
         </div>
-        <div className="d-flex border-top p-2">
+
+        <div className="d-flex">
           <input
             type="text"
             className="form-control"
