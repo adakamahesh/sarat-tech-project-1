@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+import bgImage from "../../assets/images/login.jpg"; // Adjust path if needed
 
 const AIChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -53,24 +54,34 @@ const AIChatBox = () => {
     minHeight: isSmall ? "100vh" : "500px",
     padding: isSmall || isMedium ? "1rem" : "1.5rem",
     borderRadius: isSmall ? "0" : "0.75rem",
-    backgroundColor: "#ffffff",
+    backgroundColor: "rgba(0, 0, 0, 0.3)", // more transparent
+    backdropFilter: "blur(12px)",
+    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+    color: "#fff",
   };
 
   const chatBoxStyle = {
     height: isSmall ? "320px" : isMedium ? "350px" : "400px",
     overflowY: "auto",
-    backgroundColor: "#f8f9fa",
+    backgroundColor: "rgba(255,255,255,0.08)", // more transparent
     borderRadius: "0.5rem",
     padding: "1rem",
-    boxShadow: "inset 0 0 5px rgba(0, 0, 0, 0.1)",
+    backdropFilter: "blur(6px)",
+    color: "#fff",
   };
 
   const headingStyle = {
     fontSize: isSmall ? "1.1rem" : "1.5rem",
     fontWeight: "bold",
-    color: "#0d6efd",
-    borderBottom: "1px solid #dee2e6",
+    color: "#ffffff",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.4)",
     paddingBottom: "0.5rem",
+  };
+
+  const inputStyle = {
+    backgroundColor: "rgba(255,255,255,0.05)",
+    color: "#fff",
+    border: "1px solid rgba(255,255,255,0.3)",
   };
 
   const messageStyle = (sender) => ({
@@ -79,7 +90,7 @@ const AIChatBox = () => {
     borderRadius: "1rem",
     marginBottom: "0.5rem",
     alignSelf: sender === "user" ? "flex-end" : "flex-start",
-    backgroundColor: sender === "user" ? "#0d6efd" : "#6c757d",
+    backgroundColor: sender === "user" ? "#0d6efd" : "#343a40",
     color: "#fff",
     textAlign: sender === "user" ? "right" : "left",
   });
@@ -88,10 +99,13 @@ const AIChatBox = () => {
     <div
       className="d-flex justify-content-center align-items-center vh-100"
       style={{
-        background: "linear-gradient(to right, #74ebd5, #ACB6E5)",
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div style={containerStyle} className="shadow">
+      <div style={containerStyle}>
         <div className="text-center mb-3" style={headingStyle}>
           Help Desk Chat Bot
         </div>
@@ -109,6 +123,7 @@ const AIChatBox = () => {
             type="text"
             className="form-control"
             placeholder="Type a message..."
+            style={inputStyle}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
