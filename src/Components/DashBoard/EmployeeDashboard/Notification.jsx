@@ -31,7 +31,7 @@ export default function AccessibleTable() {
                 },
               }}
             >
-              Attendance & Leave
+              Notifications
             </TableCell>
           </TableRow>
         </TableHead>

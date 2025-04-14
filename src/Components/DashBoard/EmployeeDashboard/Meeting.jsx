@@ -26,16 +26,50 @@ export default function AccessibleTable() {
     <TableContainer component={Paper}>
       <Table aria-label="caption table">
         <TableHead>
-            <TableRow>
-                <TableCell align="left" colSpan={5} sx={{ fontSize: '25px' }}>
-                    Meeting Schedule
-                </TableCell>
-            </TableRow>
-            <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
-                <TableCell sx={{fontSize:'20px'}}>Meeting Title</TableCell>
-                <TableCell align="center" sx={{fontSize:'20px'}}>Meeting Date</TableCell>
-                <TableCell align="center" sx={{fontSize:'20px'}}>Meeting Time</TableCell>
-            </TableRow>
+          <TableRow>
+            <TableCell
+              align="left"
+              colSpan={5}
+              sx={{
+                fontSize: '25px',
+                backgroundColor: '#1976d2',  // Add background color for the title row
+                color: 'white',  // White text for contrast
+              }}
+            >
+              Meeting Schedule
+            </TableCell>
+          </TableRow>
+          <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
+            <TableCell
+              sx={{
+                fontSize: '20px',
+                backgroundColor: '#f5f5f5',  // Light gray background for header row
+                fontWeight: 'bold',
+              }}
+            >
+              Meeting Title
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{
+                fontSize: '20px',
+                backgroundColor: '#f5f5f5',  // Same background for date header
+                fontWeight: 'bold',
+              }}
+            >
+              Meeting Date
+            </TableCell>
+            <TableCell
+              align="center"
+              sx={{
+                fontSize: '20px',
+                backgroundColor: '#f5f5f5',  // Same background for time header
+                fontWeight: 'bold',
+              }}
+            >
+              Meeting Time
+            </TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (

@@ -1,35 +1,34 @@
 import * as React from "react";
-import { useLocation } from 'react-router-dom'; // Add this line
+import { useLocation, useNavigate } from "react-router-dom";
 import { extendTheme } from "@mui/material/styles";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { PageContainer } from "@toolpad/core/PageContainer";
 import logo from "../assets/images/st_logo.png";
-import EmployeeDashboard from "../Components/DashBoard/EmployeeDashboard/EmployeeDashboard";
-import { useNavigate } from "react-router-dom";
-import HRMDashboard from "../Components/DashBoard/HRMDashBoard/HRMDashboard";
-import Employee from "../Components/Employee/Employees/Employee";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
+import GroupsIcon from "@mui/icons-material/Groups";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import LogoutIcon from "@mui/icons-material/Logout";
+import LoginIcon from "@mui/icons-material/Login";
+import ConstructionIcon from "@mui/icons-material/Construction";
+import HeadsetMicIcon from "@mui/icons-material/HeadsetMic";
+import FolderCopyIcon from "@mui/icons-material/FolderCopy";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
 import Logout from "../Components/LoginSignup/Logout";
+
+// Import pages
+import HRMDashboard from "../Components/DashBoard/HRMDashBoard/HRMDashboard";
+import EmployeeDashboard from "../Components/DashBoard/EmployeeDashboard/EmployeeDashboard";
+import Employee from "../Components/Employee/Employees/Employee";
 import EmployeeProfile from "../Components/Employee/EmployeeProfile/EmployeeProfil";
 import RecruitmentDashboard from "../Components/Recruitment/RecruitmentDashboard/RecruitmentDashboard";
-import GroupsIcon from '@mui/icons-material/Groups';
-import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import HowToRegIcon from '@mui/icons-material/HowToReg';
-import LogoutIcon from '@mui/icons-material/Logout';
-import LoginIcon from '@mui/icons-material/Login';
-import ConstructionIcon from '@mui/icons-material/Construction';
-import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
-import FolderCopyIcon from '@mui/icons-material/FolderCopy';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
-import AttendanceDashboard from "../Components/Attendance/AttendanceDashBoard/AttendanceDashboard";
-import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
-import ShiftRequests from "../Components/Employee/Shiftreq/Shiftreq";
 import Applicant from "../Components/Recruitment/Applicant/Applicant";
 import RecruitmentPipeline from "../Components/Recruitment/RecruitmentPipeline/RecruitmentPipeline";
 import CandidatesView from "../Components/OnBoarding/CandidatesView/CandidatesView";
 import OnBoardingView from "../Components/OnBoarding/OnBoardingView/OnBoardingView";
+import AttendanceDashboard from "../Components/Attendance/AttendanceDashBoard/AttendanceDashboard";
 import AttendanceActivity from "../Components/Attendance/AttendanceActivity/AttendanceActivity";
 import EmployeeLate from "../Components/Attendance/EmployeeLate/EmployeeLate";
 import MyAttendances from "../Components/Attendance/MyAttendances/MyAttendances";
@@ -48,8 +47,91 @@ import PayRollDashBoard from "../Components/PayRoll/PayRollDashBoard/PayRollDash
 import WorkRecord from "../Components/Attendance/WorkRecord/WorkRecord";
 import Attendances from "../Components/Attendance/Attendances/Attendances";
 import LeaveType from "../Components/Leaves/LeaveType/LeaveType";
+import ShiftRequests from "../Components/Employee/Shiftreq/Shiftreq";
+import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 
-export default function DashboardLayoutBasic(props) {
+// Inline style with media query adjustments
+const isMobile = window.innerWidth <= 768;
+const containerStyle = {
+  padding: isMobile ? "10px" : "30px",
+  fontSize: isMobile ? "14px" : "16px",
+};
+
+export default function DashboardLayoutBasic() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const currentPage = location.pathname.split("/").pop();
+
+  const renderComponent = () => {
+    switch (currentPage) {
+      case "home":
+      case "Dashboard":
+      case "HRMDashboard":
+        return <HRMDashboard />;
+      case "EmployeeDashboard":
+        return <EmployeeDashboard />;
+      case "Employee":
+      case "Employees":
+        return <Employee />;
+      case "Profile":
+        return <EmployeeProfile />;
+      case "RecruitmentDashboard":
+        return <RecruitmentDashboard />;
+      case "AttendanceDashboard":
+        return <AttendanceDashboard />;
+      case "LeaveDashboard":
+        return <Dashboard />;
+      case "ShiftRequests":
+        return <ShiftRequests />;
+      case "Applicant":
+        return <Applicant />;
+      case "RecruitmentPipeline":
+        return <RecruitmentPipeline />;
+      case "CandidatesView":
+        return <CandidatesView />;
+      case "AttendanceActivity":
+        return <AttendanceActivity />;
+      case "EmployeeLate":
+        return <EmployeeLate />;
+      case "MyAttendances":
+        return <MyAttendances />;
+      case "Attendances":
+        return <Attendances />;
+      case "Holidays":
+        return <Holidays />;
+      case "CompanyLeaves":
+        return <CompanyLeaves />;
+      case "ResignationLater":
+        return <ResignationLater />;
+      case "Contract":
+        return <Contract />;
+      case "Payslips":
+        return <Payslips />;
+      case "LeaveRequest":
+        return <LeaveRequest />;
+      case "Allowances":
+        return <Allowances />;
+      case "Deduction":
+        return <Deduction />;
+      case "OnBoardingView":
+        return <OnBoardingView />;
+      case "ExitProcess":
+        return <ExitProcess />;
+      case "AssignedLeave":
+        return <AssignedLeave />;
+      case "HelpDesk":
+        return <HelpDesk />;
+      case "PayRollDashBoard":
+        return <PayRollDashBoard />;
+      case "WorkRecord":
+        return <WorkRecord />;
+      case "LeaveType":
+        return <LeaveType />;
+      default:
+        return null;
+    }
+  };
+
   const createNavigation = (navigate) => [
     {
       kind: "header",
@@ -77,11 +159,7 @@ export default function DashboardLayoutBasic(props) {
       title: "Employee",
       icon: <GroupsIcon />,
       children: [
-        {
-          segment: "Profile",
-          title: "Profile",
-          icon: <HorizontalRuleIcon />,
-        },
+        { segment: "Profile", title: "Profile", icon: <HorizontalRuleIcon /> },
         {
           segment: "Employees",
           title: "Employees",
@@ -91,7 +169,7 @@ export default function DashboardLayoutBasic(props) {
           segment: "ShiftRequests",
           title: "Shift Requests",
           icon: <HorizontalRuleIcon />,
-        }
+        },
       ],
     },
     {
@@ -254,7 +332,7 @@ export default function DashboardLayoutBasic(props) {
     {
       segment: "Configuration",
       title: "Configuration",
-      icon: <ConstructionIcon/>,
+      icon: <ConstructionIcon />,
       children: [
         {
           segment: "Holidays",
@@ -269,102 +347,21 @@ export default function DashboardLayoutBasic(props) {
       ],
     },
     {
-
-      icon:<Logout/>,
-    }
+      icon: <Logout />,
+    },
   ];
 
+  // Light mode only
   const demoTheme = extendTheme({
-    colorSchemes: { light: true, dark: true },
-    colorSchemeSelector: "class",
-    breakpoints: {
-      values: {
-        xs: 0,
-        sm: 600,
-        md: 600,
-        lg: 1200,
-        xl: 1536,
+    colorSchemes: {
+      light: {
+        palette: {
+          mode: "light",
+        },
       },
     },
   });
 
-  const location = useLocation();  // Using useLocation to get the current URL
-  const currentPage = location.pathname.split("/").pop();  // Extracting the last part of the path to render the correct page
-
-  const renderComponent = () => {
-    switch (currentPage) {
-      case "home":
-        return <HRMDashboard/>;
-      case "Dashboard":
-        return <HRMDashboard/>;
-      case "HRMDashboard":
-        return <HRMDashboard />;
-      case "EmployeeDashboard":
-        return <EmployeeDashboard />;
-      case "Employee":
-        return <Employee/>;
-      case "Employees":
-        return <Employee/>;
-      case "Profile":
-        return <EmployeeProfile/>;
-      case "RecruitmentDashboard":
-        return <RecruitmentDashboard/>;
-      case "AttendanceDashboard":
-        return <AttendanceDashboard/>;
-      case "LeaveDashboard":
-        return <Dashboard/>;
-      case "ShiftRequests":
-        return <ShiftRequests/>;
-      case "Applicant":
-        return <Applicant/>;
-      case "RecruitmentPipeline":
-        return <RecruitmentPipeline/>;
-      case "CandidatesView":
-        return <CandidatesView/>;
-      case "AttendanceActivity":
-        return <AttendanceActivity/>;
-      case "EmployeeLate":
-        return <EmployeeLate/>;
-      case "MyAttendances":
-        return <MyAttendances/>;
-      case "Attendances":
-        return <Attendances/>;
-      case "Holidays":
-        return <Holidays/>;
-      case "CompanyLeaves":
-        return <CompanyLeaves/>;
-      case "ResignationLater":
-        return <ResignationLater/>;
-      case "Contract":
-        return <Contract/>;
-      case "Payslips":
-        return <Payslips/>;
-      case "LeaveRequest":
-        return <LeaveRequest/>;
-      case "Allowances":
-        return <Allowances/>;
-      case "Deduction":
-        return <Deduction/>;
-      case "OnBoardingView":
-        return <OnBoardingView/>;
-      case "ExitProcess":
-        return <ExitProcess/>;
-      case "AssignedLeave":
-        return <AssignedLeave/>;
-      case "HelpDesk":
-        return <HelpDesk/>;
-      case "PayRollDashBoard":
-        return <PayRollDashBoard/>;
-      case "WorkRecord":
-        return <WorkRecord/>;
-      case "LeaveType":
-        return <LeaveType/>;
-      default:
-        return null;
-    }
-  };
-
-  const navigate = useNavigate();
   const NAVIGATION = createNavigation(navigate);
 
   return (
@@ -373,13 +370,31 @@ export default function DashboardLayoutBasic(props) {
       theme={demoTheme}
       window={window || undefined}
       branding={{
-        logo: <img src={logo} alt="Custom Logo" />,
+        logo: (
+          <img
+            src={logo}
+            alt="Custom Logo"
+            style={{
+              height: isMobile ? 30 : 42,
+              margin: isMobile ? "4px 0" : "0 0",
+            }}
+          />
+        ),
         title: "",
         homeUrl: "/dashboard/HRMDashboard",
       }}
     >
-      <DashboardLayout>
-        <PageContainer>{renderComponent()}</PageContainer>
+      <DashboardLayout
+        slotProps={{
+          drawer: {
+            sx: { width: 180 },
+            PaperProps: { sx: { width: 180 } },
+          },
+        }}
+      >
+        <PageContainer style={containerStyle}>
+          {renderComponent()}
+        </PageContainer>
       </DashboardLayout>
     </AppProvider>
   );
