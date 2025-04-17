@@ -12,7 +12,8 @@ import axios from 'axios';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
-const API_URL=process.env.REACT_APP_BASE_URL;
+const API_URL = process.env.REACT_APP_BASE_URL;
+
 const columns = [
   { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
   { width: 100, label: 'Employee ID', dataKey: 'employeeId' },
@@ -39,9 +40,14 @@ function fixedHeaderContent() {
         <TableCell
           key={column.dataKey}
           variant="head"
-          align={column.numeric ? 'right' : 'left'}
-          style={{ width: column.width }}
-          sx={{ backgroundColor: 'background.paper', fontWeight: 'bold' }}
+          align="left"
+          sx={{
+            width: column.width,
+            backgroundColor: '#f5f5f5', // Light gray background
+            fontWeight: 'bold',
+            fontSize: { xs: '16px', sm: '20px' }, // Responsive font size
+            padding: { xs: '6px', sm: '12px' },
+          }}
         >
           {column.label}
         </TableCell>
@@ -54,7 +60,15 @@ function rowContent(_index, row) {
   return (
     <React.Fragment>
       {columns.map((column) => (
-        <TableCell key={column.dataKey} align={column.numeric ? 'right' : 'left'}>
+        <TableCell
+          key={column.dataKey}
+          align="left"
+          sx={{
+            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+            padding: { xs: '6px', sm: '12px' },
+            wordWrap: 'break-word',
+          }}
+        >
           {row[column.dataKey]}
         </TableCell>
       ))}
@@ -88,12 +102,37 @@ export default function ReactVirtualizedTable() {
   }, []);
 
   return (
-    <Paper style={{ height: 450, width: '130%', padding:'10px',overflow: 'hidden' }}>
-      <Typography sx={{ fontWeight: 'bold' }}>
+    <Paper
+      sx={{
+        height: { xs: 'auto', sm: 450 },
+        width: '100%',
+        overflow: 'auto',
+        padding: { xs: 1, sm: 2 },
+        boxSizing: 'border-box',
+      }}
+    >
+      <Typography
+       align="left"
+       colSpan={5}
+       sx={{
+         fontSize: '25px',
+         backgroundColor: '#1976d2',  // Add background color for the title row
+         color: 'white',  // White text for contrast
+       }}
+      >
         Active Employees
       </Typography>
+
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            padding: 2,
+          }}
+        >
           <CircularProgress />
         </Box>
       ) : error ? (

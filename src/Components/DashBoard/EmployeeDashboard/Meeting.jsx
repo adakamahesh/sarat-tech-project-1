@@ -1,50 +1,61 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Box,
+} from "@mui/material";
 
-function createData(title, date, time) {
-  return { title, date, time };
-}
-
-const rows = [
-  createData('Project Kickoff', 'June 1, 2024', '10:00 AM'),
-  createData('Weekly Team Sync', 'June 5, 2024', '02:00 PM'),
-  createData('Client Presentation', 'June 10, 2024', '11:00 AM'),
-  createData('Monthly Review', 'June 15, 2024', '03:00 PM'),
-  createData('Weekly Review', 'June 20, 2024', '11:00 AM'),
-  createData('Yearly Meeting', 'June 22, 2024', '09:00 AM'),
-  createData('Strategy Planning', 'June 28, 2024', '02:00 PM'),
-];
+const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function AccessibleTable() {
+  const [meetingData, setMeetingData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${API_URL}meeting-schedule`)
+      .then((response) => {
+        setMeetingData(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching meeting data:", error);
+      });
+  }, []);
+
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="caption table">
+    <TableContainer component={Paper} sx={{ mb: 3 }}>
+      <Table aria-label="meeting schedule table">
         <TableHead>
           <TableRow>
             <TableCell
-              align="left"
-              colSpan={5}
-              sx={{
-                fontSize: '25px',
-                backgroundColor: '#1976d2',  // Add background color for the title row
-                color: 'white',  // White text for contrast
-              }}
+              colSpan={3}
+              sx={{ padding: "16px 24px", backgroundColor: "#f5f5f5" }}
             >
-              Meeting Schedule
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <span style={{ fontSize: "25px", fontWeight: "bold" }}>
+                  Meeting Schedule
+                </span>
+              </Box>
             </TableCell>
           </TableRow>
-          <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
+          <TableRow
+            sx={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}
+          >
             <TableCell
               sx={{
-                fontSize: '20px',
-                backgroundColor: '#f5f5f5',  // Light gray background for header row
-                fontWeight: 'bold',
+                fontSize: "20px",
+                fontWeight: "bold",
+                color: "#fff",
+                backgroundColor: "#1976d2",
               }}
             >
               Meeting Title
@@ -52,9 +63,10 @@ export default function AccessibleTable() {
             <TableCell
               align="center"
               sx={{
-                fontSize: '20px',
-                backgroundColor: '#f5f5f5',  // Same background for date header
-                fontWeight: 'bold',
+                fontSize: "20px",
+                fontWeight: "bold",
+                color: "#fff",
+                backgroundColor: "#1976d2",
               }}
             >
               Meeting Date
@@ -62,9 +74,10 @@ export default function AccessibleTable() {
             <TableCell
               align="center"
               sx={{
-                fontSize: '20px',
-                backgroundColor: '#f5f5f5',  // Same background for time header
-                fontWeight: 'bold',
+                fontSize: "20px",
+                fontWeight: "bold",
+                color: "#fff",
+                backgroundColor: "#1976d2",
               }}
             >
               Meeting Time
@@ -72,13 +85,13 @@ export default function AccessibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name}>
+          {meetingData.map((row) => (
+            <TableRow key={row.meetingId}>
               <TableCell component="th" scope="row">
-                {row.title}
+                {row.meetingTitle}
               </TableCell>
-              <TableCell align="center">{row.date}</TableCell>
-              <TableCell align="center">{row.time}</TableCell>
+              <TableCell align="center">{row.meetingDate}</TableCell>
+              <TableCell align="center">{row.meetingTime}</TableCell>
             </TableRow>
           ))}
         </TableBody>

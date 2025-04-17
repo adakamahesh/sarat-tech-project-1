@@ -18,6 +18,7 @@ import OverTime from './OverTime';
 import OnLeave from './OnLeave';
 import LeaveReq from './LeaveReq';
 import { Divider, CircularProgress } from "@mui/material";
+import Quotation from './Qutions';
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
@@ -205,8 +206,7 @@ export default function HRMDashboard() {
           border: "1px solid rgb(237,237,237)",
           p: 2
         }}>
-          <Typography variant="h6">Quotation and Answers</Typography>
-          <Divider />
+          <Quotation />
         </Box>
       </Box>
 
