@@ -1,42 +1,60 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { TableVirtuoso } from 'react-virtuoso';
-import Typography from '@mui/material/Typography';
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
-import IconButton from '@mui/material/IconButton';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { TableVirtuoso } from "react-virtuoso";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 const columns = [
-  { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
-  { width: 150, label: 'Employee', dataKey: 'employee' },
-  { width: 100, label: 'Overtime', dataKey: 'overtime' },
-  { width: 100, label: 'Action', dataKey: 'action' },
+  { width: 50, label: "S.No.", dataKey: "serialNumber" },
+  { width: 100, label: "Employee ID", dataKey: "employeeId" },
+  { width: 100, label: "First Name", dataKey: "firstName" },
+  { width: 100, label: "Last Name", dataKey: "lastName" },
 ];
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
+    <TableContainer
+      component={Paper}
+      sx={{
+        maxWidth: "100%",
+        overflowX: "auto",
+        "@media (max-width: 600px)": {
+          marginX: "-8px",
+        },
+      }}
+      {...props}
+      ref={ref}
+    />
   )),
   Table: (props) => (
-    <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    <Table
+      {...props}
+      sx={{
+        borderCollapse: "separate",
+        tableLayout: "fixed",
+        minWidth: "100%",
+      }}
+    />
   ),
-  TableHead: React.forwardRef((props, ref) => <TableHead {...props} ref={ref} />),
+  TableHead: React.forwardRef((props, ref) => (
+    <TableHead {...props} ref={ref} />
+  )),
   TableRow,
-  TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+  TableBody: React.forwardRef((props, ref) => (
+    <TableBody {...props} ref={ref} />
+  )),
 };
 
-// ✅ Responsive header styles
 function fixedHeaderContent() {
   return (
     <TableRow>
@@ -44,13 +62,14 @@ function fixedHeaderContent() {
         <TableCell
           key={column.dataKey}
           variant="head"
-          align={column.numeric || false ? 'right' : 'left'}
+          align="left"
           sx={{
             width: column.width,
-            backgroundColor: '#f5f5f5', // Light gray background
-            fontWeight: 'bold',
-            fontSize: { xs: '16px', sm: '20px' }, // Responsive font size
-            padding: { xs: '6px', sm: '12px' },
+            backgroundColor: "#A7B0CA",
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: { xs: "14px", sm: "18px" },
+            padding: { xs: "6px", sm: "12px" },
           }}
         >
           {column.label}
@@ -60,65 +79,20 @@ function fixedHeaderContent() {
   );
 }
 
-// ✅ Buttons for action column
-const ActionCell = ({ onApprove, onReject }) => (
-  <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
-    <IconButton
-      aria-label="approve"
-      size="small"
-      sx={{
-        backgroundColor: 'green',
-        color: 'white',
-        width: 36,
-        height: 30,
-        borderRadius: 1,
-        '&:hover': { backgroundColor: 'darkgreen' },
-      }}
-      onClick={onApprove}
-    >
-      <CheckIcon fontSize="small" />
-    </IconButton>
-    <IconButton
-      aria-label="reject"
-      size="small"
-      sx={{
-        backgroundColor: 'red',
-        color: 'white',
-        width: 36,
-        height: 30,
-        borderRadius: 1,
-        '&:hover': { backgroundColor: 'darkred' },
-      }}
-      onClick={onReject}
-    >
-      <CloseIcon fontSize="small" />
-    </IconButton>
-  </Box>
-);
-
-// ✅ Responsive row styles
 function rowContent(_index, row) {
   return (
     <React.Fragment>
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric ? 'right' : 'left'}
+          align="left"
           sx={{
-            fontSize: { xs: '12px', sm: '14px' },
-            padding: { xs: '6px', sm: '12px' },
-            whiteSpace: 'nowrap',
-            wordWrap: 'break-word',
+            fontSize: { xs: "0.75rem", sm: "0.875rem" },
+            padding: { xs: "6px", sm: "12px" },
+            wordWrap: "break-word",
           }}
         >
-          {column.dataKey === 'action' ? (
-            <ActionCell
-              onApprove={() => alert(`Approved overtime for ${row.employee}`)}
-              onReject={() => alert(`Rejected overtime for ${row.employee}`)}
-            />
-          ) : (
-            row[column.dataKey]
-          )}
+          {row[column.dataKey]}
         </TableCell>
       ))}
     </React.Fragment>
@@ -138,14 +112,14 @@ export default function ReactVirtualizedTable() {
           serialNumber: index + 1,
           employee: `${employee.firstName} ${employee.lastName}`,
           overtime: employee.overtime,
-          action: '',
+          action: "",
         }));
         setEmployees(employeeData);
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching overtime employee data:', error);
-        setError('Failed to load employees');
+        console.error("Error fetching overtime employee data:", error);
+        setError("Failed to load employees");
         setLoading(false);
       });
   }, []);
@@ -153,33 +127,30 @@ export default function ReactVirtualizedTable() {
   return (
     <Paper
       sx={{
-        height: { xs: 'auto', sm: 450 },
-        width: '100%',
+        width: "100%",
         padding: { xs: 1, sm: 2 },
-        overflowX: 'auto',
-        boxSizing: 'border-box',
-        marginBottom: 2,
+        boxSizing: "border-box",
       }}
     >
       <Typography
-        align="left"
-        colSpan={5}
         sx={{
-          fontSize: '25px',
-          backgroundColor: '#1976d2',  // Add background color for the title row
-          color: 'white',  // White text for contrast
+          fontSize: { xs: "18px", sm: "25px" },
+          backgroundColor: "#F5F5F5",
+          fontWeight: "bold",
+          p: 1,
+          textAlign: "left",
         }}
       >
         Leave Request
       </Typography>
-
       {loading ? (
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+            padding: 2,
           }}
         >
           <CircularProgress />
@@ -187,12 +158,18 @@ export default function ReactVirtualizedTable() {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <TableVirtuoso
-          data={employees}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
+        <Box
+          sx={{
+            height: { xs: 400, sm: 450 }, // 👈 This is important for mobile rendering!
+          }}
+        >
+          <TableVirtuoso
+            data={employees}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+          />
+        </Box>
       )}
     </Paper>
   );

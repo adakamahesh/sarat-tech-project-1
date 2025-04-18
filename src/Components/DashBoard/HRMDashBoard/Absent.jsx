@@ -23,12 +23,24 @@ const columns = [
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
+    <TableContainer
+      component={Paper}
+      {...props}
+      ref={ref}
+      sx={{
+        maxHeight: { xs: 300, sm: 450 },
+        overflowX: 'auto',
+      }}
+    />
   )),
   Table: (props) => (
     <Table
       {...props}
-      sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }}
+      sx={{
+        borderCollapse: 'separate',
+        tableLayout: 'fixed',
+        minWidth: '600px', // enables scroll on mobile
+      }}
     />
   ),
   TableHead: React.forwardRef((props, ref) => (
@@ -40,7 +52,6 @@ const VirtuosoTableComponents = {
   )),
 };
 
-// 🔷 Header Row Styling
 function fixedHeaderContent() {
   return (
     <TableRow>
@@ -50,9 +61,10 @@ function fixedHeaderContent() {
           align={column.numeric ? 'right' : 'left'}
           sx={{
             width: column.width,
-            backgroundColor: '#f5f5f5', // Light gray background
+            backgroundColor: '#A7B0CA',
+            color:'#fff',
             fontWeight: 'bold',
-            fontSize: { xs: '16px', sm: '20px' }, // Responsive font size
+            fontSize: { xs: '14px', sm: '16px' },
             padding: { xs: '6px', sm: '12px' },
           }}
         >
@@ -63,7 +75,6 @@ function fixedHeaderContent() {
   );
 }
 
-// 🔷 Row Content Styling
 function rowContent(_index, row) {
   return (
     <React.Fragment>
@@ -74,8 +85,8 @@ function rowContent(_index, row) {
           sx={{
             fontSize: { xs: '12px', sm: '14px' },
             padding: { xs: '6px', sm: '12px' },
-            wordWrap: 'break-word',
             whiteSpace: 'nowrap',
+            wordWrap: 'break-word',
           }}
         >
           {row[column.dataKey]}
@@ -116,18 +127,18 @@ export default function ReactVirtualizedTable() {
         height: { xs: 'auto', sm: 450 },
         width: '100%',
         padding: { xs: 1, sm: 2 },
-        overflow: 'auto',
+        overflowX: 'auto',
         boxSizing: 'border-box',
       }}
     >
       <Typography
-         align="left"
-         colSpan={5}
-         sx={{
-           fontSize: '25px',
-           backgroundColor: '#1976d2',  // Add background color for the title row
-           color: 'white',  // White text for contrast
-         }}
+        align="left"
+        sx={{
+          fontSize: { xs: '18px', sm: '25px' },
+          backgroundColor: '#F5F5F5',
+          fontWeight:'bold',
+          padding: 1,
+        }}
       >
         Absent Employees
       </Typography>
@@ -138,8 +149,7 @@ export default function ReactVirtualizedTable() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%',
-            padding: 2,
+            height: 300,
           }}
         >
           <CircularProgress />
@@ -147,12 +157,14 @@ export default function ReactVirtualizedTable() {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <TableVirtuoso
-          data={employees}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
+        <Box sx={{ height: { xs: 300, sm: 450 } }}>
+          <TableVirtuoso
+            data={employees}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+          />
+        </Box>
       )}
     </Paper>
   );

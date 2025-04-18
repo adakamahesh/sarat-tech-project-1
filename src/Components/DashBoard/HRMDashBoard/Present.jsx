@@ -23,10 +23,25 @@ const columns = [
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
+    <TableContainer
+      component={Paper}
+      {...props}
+      ref={ref}
+      sx={{
+        maxHeight: { xs: 300, sm: 450 },
+        overflowX: 'auto',
+      }}
+    />
   )),
   Table: (props) => (
-    <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    <Table
+      {...props}
+      sx={{
+        borderCollapse: 'separate',
+        tableLayout: 'fixed',
+        minWidth: '600px', // Ensures horizontal scroll on small screens
+      }}
+    />
   ),
   TableHead: React.forwardRef((props, ref) => <TableHead {...props} ref={ref} />),
   TableRow,
@@ -40,13 +55,15 @@ function fixedHeaderContent() {
         <TableCell
           key={column.dataKey}
           variant="head"
-          align={column.numeric ? 'right' : 'left'}
+          align="left"
           sx={{
             width: column.width,
-            backgroundColor: '#f5f5f5', // Light gray background
+            backgroundColor: '#A7B0CA',
+            color:'#fff',
             fontWeight: 'bold',
-            fontSize: { xs: '16px', sm: '20px' }, // Responsive font size
+            fontSize: { xs: '14px', sm: '18px' },
             padding: { xs: '6px', sm: '12px' },
+            whiteSpace: 'nowrap',
           }}
         >
           {column.label}
@@ -58,22 +75,21 @@ function fixedHeaderContent() {
 
 function rowContent(_index, row) {
   return (
-    <React.Fragment>
+    <>
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric ? 'right' : 'left'}
+          align="left"
           sx={{
             fontSize: { xs: '12px', sm: '14px' },
             padding: { xs: '6px', sm: '12px' },
-            wordWrap: 'break-word',
             whiteSpace: 'nowrap',
           }}
         >
           {row[column.dataKey]}
         </TableCell>
       ))}
-    </React.Fragment>
+    </>
   );
 }
 
@@ -105,21 +121,20 @@ export default function ReactVirtualizedTable() {
   return (
     <Paper
       sx={{
-        height: { xs: 'auto', sm: 450 },
         width: '100%',
         padding: { xs: 1, sm: 2 },
-        overflow: 'auto',
         boxSizing: 'border-box',
+        overflowX: 'auto',
       }}
     >
       <Typography
-       align="left"
-       colSpan={5}
-       sx={{
-         fontSize: '25px',
-         backgroundColor: '#1976d2',  // Add background color for the title row
-         color: 'white',  // White text for contrast
-       }}
+        sx={{
+          fontSize: { xs: '18px', sm: '25px' },
+          backgroundColor: '#F5F5F5',
+          fontWeight:'bold',
+          p: 1,
+          textAlign: 'left',
+        }}
       >
         Total Presents
       </Typography>
@@ -130,8 +145,7 @@ export default function ReactVirtualizedTable() {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            height: '100%',
-            padding: 2,
+            height: 300,
           }}
         >
           <CircularProgress />
@@ -139,12 +153,18 @@ export default function ReactVirtualizedTable() {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <TableVirtuoso
-          data={employees}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
+        <Box
+          sx={{
+            height: { xs: 300, sm: 450 },
+          }}
+        >
+          <TableVirtuoso
+            data={employees}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+          />
+        </Box>
       )}
     </Paper>
   );

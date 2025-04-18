@@ -64,7 +64,7 @@ export default function AccessibleTable() {
                   </span>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="#93A0B4"
                     onClick={handleButtonClick}
                     size="small"
                   >
@@ -74,13 +74,13 @@ export default function AccessibleTable() {
               </TableCell>
             </TableRow>
             <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#1976d2' }}>
+              <TableCell sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
                 Meeting Title
               </TableCell>
-              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#1976d2' }}>
+              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
                 Meeting Date
               </TableCell>
-              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#1976d2' }}>
+              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
                 Meeting Time
               </TableCell>
             </TableRow>

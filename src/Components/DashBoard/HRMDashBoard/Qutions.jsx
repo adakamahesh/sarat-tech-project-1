@@ -23,7 +23,7 @@ export default function AccessibleTable() {
                   lg: '25px',   // extra large
                 },
                 fontWeight: 'bold',
-                background:'#1976d2',
+                background:'#A7B0CA',
                 color: 'white',
                 textAlign: {
                   xs: 'center',

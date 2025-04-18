@@ -61,28 +61,28 @@ export default function HRMDashboard() {
       icon: <PersonIcon />,
       title: 'Total Employee',
       description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : totalEmployees),
-      backgroundColor: "#2196F3",
+      backgroundColor: "#8EDCE6",
     },
     {
       id: 2,
       icon: <HailIcon />,
       title: "Today Presents",
       description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : todayPresent),
-      backgroundColor: "#4CAF50",
+      backgroundColor: "#6BF178",
     },
     {
       id: 3,
       icon: <WorkOutlineIcon />,
       title: 'Total Absents',
       description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : todayAbsent),
-      backgroundColor: "red",
+      backgroundColor: "#F28B82",
     },
     {
       id: 4,
       icon: <HailIcon />,
       title: "Leave Request",
       description: loading ? <CircularProgress size={20} color="inherit" /> : (error ? "Error" : LeaveRequest),
-      backgroundColor: "#4CAF50",
+      backgroundColor: "#93A0B4",
     },
   ];
 
@@ -122,8 +122,8 @@ export default function HRMDashboard() {
             gridTemplateColumns: {
               xs: "repeat(1, 1fr)",
               sm: "repeat(2, 1fr)",
-              md: "repeat(3, 1fr)",
-              lg: "repeat(4, 1fr)"
+              md: "repeat(2, 1fr)",
+              lg: "repeat(2, 1fr)"
             },
             gap: 1
           }}>
@@ -152,7 +152,7 @@ export default function HRMDashboard() {
                       <Typography variant="h6" sx={{ fontSize: { xs: '16px', sm: '18px', md: '20px' } }}>
                         {card.title}
                       </Typography>
-                      <Typography variant="h5" color="black" sx={{ fontSize: { xs: '22px', sm: '26px', md: '30px' } }}>
+                      <Typography variant="h5" color="white" sx={{ fontSize: { xs: '22px', sm: '26px', md: '30px' } }}>
                         {card.description}
                       </Typography>
                     </Box>
@@ -163,7 +163,7 @@ export default function HRMDashboard() {
           </Box>
 
           {/* Selected Card Content */}
-          <Box sx={{ width: "100%", mt: 4 }}>
+          <Box sx={{ width: "100%" }}>
             {renderComponent()}
           </Box>
 

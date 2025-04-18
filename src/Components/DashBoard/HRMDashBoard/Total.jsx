@@ -23,10 +23,28 @@ const columns = [
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
-    <TableContainer component={Paper} {...props} ref={ref} />
+    <TableContainer
+      component={Paper}
+      sx={{
+        maxWidth: '100%',
+        overflowX: 'auto',
+        '@media (max-width: 600px)': {
+          marginX: '-8px',
+        },
+      }}
+      {...props}
+      ref={ref}
+    />
   )),
   Table: (props) => (
-    <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    <Table
+      {...props}
+      sx={{
+        borderCollapse: 'separate',
+        tableLayout: 'fixed',
+        minWidth: '100%',
+      }}
+    />
   ),
   TableHead: React.forwardRef((props, ref) => <TableHead {...props} ref={ref} />),
   TableRow,
@@ -43,9 +61,10 @@ function fixedHeaderContent() {
           align="left"
           sx={{
             width: column.width,
-            backgroundColor: '#f5f5f5', // Light gray background
+            backgroundColor: '#A7B0CA',
+            color:'#fff',
             fontWeight: 'bold',
-            fontSize: { xs: '16px', sm: '20px' }, // Responsive font size
+            fontSize: { xs: '14px', sm: '18px' },
             padding: { xs: '6px', sm: '12px' },
           }}
         >
@@ -104,25 +123,22 @@ export default function ReactVirtualizedTable() {
   return (
     <Paper
       sx={{
-        height: { xs: 'auto', sm: 450 },
         width: '100%',
-        overflow: 'auto',
         padding: { xs: 1, sm: 2 },
         boxSizing: 'border-box',
       }}
     >
       <Typography
-       align="left"
-       colSpan={5}
-       sx={{
-         fontSize: '25px',
-         backgroundColor: '#1976d2',  // Add background color for the title row
-         color: 'white',  // White text for contrast
-       }}
+        sx={{
+          fontSize: { xs: '18px', sm: '25px' },
+          backgroundColor: '#F5F5F5',
+          fontWeight:'bold',
+          p: 1,
+          textAlign: 'left',
+        }}
       >
         Active Employees
       </Typography>
-
       {loading ? (
         <Box
           sx={{
@@ -138,12 +154,18 @@ export default function ReactVirtualizedTable() {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <TableVirtuoso
-          data={employees}
-          components={VirtuosoTableComponents}
-          fixedHeaderContent={fixedHeaderContent}
-          itemContent={rowContent}
-        />
+        <Box
+          sx={{
+            height: { xs: 400, sm: 450 }, // 👈 This is important for mobile rendering!
+          }}
+        >
+          <TableVirtuoso
+            data={employees}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+          />
+        </Box>
       )}
     </Paper>
   );

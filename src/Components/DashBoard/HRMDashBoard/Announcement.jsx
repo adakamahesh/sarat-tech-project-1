@@ -104,8 +104,9 @@ export default function StickyHeadTable() {
           <Typography variant="h5" sx={{ fontSize: '25px', fontWeight: 'bold' }}>Announcements</Typography>
           <Button
             variant="contained"
-            color="primary"
+            color="#93A0B4"
             onClick={handleNewAnnouncementClick}
+            size="small"
           >
             {showForm ? "Close Form" : "New Announcement"}
           </Button>
@@ -114,18 +115,13 @@ export default function StickyHeadTable() {
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader>
             <TableHead>
-              <TableRow>
+              <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
-                    sx={{
-                      backgroundColor: "#1976d2",
-                      color: "#fff",
-                      fontWeight: "bold",
-                      fontSize: "0.95rem",
-                    }}
+                    sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}
                   >
                     {column.label}
                   </TableCell>

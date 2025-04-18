@@ -1,97 +1,105 @@
-import React, { useState } from "react";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
+import React, { useRef, useState } from 'react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { Box, Typography, GlobalStyles } from '@mui/material';
 
-const styles = {
-  wrapper: {
-    display: "flex",
-    justifyContent: "center", // centers the calendar horizontally
-    alignItems: "center",
-    width: "100%",
-    minHeight: "100vh",
-    backgroundColor: "#f0f2f5",
-    padding: "20px",
-  },
-  container: {
-    width: "100%",
-    maxWidth: "600px",
-    backgroundColor: "#fff",
-    borderRadius: "12px",
-    padding: "20px",
-    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-  },
-  header: {
-    textAlign: "center",
-    color: "#1976d2",
-    fontSize: "28px",
-    marginBottom: "20px",
-  },
-  selectedDate: {
-    textAlign: "center",
-    marginTop: "20px",
-    fontSize: "16px",
-    color: "#333",
-  },
-  calendarResponsive: `
-    @media (max-width: 600px) {
-      .react-calendar {
-        width: 100% !important;
-        font-size: 14px;
-      }
+const initialEvents = [
+  { title: 'Mid-term Exams', start: '2024-03-15', end: '2024-03-20', classNames: ['event-type-exam'] },
+  { title: 'Parent-Teacher Meeting', start: '2024-03-22', classNames: ['event-type-meeting'] },
+  { title: 'Spring Break', start: '2024-03-25', end: '2024-04-05', classNames: ['event-type-holiday'] },
+];
 
-      .header {
-        font-size: 20px; /* Smaller header text on mobile */
-      }
+const CalendarPage = () => {
+  const calendarRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [events, setEvents] = useState(initialEvents);
 
-      .selectedDate {
-        font-size: 14px; /* Smaller selected date text on mobile */
-      }
+  const handleDateSelect = () => setOpen(true);
+  const handleEventClick = (clickInfo) => {
+    if (window.confirm('Delete this event?')) {
+      clickInfo.event.remove();
     }
-
-    .react-calendar {
-      width: 100%;
-      border: none;
-    }
-
-    .react-calendar__tile--active {
-      background: #1976d2 !important;
-      color: white !important;
-    }
-
-    .react-calendar__tile--now {
-      background: #e3f2fd !important;
-    }
-
-    .sunday {
-      color: red;
-    }
-  `,
-};
-
-const MyCalendar = () => {
-  const [date, setDate] = useState(new Date());
+  };
 
   return (
     <>
-      <style>{styles.calendarResponsive}</style>
+      <GlobalStyles
+        styles={{
+          '.fc-header-toolbar': {
+            backgroundColor: '#93A0B4',
+            color: '#fff',
+            padding: '10px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '10px',
+          },
+          '.fc-toolbar-title': {
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '18px',
+          },
+          '.fc-button': {
+            backgroundColor: '#93A0B4',
+            color: '#fff',
+            border: 'none',
+          },
+          '.fc-button:hover': {
+            backgroundColor: '#93A0B4',
+          },
+        }}
+      />
 
-      <div style={styles.wrapper}>
-        <div style={styles.container}>
-          <h2 style={styles.header}>Calendar</h2>
-          <Calendar
-            onChange={setDate}
-            value={date}
-            tileClassName={({ date, view }) =>
-              view === "month" && date.getDay() === 0 ? "sunday" : null
-            }
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          p: 2,
+          '@media (max-width: 600px)': {
+            p: 1,
+          },
+        }}
+      >
+        <Typography variant="h5" sx={{ fontWeight: 'bold',display:'flex', justifyContent: 'center',alignItems:'center'}}>
+          Calendar
+        </Typography>
+
+        {/* Calendar Box */}
+        <Box
+          sx={{
+            flexGrow: 1,
+            backgroundColor: '#F5F5F5',
+            borderRadius: 2,
+            p: 2,
+            '@media (max-width: 600px)': {
+              p: 1,
+            },
+          }}
+        >
+          <FullCalendar
+            ref={calendarRef}
+            plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            events={events}
+            editable
+            selectable
+            selectMirror
+            select={handleDateSelect}
+            eventClick={handleEventClick}
+            headerToolbar={{
+              left: 'prev,next today',
+              center: 'title',
+              right: 'dayGridMonth,timeGridWeek,timeGridDay',
+            }}
           />
-          <p style={styles.selectedDate}>
-            Selected Date: {date.toDateString()}
-          </p>
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   );
 };
 
-export default MyCalendar;
+export default CalendarPage;

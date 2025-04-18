@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -11,39 +13,63 @@ import AttendanceBarGraph from "./AttendanceAnalytic";
 import OvertimeToApprove from "./OvertimeToApprove";
 import AttendanceToValidate from "./AttendanceToValidate";
 
-const cards = [
-  {
-    id: 1,
-    icon: <PersonIcon />,
-    title: "Today Attendances",
-    description: "90%",
-    backgroundColor: "#2196F3", // Blue
-  },
-  {
-    id: 2,
-    icon: <HailIcon />,
-    title: "On Time",
-    description: "20",
-    backgroundColor: "#4CAF50", // Green
-  },
-  {
-    id: 3,
-    icon: <WorkOutlineIcon />,
-    title: "Late Come",
-    description: "5",
-    backgroundColor: "orange", // red
-  },
-  {
-    id: 4,
-    icon: <HailIcon />,
-    title: "Today's Absent",
-    description: "2",
-    backgroundColor: "red", // Green
-  },
-];
+const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function HRMDashboard() {
-  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [presentCount, setPresentCount] = useState(0);
+  const [absentCount, setAbsentCount] = useState(0);
+  const [lateCount, setLateCount] = useState(0);
+
+  const fetchTodayAttendance = async () => {
+    try {
+      const presentRes = await axios.get(`${API_URL}attendance/today/present`);
+      const absentRes = await axios.get(`${API_URL}attendance/today/absent`);
+      const lateRes = await axios.get(`${API_URL}attendance/today/late`);
+  
+      setPresentCount(presentRes.data);
+      setAbsentCount(absentRes.data);
+      setLateCount(lateRes.data);
+    } catch (error) {
+      console.error("Failed to fetch today's attendance:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTodayAttendance();
+  }, []);
+
+  const cards = [
+    {
+      id: 1,
+      icon: <PersonIcon />,
+      title: "Today Attendances",
+      description: presentCount + lateCount,
+      backgroundColor: "#2196F3",
+    },
+    {
+      id: 2,
+      icon: <HailIcon />,
+      title: "On Time",
+      description: presentCount, // Adjust if needed based on "on-time" logic
+      backgroundColor: "#4CAF50",
+    },
+    {
+      id: 3,
+      icon: <WorkOutlineIcon />,
+      title: "Late Come",
+      description: lateCount,
+      backgroundColor: "#FF9800",
+    },
+    {
+      id: 4,
+      icon: <HailIcon />,
+      title: "Today's Absent",
+      description: absentCount,
+      backgroundColor: "red",
+    },
+  ];
+
+  const [selectedCard, setSelectedCard] = useState(null);
 
   return (
     <>
@@ -83,14 +109,14 @@ export default function HRMDashboard() {
               >
                 <Box
                   sx={{
-                    width: 40, // Adjust size
+                    width: 40,
                     height: 40,
-                    borderRadius: "50%", // Circle shape
-                    backgroundColor: "rgb(236,239,253)", // Change to desired color
+                    borderRadius: "50%",
+                    backgroundColor: "rgb(236,239,253)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    color: "#7C76E7", // Icon color
+                    color: "#7C76E7",
                   }}
                 >
                   {card.icon}
@@ -116,6 +142,7 @@ export default function HRMDashboard() {
           </Card>
         ))}
       </Box>
+
       <Box
         sx={{
           flex: 1,
@@ -126,10 +153,11 @@ export default function HRMDashboard() {
         }}
       >
         <AttendanceBarGraph />
-        <OvertimeToApprove sx={{ height: "200px" }}/>
+        <OvertimeToApprove sx={{ height: "200px" }} />
       </Box>
-      <Box sx={{ mt:4 }}>
-        <AttendanceToValidate/>
+
+      <Box sx={{ mt: 4 }}>
+        <AttendanceToValidate />
       </Box>
     </>
   );
