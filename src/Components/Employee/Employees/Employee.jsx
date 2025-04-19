@@ -2,9 +2,10 @@ import * as React from 'react';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead,
   TablePagination, TableRow, TableSortLabel, Paper, TextField, MenuItem,
-  Button, Card, CardContent, Typography, Dialog, Avatar
+  Button, Typography, Dialog, Avatar
 } from '@mui/material';
 import axios from 'axios';
+import CreateEmployee from './CreateEmployee';
 
 export default function EmployeeTable() {
   const [order, setOrder] = React.useState('asc');
@@ -15,9 +16,6 @@ export default function EmployeeTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
-  const [newEmployee, setNewEmployee] = React.useState({
-    Employee: '', Email: '', Phone: '', EmployeeId: '', JobPosition: '', Department: '', shift: '', DateOfJoining: ''
-  });
 
   React.useEffect(() => {
     fetchEmployees();
@@ -25,7 +23,7 @@ export default function EmployeeTable() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('http://192.168.1.49:8084/api/employees/active'); 
+      const response = await axios.get('http://192.168.1.49:8084/api/employees/active');
       const formatted = response.data.map((emp, index) => ({
         id: index + 1,
         Employee: `${emp.firstName} ${emp.lastName}`,
@@ -58,20 +56,10 @@ export default function EmployeeTable() {
   };
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const handleAddEmployee = () => {
-    // 🛠️ Optional: Post new employee to backend here
-    // axios.post('http://localhost:8080/api/employees', newEmployee)
-
-    setNewEmployee({
-      Employee: '', Email: '', Phone: '', EmployeeId: '', JobPosition: '', Department: '', shift: '', DateOfJoining: ''
-    });
-    handleClose();
+  const handleClose = () => {
+    setOpen(false);
+    fetchEmployees(); // refresh data after new employee added
   };
-
-  const handleInputChange = (event) =>
-    setNewEmployee({ ...newEmployee, [event.target.name]: event.target.value });
 
   const filteredRows = rows.filter((row) =>
     row.Employee.toLowerCase().includes(search.toLowerCase()) &&
@@ -81,7 +69,7 @@ export default function EmployeeTable() {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap: 10, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
           <Typography variant="h6">Employee</Typography>
           <TextField label="Search Employee" variant="outlined" size="small" value={search} onChange={handleSearch} />
           <TextField select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
@@ -92,6 +80,7 @@ export default function EmployeeTable() {
           </TextField>
           <Button variant="contained" onClick={handleOpen}>Create</Button>
         </Box>
+
         <TableContainer>
           <Table>
             <TableHead>
@@ -139,6 +128,7 @@ export default function EmployeeTable() {
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -150,24 +140,9 @@ export default function EmployeeTable() {
         />
       </Paper>
 
-      {/* Add Employee Modal */}
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <Card sx={{ p: 2, minWidth: 300 }}>
-          <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-            <Typography variant="h6">Add Employee</Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              <TextField name="Employee" label="Employee Name" variant="outlined" size="small" value={newEmployee.Employee} onChange={handleInputChange} />
-              <TextField name="Email" label="Email" variant="outlined" size="small" value={newEmployee.Email} onChange={handleInputChange} />
-              <TextField name="Phone" label="Phone" variant="outlined" size="small" value={newEmployee.Phone} onChange={handleInputChange} />
-              <TextField name="EmployeeId" label="Employee ID" variant="outlined" size="small" value={newEmployee.EmployeeId} onChange={handleInputChange} />
-              <TextField name="JobPosition" label="Job Position" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
-              <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.Department} onChange={handleInputChange} />
-              <TextField name="shift" label="Shift" variant="outlined" size="small" value={newEmployee.shift} onChange={handleInputChange} />
-              <TextField name="DateOfJoining" label="Date of Joining" variant="outlined" size="small" type="date" InputLabelProps={{ shrink: true }} value={newEmployee.DateOfJoining} onChange={handleInputChange} />
-              <Button variant="contained" onClick={handleAddEmployee}>Add Employee</Button>
-            </Box>
-          </CardContent>
-        </Card>
+      {/* Create Employee Modal */}
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <CreateEmployee onClose={handleClose} />
       </Dialog>
     </Box>
   );

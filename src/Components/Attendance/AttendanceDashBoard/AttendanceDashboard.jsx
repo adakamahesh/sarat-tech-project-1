@@ -12,6 +12,7 @@ import HailIcon from "@mui/icons-material/Hail";
 import AttendanceBarGraph from "./AttendanceAnalytic";
 import OvertimeToApprove from "./OvertimeToApprove";
 import AttendanceToValidate from "./AttendanceToValidate";
+import Attendance from "./Attendance";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
@@ -154,6 +155,10 @@ export default function HRMDashboard() {
       >
         <AttendanceBarGraph />
         <OvertimeToApprove sx={{ height: "200px" }} />
+      </Box>
+
+      <Box sx={{ mt: 4 }}>
+        <Attendance/>
       </Box>
 
       <Box sx={{ mt: 4 }}>

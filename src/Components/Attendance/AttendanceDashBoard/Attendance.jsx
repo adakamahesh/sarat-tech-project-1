@@ -8,19 +8,16 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import { Box } from "@mui/material";
 
 const columns = [
+  { id: "SLNO", label: "SL.NO", minWidth: 100 },
+  { id: "EmpId", label: "EmpId", minWidth: 100 },
   { id: "Employee", label: "Employee", minWidth: 170 },
   { id: "Date", label: "Date", minWidth: 100 },
   { id: "check-in", label: "Check-in", minWidth: 100 },
-  { id: "inDate", label: "In Date", minWidth: 100 },
   { id: "check-out", label: "Check-out", minWidth: 100 },
-  { id: "outDate", label: "Out Date", minWidth: 100 },
   { id: "Shift", label: "Shift", minWidth: 100 },
-  { id: "WorkType", label: "Work Type", minWidth: 100 },
-  { id: "MinHour", label: "Min Hour", minWidth: 100 },
-  { id: "PendingHour", label: "Pending Hour", minWidth: 100 },
-  { id: "AtWork", label: "At Work", align: "center", minWidth: 100 },
   { id: "Action", label: "Action", align: "center", minWidth: 100 },
 ];
 
@@ -32,25 +29,43 @@ const rows = [
   { Employee: "Adam Luis", Overtime: "01:00" },
 ];
 
-const ActionCell = ({ onApprove }) => (
-  <div style={{ display: "flex", justifyContent: "center" }}>
+const ActionCell = ({ onCheckIn, onCheckOut }) => (
+  <Box
+    sx={{ display: "flex", justifyContent: "center", gap: 1, flexWrap: "wrap" }}
+  >
     <IconButton
-      aria-label="approve"
+      aria-label="check-in"
       sx={{
-        backgroundColor: "blue",
+        backgroundColor: "green",
         color: "white",
-        width: 100,
+        width: { xs: 80, sm: 100 },
         height: 30,
         borderRadius: 1,
         fontSize: "12px",
-        "&:hover": { backgroundColor: "darkblue" },
+        "&:hover": { backgroundColor: "darkgreen" },
       }}
-      onClick={onApprove}
+      onClick={onCheckIn}
     >
-      Validation
+      Check-In
     </IconButton>
-  </div>
+    <IconButton
+      aria-label="check-out"
+      sx={{
+        backgroundColor: "orange",
+        color: "white",
+        width: { xs: 80, sm: 100 },
+        height: 30,
+        borderRadius: 1,
+        fontSize: "12px",
+        "&:hover": { backgroundColor: "darkorange" },
+      }}
+      onClick={onCheckOut}
+    >
+      Check-Out
+    </IconButton>
+  </Box>
 );
+
 export default function StickyHeadTable() {
   const handleApprove = () => {
     alert("Approved overtime successfully");
@@ -59,7 +74,7 @@ export default function StickyHeadTable() {
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <Typography variant="h5" sx={{ p: 2 }}>
-        Attendance to Validate
+        Attendance
       </Typography>
       <hr />
       <TableContainer sx={{ maxHeight: 440 }}>
