@@ -1,29 +1,30 @@
 import * as React from 'react';
-import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
-  TableSortLabel,Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,IconButton
+import {
+  Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow,
+  TableSortLabel, Paper, TextField, MenuItem, Button, Card, CardContent, Typography, Dialog, IconButton
 } from '@mui/material';
 import { Avatar } from '@mui/material';
 import DescriptionIcon from '@mui/icons-material/Description';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-function createData(id, Employee, Email, Phone, ApplicantId, JobPosition ) {
-  return { id, Employee, Email, Phone, ApplicantId, JobPosition };
+function createData(id, Employee, Email, Phone, ApplicantId, SLNO, JobPosition) {
+  return { id, Employee, Email, Phone, ApplicantId, SLNO, JobPosition };
 }
 
 const initialRows = [
-  createData(1, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 501, "FrontEnd Developer"),
-  createData(2, 'Vasu', 'vasu@gmail.com', 9700784065, 502, "Backend Developer"),
-  createData(3, 'Praveen', 'praveen@gmail.com', 9700784065, 503, "UI/UX Designer"),
-  createData(4, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 504, "FrontEnd Developer"),
-  createData(5, 'Vasu', 'vasu@gmail.com', 9700784065, 505, "Backend Developer"),
-  createData(6, 'Praveen', 'praveen@gmail.com', 9700784065, 506, "UI/UX Designer"),
-  createData(7, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 507, "FrontEnd Developer"),
-  createData(8, 'Vasu', 'vasu@gmail.com', 9700784065, 508, "Backend Developer"),
-  createData(9, 'Praveen', 'praveen@gmail.com', 9700784065, 509, "UI/UX Designer"),
+  createData(1, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 501, 'SL001', "FrontEnd Developer"),
+  createData(2, 'Vasu', 'vasu@gmail.com', 9700784065, 502, 'SL002', "Backend Developer"),
+  createData(3, 'Praveen', 'praveen@gmail.com', 9700784065, 503, 'SL003', "UI/UX Designer"),
+  createData(4, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 504, 'SL004', "FrontEnd Developer"),
+  createData(5, 'Vasu', 'vasu@gmail.com', 9700784065, 505, 'SL005', "Backend Developer"),
+  createData(6, 'Praveen', 'praveen@gmail.com', 9700784065, 506, 'SL006', "UI/UX Designer"),
+  createData(7, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 507, 'SL007', "FrontEnd Developer"),
+  createData(8, 'Vasu', 'vasu@gmail.com', 9700784065, 508, 'SL008', "Backend Developer"),
+  createData(9, 'Praveen', 'praveen@gmail.com', 9700784065, 509, 'SL009', "UI/UX Designer"),
 ];
 
-export default function EmployeeTable() {
+export default function Applicant() {
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('DateOfJoining');
   const [search, setSearch] = React.useState('');
@@ -35,9 +36,9 @@ export default function EmployeeTable() {
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
   const [newEmployee, setNewEmployee] = React.useState({
-    Employee: '', Email: '', Phone: '',ApplicantId:'', JobPosition: '',Department:'',shift:'', WorkEmail:'', DateOfJoining: ''
+    Employee: '', Email: '', Phone: '', SLNO: '', ApplicantId: '', JobPosition: '', Department: '', shift: '', WorkEmail: '', DateOfJoining: ''
   });
-  
+
   const handleEdit = (row) => {
     setEditId(row.id);
     setEditData(row);
@@ -51,7 +52,7 @@ export default function EmployeeTable() {
     setRows(rows.map((row) => (row.id === editId ? editData : row)));
     setEditId(null);
   };
-  
+
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -71,8 +72,21 @@ export default function EmployeeTable() {
 
   const handleAddEmployee = () => {
     if (newEmployee.Employee && newEmployee.Email) {
-      setRows([...rows, createData(rows.length + 1, newEmployee.Employee, newEmployee.Email, newEmployee.Phone, rows.length + 500, newEmployee.JobPosition, 'IT Dept', "Day Shift", "Office", 'Mahii', 'Sarat Tech', newEmployee.Email, newEmployee.DateOfJoining)]);
-      setNewEmployee({ Employee: '', Email: '', Phone: '',ApplicantId:'', JobPosition: '',Department:'',shift:'', WorkEmail:'', DateOfJoining: '' });
+      const newId = rows.length + 1;
+      const newApplicantId = 500 + newId;
+      const newRow = createData(
+        newId,
+        newEmployee.Employee,
+        newEmployee.Email,
+        newEmployee.Phone,
+        newApplicantId,
+        newEmployee.SLNO,
+        newEmployee.JobPosition
+      );
+      setRows([...rows, newRow]);
+      setNewEmployee({
+        Employee: '', Email: '', Phone: '', SLNO: '', ApplicantId: '', JobPosition: '', Department: '', shift: '', WorkEmail: '', DateOfJoining: ''
+      });
       handleClose();
     }
   };
@@ -81,12 +95,11 @@ export default function EmployeeTable() {
 
   const handleResumeClick = (employee) => {
     alert(`Viewing resume for ${employee}`);
-  }
+  };
 
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
   };
-  
 
   const filteredRows = rows.filter((row) =>
     row.Employee.toLowerCase().includes(search.toLowerCase()) &&
@@ -96,10 +109,10 @@ export default function EmployeeTable() {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
           <Typography variant="h6">Applicant</Typography>
           <TextField label="Search Employee" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
+          <TextField sx={{width:'30%'}} select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.JobPosition))].map((job) => (
               <MenuItem key={job} value={job}>{job}</MenuItem>
@@ -111,6 +124,7 @@ export default function EmployeeTable() {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>SLNO</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Applicant Id</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
                   <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
@@ -118,31 +132,32 @@ export default function EmployeeTable() {
                   </TableSortLabel>
                 </TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Mobil</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Mobile</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Job Position</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Resume</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Actions</TableCell>          
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.SLNO}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.ApplicantId}</TableCell>
-                  <TableCell sx={{ 
-                     textAlign: 'left',
-                     display: 'flex', 
-                     alignItems: 'center',
-                     gap: 1, 
-                     justifyContent: 'flex-start',
-                     minWidth: 150
-                    }}>
+                  <TableCell sx={{
+                    textAlign: 'left',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    justifyContent: 'flex-start',
+                    minWidth: 150
+                  }}>
                     <Avatar sx={{ bgcolor: 'gray' }}>{row.Employee[0]}</Avatar>
                     <Box sx={{ flexGrow: 1 }}>
-                    {editId === row.id ? (
-                      <TextField name="Employee" value={editData.Employee} onChange={handleEditChange} size="small" variant="outlined" fullWidth />
-                    ) : (
-                      <Typography variant="body1">{row.Employee}</Typography>
-                    )}
+                      {editId === row.id ? (
+                        <TextField name="Employee" value={editData.Employee} onChange={handleEditChange} size="small" variant="outlined" fullWidth />
+                      ) : (
+                        <Typography variant="body1">{row.Employee}</Typography>
+                      )}
                     </Box>
                   </TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>
@@ -166,7 +181,7 @@ export default function EmployeeTable() {
                       row.JobPosition
                     )}
                   </TableCell>
-                  <TableCell sx={{ textAlign: 'center',display:"flex", alignItems:"center" }}>
+                  <TableCell sx={{ textAlign: 'center', display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <IconButton onClick={() => handleResumeClick(row.Employee)}>
                       <DescriptionIcon color="gray" />
                     </IconButton>
@@ -179,12 +194,12 @@ export default function EmployeeTable() {
                       <Button variant="contained" color="success" size="small" onClick={handleSave}>Save</Button>
                     ) : (
                       <>
-                      <IconButton color="primary" onClick={() => handleEdit(row)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton color="error" onClick={() => handleDelete(row.id)}>
-                        <DeleteIcon />
-                      </IconButton>
+                        <IconButton color="primary" onClick={() => handleEdit(row)}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton color="error" onClick={() => handleDelete(row.id)}>
+                          <DeleteIcon />
+                        </IconButton>
                       </>
                     )}
                   </TableCell>
@@ -203,7 +218,8 @@ export default function EmployeeTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-      <Dialog open={open} onClose={handleClose}  maxWidth="sm" fullWidth>
+
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <Card sx={{ p: 2, minWidth: 300 }}>
           <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
             <Typography variant="h6">Add Applicant</Typography>
@@ -211,11 +227,12 @@ export default function EmployeeTable() {
               <TextField name="Employee" label="Employee Name" variant="outlined" size="small" value={newEmployee.Employee} onChange={handleInputChange} />
               <TextField name="Email" label="Email" variant="outlined" size="small" value={newEmployee.Email} onChange={handleInputChange} />
               <TextField name="Phone" label="Phone" variant="outlined" size="small" value={newEmployee.Phone} onChange={handleInputChange} />
-              <TextField name="ApplicantId" label="ApplicantId" variant="outlined" size="small" value={newEmployee.ApplicantId} onChange={handleInputChange} />
-              <TextField name="JobPosition" label="JobPosition" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
+              <TextField name="SLNO" label="SLNO" variant="outlined" size="small" value={newEmployee.SLNO} onChange={handleInputChange} />
+              <TextField name="ApplicantId" label="Applicant ID" variant="outlined" size="small" value={newEmployee.ApplicantId} onChange={handleInputChange} />
+              <TextField name="JobPosition" label="Job Position" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
               <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.Department} onChange={handleInputChange} />
-              <TextField name="shift" label="shift" variant="outlined" size="small" value={newEmployee.shift} onChange={handleInputChange} />
-              <TextField name="WorkEmail" label="WorkEmail" variant="outlined" size="small" value={newEmployee.WorkEmail} onChange={handleInputChange} />
+              <TextField name="shift" label="Shift" variant="outlined" size="small" value={newEmployee.shift} onChange={handleInputChange} />
+              <TextField name="WorkEmail" label="Work Email" variant="outlined" size="small" value={newEmployee.WorkEmail} onChange={handleInputChange} />
               <TextField name="DateOfJoining" label="Date of Joining" variant="outlined" size="small" type="date" InputLabelProps={{ shrink: true }} value={newEmployee.DateOfJoining} onChange={handleInputChange} />
               <Button variant="contained" onClick={handleAddEmployee}>Add Employee</Button>
             </Box>

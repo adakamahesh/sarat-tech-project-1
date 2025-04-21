@@ -35,7 +35,7 @@ export default function EmployeeCard() {
           profileImage: "/default-profile.png",
           designation: data.designation,
           phoneNumber: data.phoneNumber,
-          alternatePhoneNumber: data.alternatePhoneNumber || "",
+          alternateNumber: data.alternateNumber|| "",
           emailId: data.emailId,
         };
         setEmployee(empData);
@@ -160,11 +160,11 @@ export default function EmployeeCard() {
                 />
                 <TextField
                   label="Alternate Phone"
-                  value={editedData.alternatePhoneNumber}
+                  value={editedData.alternateNumber}
                   onChange={(e) =>
                     setEditedData({
                       ...editedData,
-                      alternatePhoneNumber: e.target.value,
+                      alternateNumber: e.target.value,
                     })
                   }
                   size="small"
@@ -188,7 +188,7 @@ export default function EmployeeCard() {
                   <span style={{ color: "gray", fontWeight: "bold" }}>
                     Alternate Phone:
                   </span>{" "}
-                  {employee.alternatePhoneNumber || "—"}
+                  {employee.alternateNumber || "—"}
                 </Typography>
               </>
             )}

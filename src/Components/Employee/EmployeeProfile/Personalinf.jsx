@@ -26,7 +26,7 @@ export default function Personalinf() {
     gender: "",
     address: "",
     qualification: "",
-    DateOfJoining: "",
+    dateOfJoining: "",
     maritalStatus: "",
     emergencyContactName: "",
     emergencyContactNumber: "",
@@ -116,8 +116,8 @@ export default function Personalinf() {
               />
               <TextField
                 label="Date Of Joining"
-                name="DateOfJoining"
-                value={personalDetails.DateOfJoining}
+                name="dateOfJoining"
+                value={personalDetails.dateOfJoining}
                 onChange={handleChange}
                 fullWidth
               />
@@ -185,8 +185,8 @@ export default function Personalinf() {
                 },
                 {
                   icon: <CalendarTodayIcon />,
-                  label: "DateOfJoining",
-                  value: personalDetails.DateOfJoining,
+                  label: "dateOfJoining",
+                  value: personalDetails.dateOfJoining,
                 },
                 {
                   icon: <FamilyRestroomIcon />,
