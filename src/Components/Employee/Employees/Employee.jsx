@@ -5,6 +5,7 @@ import {
   Button, Typography, Dialog, Avatar
 } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import CreateEmployee from './CreateEmployee';
 
 export default function EmployeeTable() {
@@ -16,6 +17,8 @@ export default function EmployeeTable() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
+
+  const navigate = useNavigate(); // Initialize the navigate function
 
   React.useEffect(() => {
     fetchEmployees();
@@ -59,6 +62,11 @@ export default function EmployeeTable() {
   const handleClose = () => {
     setOpen(false);
     fetchEmployees(); // refresh data after new employee added
+  };
+
+  const handleRowClick = (employeeId) => {
+    // Navigate to the EmployeeProfile page with the employee's ID
+    navigate(`/Employee/Profile`);
   };
 
   const filteredRows = rows.filter((row) =>
@@ -105,7 +113,7 @@ export default function EmployeeTable() {
             </TableHead>
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} onClick={() => handleRowClick(row.EmployeeId)} style={{ cursor: 'pointer' }}>
                   <TableCell sx={{ textAlign: 'center' }}>{row.EmployeeId}</TableCell>
                   <TableCell sx={{
                     textAlign: 'left',
