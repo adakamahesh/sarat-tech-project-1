@@ -99,12 +99,29 @@ export default function StickyHeadTable() {
           alignItems={isMobile ? "flex-start" : "center"}
           p={2}
           gap={isMobile ? 1 : 0}
-          sx={{ padding: '16px 24px',backgroundColor:'#f5f5f5',}}
+          sx={{
+            padding: "16px 24px",
+            backgroundColor: "#f5f5f5",
+          }}
         >
-          <Typography variant="h5" sx={{ fontSize: '25px', fontWeight: 'bold' }}>Announcements</Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              fontSize: { xs: "18px", sm: "25px" },
+              fontWeight: "bold",
+            }}
+          >
+            Announcements
+          </Typography>
           <Button
             variant="contained"
-            color="#93A0B4"
+            sx={{
+              backgroundColor: "#93A0B4",
+              color: "#fff",
+              fontSize: { xs: "12px", sm: "14px" },
+              padding: { xs: "6px 12px", sm: "8px 16px" },
+              mt: isMobile ? 1 : 0,
+            }}
             onClick={handleNewAnnouncementClick}
             size="small"
           >
@@ -112,16 +129,36 @@ export default function StickyHeadTable() {
           </Button>
         </Box>
 
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer
+          sx={{
+            maxHeight: 440,
+            overflowX: "auto",
+            [theme.breakpoints.down("sm")]: {
+              maxWidth: "100%",
+            },
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
-              <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
+              <TableRow
+                sx={{
+                  borderTop: "1px solid #ccc",
+                  borderBottom: "1px solid #ccc",
+                }}
+              >
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
-                    sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}
+                    sx={{
+                      fontSize: { xs: "12px", sm: "16px" },
+                      fontWeight: "bold",
+                      color: "#fff",
+                      backgroundColor: "#93A0B4",
+                      padding: { xs: "6px", sm: "10px" },
+                      whiteSpace: "nowrap",
+                    }}
                   >
                     {column.label}
                   </TableCell>
@@ -136,7 +173,15 @@ export default function StickyHeadTable() {
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          sx={{
+                            fontSize: { xs: "12px", sm: "14px" },
+                            padding: { xs: "6px", sm: "10px" },
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {column.id === "date"
                             ? new Date(value).toDateString()
                             : value}
@@ -165,7 +210,7 @@ export default function StickyHeadTable() {
           sx={{
             maxWidth: 600,
             mx: "auto",
-            p: 2,
+            p: { xs: 2, sm: 3 },
             mb: 4,
             boxShadow: 4,
             borderRadius: 2,
@@ -214,6 +259,7 @@ export default function StickyHeadTable() {
                 display="flex"
                 flexDirection={isMobile ? "column" : "row"}
                 gap={2}
+                mt={2}
               >
                 <Button type="submit" variant="contained" fullWidth>
                   Submit Announcement

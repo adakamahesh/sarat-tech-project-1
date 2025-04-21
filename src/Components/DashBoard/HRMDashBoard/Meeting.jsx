@@ -57,16 +57,17 @@ export default function AccessibleTable() {
         <Table aria-label="meeting schedule table">
           <TableHead>
             <TableRow>
-              <TableCell colSpan={5} sx={{ padding: '16px 24px',backgroundColor:'#f5f5f5' }}>
+              <TableCell colSpan={5} sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
                   <span style={{ fontSize: '25px', fontWeight: 'bold' }}>
                     Meeting Schedule
                   </span>
                   <Button
                     variant="contained"
-                    color="#93A0B4"
+                    color="primary"
                     onClick={handleButtonClick}
                     size="small"
+                    sx={{ "@media (max-width: 600px)": { fontSize: '12px' } }}
                   >
                     {showForm ? 'Close Form' : 'New Meeting'}
                   </Button>
@@ -74,13 +75,28 @@ export default function AccessibleTable() {
               </TableCell>
             </TableRow>
             <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
-              <TableCell sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
+              <TableCell sx={{
+                fontSize: { xs: '16px', sm: '20px' },
+                fontWeight: 'bold',
+                color: "#fff",
+                backgroundColor: '#93A0B4'
+              }}>
                 Meeting Title
               </TableCell>
-              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
+              <TableCell align="center" sx={{
+                fontSize: { xs: '14px', sm: '20px' },
+                fontWeight: 'bold',
+                color: "#fff",
+                backgroundColor: '#93A0B4'
+              }}>
                 Meeting Date
               </TableCell>
-              <TableCell align="center" sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}>
+              <TableCell align="center" sx={{
+                fontSize: { xs: '14px', sm: '20px' },
+                fontWeight: 'bold',
+                color: "#fff",
+                backgroundColor: '#93A0B4'
+              }}>
                 Meeting Time
               </TableCell>
             </TableRow>
@@ -105,8 +121,20 @@ export default function AccessibleTable() {
           justifyContent="center"
           alignItems="center"
           mt={2}
+          sx={{
+            "@media (max-width: 600px)": {
+              padding: '0 10px',
+            },
+          }}
         >
-          <Card sx={{ width: 500, padding: 2, boxShadow: 4 }}>
+          <Card sx={{
+            width: { xs: '100%', sm: 500 },
+            padding: 2,
+            boxShadow: 4,
+            "@media (max-width: 600px)": {
+              boxShadow: 2,
+            }
+          }}>
             <CardContent>
               <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                 <span style={{ fontSize: '18px', fontWeight: 600 }}>Create New Meeting</span>
@@ -124,6 +152,11 @@ export default function AccessibleTable() {
                     onChange={handleInputChange}
                     fullWidth
                     required
+                    sx={{
+                      "@media (max-width: 600px)": {
+                        fontSize: '14px',
+                      }
+                    }}
                   />
                 </Box>
 
@@ -137,6 +170,11 @@ export default function AccessibleTable() {
                     InputLabelProps={{ shrink: true }}
                     fullWidth
                     required
+                    sx={{
+                      "@media (max-width: 600px)": {
+                        fontSize: '14px',
+                      }
+                    }}
                   />
                 </Box>
 
@@ -150,6 +188,11 @@ export default function AccessibleTable() {
                     InputLabelProps={{ shrink: true }}
                     fullWidth
                     required
+                    sx={{
+                      "@media (max-width: 600px)": {
+                        fontSize: '14px',
+                      }
+                    }}
                   />
                 </Box>
 

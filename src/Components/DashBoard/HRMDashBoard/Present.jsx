@@ -39,7 +39,7 @@ const VirtuosoTableComponents = {
       sx={{
         borderCollapse: 'separate',
         tableLayout: 'fixed',
-        minWidth: '600px', // Ensures horizontal scroll on small screens
+        minWidth: { xs: '300px', sm: '600px' }, // Ensures horizontal scroll on small screens
       }}
     />
   ),
@@ -59,9 +59,9 @@ function fixedHeaderContent() {
           sx={{
             width: column.width,
             backgroundColor: '#A7B0CA',
-            color:'#fff',
+            color: '#fff',
             fontWeight: 'bold',
-            fontSize: { xs: '14px', sm: '18px' },
+            fontSize: { xs: '12px', sm: '16px' },
             padding: { xs: '6px', sm: '12px' },
             whiteSpace: 'nowrap',
           }}
@@ -81,7 +81,7 @@ function rowContent(_index, row) {
           key={column.dataKey}
           align="left"
           sx={{
-            fontSize: { xs: '12px', sm: '14px' },
+            fontSize: { xs: '10px', sm: '12px' },
             padding: { xs: '6px', sm: '12px' },
             whiteSpace: 'nowrap',
           }}
@@ -129,9 +129,9 @@ export default function ReactVirtualizedTable() {
     >
       <Typography
         sx={{
-          fontSize: { xs: '18px', sm: '25px' },
+          fontSize: { xs: '16px', sm: '20px' },
           backgroundColor: '#F5F5F5',
-          fontWeight:'bold',
+          fontWeight: 'bold',
           p: 1,
           textAlign: 'left',
         }}

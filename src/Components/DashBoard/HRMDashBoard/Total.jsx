@@ -43,6 +43,9 @@ const VirtuosoTableComponents = {
         borderCollapse: 'separate',
         tableLayout: 'fixed',
         minWidth: '100%',
+        '@media (max-width: 600px)': {
+          minWidth: '500px', // For mobile
+        },
       }}
     />
   ),

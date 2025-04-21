@@ -61,10 +61,20 @@ const CalendarPage = () => {
           p: 2,
           '@media (max-width: 600px)': {
             p: 1,
+            gap: 1,
           },
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: 'bold',display:'flex', justifyContent: 'center',alignItems:'center'}}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 'bold',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            fontSize: { xs: '18px', sm: '24px' },
+          }}
+        >
           Calendar
         </Typography>
 

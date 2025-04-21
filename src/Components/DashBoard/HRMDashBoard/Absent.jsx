@@ -39,7 +39,7 @@ const VirtuosoTableComponents = {
       sx={{
         borderCollapse: 'separate',
         tableLayout: 'fixed',
-        minWidth: '600px', // enables scroll on mobile
+        minWidth: { xs: 500, sm: 600 }, // min width for scroll
       }}
     />
   ),
@@ -58,13 +58,13 @@ function fixedHeaderContent() {
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric ? 'right' : 'left'}
+          align="left"
           sx={{
             width: column.width,
             backgroundColor: '#A7B0CA',
-            color:'#fff',
+            color: '#fff',
             fontWeight: 'bold',
-            fontSize: { xs: '14px', sm: '16px' },
+            fontSize: { xs: '12px', sm: '14px' },
             padding: { xs: '6px', sm: '12px' },
           }}
         >
@@ -77,22 +77,22 @@ function fixedHeaderContent() {
 
 function rowContent(_index, row) {
   return (
-    <React.Fragment>
+    <>
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric ? 'right' : 'left'}
+          align="left"
           sx={{
-            fontSize: { xs: '12px', sm: '14px' },
+            fontSize: { xs: '11px', sm: '13px' },
             padding: { xs: '6px', sm: '12px' },
             whiteSpace: 'nowrap',
-            wordWrap: 'break-word',
+            wordBreak: 'break-word',
           }}
         >
           {row[column.dataKey]}
         </TableCell>
       ))}
-    </React.Fragment>
+    </>
   );
 }
 
@@ -115,8 +115,8 @@ export default function ReactVirtualizedTable() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error("Error fetching absent employee data:", error);
-        setError("Failed to load employees");
+        console.error('Error fetching absent employee data:', error);
+        setError('Failed to load employees');
         setLoading(false);
       });
   }, []);
@@ -134,10 +134,11 @@ export default function ReactVirtualizedTable() {
       <Typography
         align="left"
         sx={{
-          fontSize: { xs: '18px', sm: '25px' },
+          fontSize: { xs: '16px', sm: '24px' },
           backgroundColor: '#F5F5F5',
-          fontWeight:'bold',
+          fontWeight: 'bold',
           padding: 1,
+          mb: 1,
         }}
       >
         Absent Employees

@@ -17,17 +17,26 @@ export default function AccessibleTable() {
               colSpan={5}
               sx={{
                 fontSize: {
-                  xs: '16px',   // small screens
-                  sm: '18px',   // medium screens
-                  md: '22px',   // large screens
-                  lg: '25px',   // extra large
+                  xs: '14px',   // Extra small screens
+                  sm: '16px',   // Small screens
+                  md: '18px',   // Medium screens
+                  lg: '20px',   // Large screens
+                  xl: '22px',   // Extra large screens
                 },
                 fontWeight: 'bold',
-                background:'#A7B0CA',
+                background: '#A7B0CA',
                 color: 'white',
                 textAlign: {
-                  xs: 'center',
-                  sm: 'left'
+                  xs: 'center',  // Center-align on small screens
+                  sm: 'left',    // Left-align on medium and up
+                  md: 'left',    // Left-align remains for larger screens
+                  lg: 'left',
+                  xl: 'left',
+                },
+                padding: {
+                  xs: '8px',    // Smaller padding on mobile
+                  sm: '12px',   // Medium padding
+                  md: '14px',   // Larger padding on bigger screens
                 },
               }}
             >

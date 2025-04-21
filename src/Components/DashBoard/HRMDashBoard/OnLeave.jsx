@@ -44,12 +44,16 @@ function fixedHeaderContent() {
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
           sx={{
-            fontSize: '20px',
+            fontSize: { xs: '14px', sm: '16px', md: '20px' },
             fontWeight: 'bold',
             color: "#fff",
             backgroundColor: '#93A0B4',
             px: 2, // horizontal padding (space inside)
             py: 1, // vertical padding
+            "@media (max-width: 600px)": {
+              fontSize: '12px',
+              padding: '8px',
+            }
           }}
         >
           {column.label}
@@ -63,14 +67,20 @@ function rowContent(_index, row) {
   return (
     <React.Fragment>
       {columns.map((column) => (
-        <TableCell key={column.dataKey} align={column.numeric ? 'right' : 'left'}>
+        <TableCell key={column.dataKey} align={column.numeric ? 'right' : 'left'} sx={{
+          fontSize: { xs: '12px', sm: '14px', md: '16px' },
+          padding: { xs: '8px', sm: '12px' },
+          "@media (max-width: 600px)": {
+            fontSize: '10px',
+            padding: '6px',
+          }
+        }}>
           {row[column.dataKey]}
         </TableCell>
       ))}
     </React.Fragment>
   );
 }
-
 
 export default function AccessibleTable() {
 
@@ -101,28 +111,32 @@ export default function AccessibleTable() {
 
 
   return (
-  <Paper style={{overflow: 'hidden', width: '100%' }}>
-  <TableContainer component={Paper}>
-  <Typography variant="h5" sx={{ p: 2,backgroundColor:'#F5F5F5', fontWeight:'bold' }}>
-        On Leave
-      </Typography>
-    </TableContainer>
+    <Paper style={{ overflow: 'hidden', width: '100%' }}>
+      <TableContainer component={Paper}>
+        <Typography variant="h5" sx={{
+          p: 2,
+          backgroundColor: '#F5F5F5',
+          fontWeight: 'bold',
+          fontSize: { xs: '16px', sm: '18px', md: '20px' },
+        }}>
+          On Leave
+        </Typography>
+      </TableContainer>
 
-
-  {loading ? (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      <CircularProgress />
-    </Box>
-  ) : error ? (
-    <Typography color="error">{error}</Typography>
-  ) : (
-    <TableVirtuoso
-      data={employees}
-      components={VirtuosoTableComponents}
-      fixedHeaderContent={fixedHeaderContent}
-      itemContent={rowContent}
-    />
-  )}
-</Paper>
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
+      ) : (
+        <TableVirtuoso
+          data={employees}
+          components={VirtuosoTableComponents}
+          fixedHeaderContent={fixedHeaderContent}
+          itemContent={rowContent}
+        />
+      )}
+    </Paper>
   );
 }

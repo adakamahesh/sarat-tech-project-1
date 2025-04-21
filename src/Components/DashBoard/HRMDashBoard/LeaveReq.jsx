@@ -43,6 +43,9 @@ const VirtuosoTableComponents = {
         borderCollapse: "separate",
         tableLayout: "fixed",
         minWidth: "100%",
+        "@media (max-width: 600px)": {
+          fontSize: "0.75rem", // Smaller font size for mobile
+        },
       }}
     />
   ),
@@ -160,7 +163,8 @@ export default function ReactVirtualizedTable() {
       ) : (
         <Box
           sx={{
-            height: { xs: 400, sm: 450 }, // 👈 This is important for mobile rendering!
+            height: { xs: 400, sm: 450 }, // Mobile height adjustment
+            overflowY: "auto",
           }}
         >
           <TableVirtuoso

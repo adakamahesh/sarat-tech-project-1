@@ -100,7 +100,12 @@ export default function StickyHeadTable() {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Typography variant="h5" sx={{ p: 2,backgroundColor:'#F5F5F5', fontWeight:'bold' }}>
+      <Typography variant="h5" sx={{
+        p: 2,
+        backgroundColor: '#F5F5F5',
+        fontWeight: 'bold',
+        fontSize: { xs: '16px', sm: '18px', md: '20px' },
+      }}>
         Over Time To Approve
       </Typography>
       <TableContainer sx={{ maxHeight: 440 }}>
@@ -111,8 +116,20 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth, fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}
-                  sx={column.id === 'Employee' ? { position: 'sticky', left: 0, zIndex: 1100 } : {}}
+                  style={{
+                    minWidth: column.minWidth,
+                    fontSize: '20px',
+                    fontWeight: 'bold',
+                    color: "#fff",
+                    backgroundColor: '#93A0B4',
+                  }}
+                  sx={{
+                    position: column.id === 'Employee' ? 'sticky' : 'static',
+                    left: column.id === 'Employee' ? 0 : undefined,
+                    zIndex: column.id === 'Employee' ? 1100 : undefined,
+                    fontSize: { xs: '14px', sm: '16px', md: '20px' },
+                    padding: { xs: '8px', sm: '12px', md: '16px' },
+                  }}
                 >
                   {column.label}
                 </TableCell>
@@ -130,7 +147,13 @@ export default function StickyHeadTable() {
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        sx={column.id === 'Employee' ? { position: 'sticky', left: 0, zIndex: 1000 } : {}}
+                        sx={{
+                          fontSize: { xs: '12px', sm: '14px', md: '16px' },
+                          padding: { xs: '8px', sm: '12px', md: '16px' },
+                          position: column.id === 'Employee' ? 'sticky' : 'static',
+                          left: column.id === 'Employee' ? 0 : undefined,
+                          zIndex: column.id === 'Employee' ? 1000 : undefined,
+                        }}
                       >
                         {column.id === 'Action' ? (
                           <ActionCell onApprove={handleApprove} onReject={handleReject} />
@@ -153,6 +176,7 @@ export default function StickyHeadTable() {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{ padding: { xs: '8px', sm: '12px' } }}
       />
     </Paper>
   );

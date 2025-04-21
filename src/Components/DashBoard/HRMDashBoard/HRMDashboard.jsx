@@ -103,7 +103,8 @@ export default function HRMDashboard() {
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
         width: "100%",
-        gap: 2
+        gap: 2,
+        p: 2
       }}>
         {/* Left Section */}
         <Box sx={{
@@ -111,7 +112,6 @@ export default function HRMDashboard() {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          ml: { xs: 0, md: 2 },
           border: "1px solid rgb(237,237,237)",
           p: 2
         }}>
@@ -201,7 +201,6 @@ export default function HRMDashboard() {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          ml: { xs: 0, md: 2 },
           mt: { xs: 2, md: 0 },
           border: "1px solid rgb(237,237,237)",
           p: 2
