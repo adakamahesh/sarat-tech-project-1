@@ -55,7 +55,7 @@ export default function AccessibleTable() {
                 fontSize: "20px",
                 fontWeight: "bold",
                 color: "#fff",
-                backgroundColor: "#1976d2",
+                backgroundColor: "#A7B0CA",
               }}
             >
               Meeting Title
@@ -66,7 +66,7 @@ export default function AccessibleTable() {
                 fontSize: "20px",
                 fontWeight: "bold",
                 color: "#fff",
-                backgroundColor: "#1976d2",
+                backgroundColor: "#A7B0CA",
               }}
             >
               Meeting Date
@@ -77,7 +77,7 @@ export default function AccessibleTable() {
                 fontSize: "20px",
                 fontWeight: "bold",
                 color: "#fff",
-                backgroundColor: "#1976d2",
+                backgroundColor: "#A7B0CA",
               }}
             >
               Meeting Time

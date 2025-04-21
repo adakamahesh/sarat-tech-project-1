@@ -45,13 +45,13 @@ const ActionCell = ({ onApprove, onReject }) => (
     <IconButton
       aria-label="approve"
       sx={{
-        backgroundColor: 'green',
+        backgroundColor: '#71F27D',
         color: 'white',
         width: 75,
         height: 25,
         borderRadius: 1,
         '&:hover': {
-          backgroundColor: 'darkgreen',
+          backgroundColor: '#71F27D',
         },
       }}
       onClick={onApprove}
@@ -61,13 +61,13 @@ const ActionCell = ({ onApprove, onReject }) => (
     <IconButton
       aria-label="reject"
       sx={{
-        backgroundColor: 'red',
+        backgroundColor: '#F29087',
         color: 'white',
         width: 75,
         height: 25,
         borderRadius: 1,
         '&:hover': {
-          backgroundColor: 'darkred',
+          backgroundColor: '#F29087',
         },
       }}
       onClick={onReject}
@@ -100,10 +100,9 @@ export default function StickyHeadTable() {
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-      <Typography variant="h5" sx={{ p: 2 }}>
+      <Typography variant="h5" sx={{ p: 2,backgroundColor:'#F5F5F5', fontWeight:'bold' }}>
         Over Time To Approve
       </Typography>
-      <hr />
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
@@ -112,7 +111,7 @@ export default function StickyHeadTable() {
                 <TableCell
                   key={column.id}
                   align={column.align}
-                  style={{ minWidth: column.minWidth }}
+                  style={{ minWidth: column.minWidth, fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}
                   sx={column.id === 'Employee' ? { position: 'sticky', left: 0, zIndex: 1100 } : {}}
                 >
                   {column.label}

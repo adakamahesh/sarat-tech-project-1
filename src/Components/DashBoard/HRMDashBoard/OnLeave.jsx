@@ -16,10 +16,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 const columns = [
-  { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
-  { width: 100, label: 'Employee ID', dataKey: 'employeeId' },
-  { width: 100, label: 'First Name', dataKey: 'firstName' },
-  { width: 100, label: 'Last Name', dataKey: 'lastName' },
+  { width: 100, label: 'SL.No', dataKey: 'serialNumber' },
+  { width: 150, label: 'Employee ID', dataKey: 'employeeId' },
+  { width: 150, label: 'First Name', dataKey: 'firstName' },
+  { width: 150, label: 'Last Name', dataKey: 'lastName' },
 ];
 
 const VirtuosoTableComponents = {
@@ -43,7 +43,14 @@ function fixedHeaderContent() {
           variant="head"
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
-          sx={{ backgroundColor: 'background.paper' }}
+          sx={{
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: "#fff",
+            backgroundColor: '#93A0B4',
+            px: 2, // horizontal padding (space inside)
+            py: 1, // vertical padding
+          }}
         >
           {column.label}
         </TableCell>
@@ -94,30 +101,11 @@ export default function AccessibleTable() {
 
 
   return (
-  //   <TableContainer component={Paper}>
-  //     <Table aria-label="caption table">
-  //       <TableHead>
-  //           <TableRow>
-  //               <TableCell align="left" colSpan={5} sx={{ fontSize: '25px' }}>
-  //                   On Leave
-  //               </TableCell>
-  //           </TableRow>
-  //       </TableHead>
-  //     </Table>
-  //   </TableContainer>
-  // );
-
   <Paper style={{overflow: 'hidden', width: '100%' }}>
   <TableContainer component={Paper}>
-      <Table aria-label="caption table">
-        <TableHead>
-            <TableRow>
-                <TableCell align="left" colSpan={5} sx={{ fontSize: '25px' }}>
-                    On Leave
-                </TableCell>
-            </TableRow>
-        </TableHead>
-      </Table>
+  <Typography variant="h5" sx={{ p: 2,backgroundColor:'#F5F5F5', fontWeight:'bold' }}>
+        On Leave
+      </Typography>
     </TableContainer>
 
 

@@ -40,7 +40,7 @@ export default function HRMDashboard() {
           .then(response => setTodayPresent(response.data)),
         axios.get(`${API_URL}attendance/today/absent`)
           .then(response => setTodayAbsent(response.data)),
-        axios.get(`${API_URL}attendance/today/absent`)
+        axios.get(`${API_URL}leave-requests/count/pending`)
           .then(response => setLeaveRequest(response.data))
       ])
         .then(() => setLoading(false))

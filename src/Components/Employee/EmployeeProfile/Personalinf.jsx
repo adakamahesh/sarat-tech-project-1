@@ -13,7 +13,6 @@ import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import PersonIcon from "@mui/icons-material/Person";
 import HomeIcon from "@mui/icons-material/Home";
 import SchoolIcon from "@mui/icons-material/School";
-import WorkIcon from "@mui/icons-material/Work";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import CallIcon from "@mui/icons-material/Call";
@@ -23,11 +22,11 @@ const API_URL = process.env.REACT_APP_BASE_URL;
 export default function Personalinf() {
   const [isEditing, setIsEditing] = useState(false);
   const [personalDetails, setPersonalDetails] = useState({
-    dateOfBirth: "",
+    dob: "",
     gender: "",
     address: "",
     qualification: "",
-    experience: "",
+    DateOfJoining: "",
     maritalStatus: "",
     emergencyContactName: "",
     emergencyContactNumber: "",
@@ -89,8 +88,8 @@ export default function Personalinf() {
             <Box display="flex" flexDirection="column" gap={2}>
               <TextField
                 label="Date of Birth"
-                name="dateOfBirth"
-                value={personalDetails.dateOfBirth}
+                name="dob"
+                value={personalDetails.dob}
                 onChange={handleChange}
                 fullWidth
               />
@@ -116,9 +115,9 @@ export default function Personalinf() {
                 fullWidth
               />
               <TextField
-                label="Experience"
-                name="experience"
-                value={personalDetails.experience}
+                label="Date Of Joining"
+                name="DateOfJoining"
+                value={personalDetails.DateOfJoining}
                 onChange={handleChange}
                 fullWidth
               />
@@ -167,7 +166,7 @@ export default function Personalinf() {
                 {
                   icon: <CalendarTodayIcon />,
                   label: "Date of Birth",
-                  value: personalDetails.dateOfBirth,
+                  value: personalDetails.dob,
                 },
                 {
                   icon: <PersonIcon />,
@@ -185,9 +184,9 @@ export default function Personalinf() {
                   value: personalDetails.qualification,
                 },
                 {
-                  icon: <WorkIcon />,
-                  label: "Experience",
-                  value: personalDetails.experience,
+                  icon: <CalendarTodayIcon />,
+                  label: "DateOfJoining",
+                  value: personalDetails.DateOfJoining,
                 },
                 {
                   icon: <FamilyRestroomIcon />,

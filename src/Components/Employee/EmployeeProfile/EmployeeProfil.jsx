@@ -35,6 +35,7 @@ export default function EmployeeCard() {
           profileImage: "/default-profile.png",
           designation: data.designation,
           phoneNumber: data.phoneNumber,
+          alternatePhoneNumber: data.alternatePhoneNumber || "",
           emailId: data.emailId,
         };
         setEmployee(empData);
@@ -50,11 +51,11 @@ export default function EmployeeCard() {
   const handleSave = () => {
     setEmployee(editedData);
     setIsEditing(false);
-    // Here you can also make a PUT API call to update the data in backend
+    // Optionally send editedData to backend with PUT request here
   };
 
   const handleCancel = () => {
-    setEditedData(employee); // Reset to original
+    setEditedData(employee);
     setIsEditing(false);
   };
 
@@ -157,6 +158,18 @@ export default function EmployeeCard() {
                   size="small"
                   sx={{ mt: 1 }}
                 />
+                <TextField
+                  label="Alternate Phone"
+                  value={editedData.alternatePhoneNumber}
+                  onChange={(e) =>
+                    setEditedData({
+                      ...editedData,
+                      alternatePhoneNumber: e.target.value,
+                    })
+                  }
+                  size="small"
+                  sx={{ mt: 1 }}
+                />
               </>
             ) : (
               <>
@@ -169,6 +182,13 @@ export default function EmployeeCard() {
                   <LocalPhoneIcon sx={{ color: "gray" }} />
                   <span style={{ color: "gray", fontWeight: "bold" }}>Phone:</span>{" "}
                   {employee.phoneNumber}
+                </Typography>
+                <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <LocalPhoneIcon sx={{ color: "gray" }} />
+                  <span style={{ color: "gray", fontWeight: "bold" }}>
+                    Alternate Phone:
+                  </span>{" "}
+                  {employee.alternatePhoneNumber || "—"}
                 </Typography>
               </>
             )}
