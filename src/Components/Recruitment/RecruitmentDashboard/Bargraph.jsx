@@ -1,5 +1,13 @@
 import * as React from "react";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 
@@ -21,15 +29,39 @@ const data = [
 
 export default function EmployeeJoiningGraph() {
   return (
-    <Paper sx={{ padding: 2 }}>
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>
+    <Paper
+      sx={{
+        padding: { xs: 1, sm: 2 },
+        mt: { xs: 2, sm: 4 },
+        boxShadow: { xs: "none", sm: 3 },
+        borderRadius: 2,
+      }}
+    >
+      <Typography
+        variant="h6"
+        sx={{
+          mb: { xs: 1, sm: 2 },
+          fontSize: { xs: "16px", sm: "20px" },
+          textAlign: { xs: "center", sm: "left" },
+        }}
+      >
         Joining Per Month
       </Typography>
 
       {/* Bar Chart */}
-      <ResponsiveContainer width="100%" height={440}>
-        <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-          <XAxis dataKey="month" tick={{ fontSize: 10 }} />
+      <ResponsiveContainer width="100%" height={360}>
+        <BarChart
+          data={data}
+          margin={{ top: 20, right: 20, left: 0, bottom: 5 }}
+        >
+          <XAxis
+            dataKey="month"
+            tick={{ fontSize: 10 }}
+            interval={0}
+            angle={-45}
+            textAnchor="end"
+            height={60}
+          />
           <YAxis />
           <Tooltip />
           <Legend />

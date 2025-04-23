@@ -115,9 +115,8 @@ export default function StickyHeadTable() {
           </Typography>
           <Button
             variant="contained"
+            color="#93A0B4"
             sx={{
-              backgroundColor: "#93A0B4",
-              color: "#fff",
               fontSize: { xs: "12px", sm: "14px" },
               padding: { xs: "6px 12px", sm: "8px 16px" },
               mt: isMobile ? 1 : 0,

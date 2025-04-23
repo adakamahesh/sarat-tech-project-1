@@ -4,7 +4,6 @@ import KlArchitech from "../../Components/Recruitment/RecruitmentPipeline/KlArch
 import New from "../../Components/Recruitment/RecruitmentPipeline/New";
 import Demo from "../../Components/Recruitment/RecruitmentPipeline/Demo";
 import Probal from "../../Components/Recruitment/RecruitmentPipeline/Probal";
-import Pzda from "../../Components/Recruitment/RecruitmentPipeline/Pzda";
 import Manager from "../../Components/Recruitment//RecruitmentPipeline/Manager";
 import AiDeveloper from "../../Components/Recruitment/RecruitmentPipeline/AiDeveloper";
 import HiringNewDataAnalysts from "../../Components/Recruitment/RecruitmentPipeline/HiringNewDataAnalysts";
@@ -86,17 +85,6 @@ export const RecruitmentPipeline = [
   },
   {
     id: "panel6",
-    title: "Pzda",
-    category: "Recruitment",
-    Component: Pzda,
-    subAccordionList: [
-      { id: "panel1", title: "Applied" },
-      { id: "panel2", title: "Initial" },
-      { id: "panel3", title: "Hired" },
-    ],
-  },
-  {
-    id: "panel7",
     title: "Manager",
     category: "Manager",
     Component: Manager,
@@ -106,7 +94,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel8",
+    id: "panel7",
     title: "AI Developer",
     category: "Developer",
     Component: AiDeveloper,
@@ -116,7 +104,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel9",
+    id: "panel8",
     title: "Hiring New Data Analysts",
     category: "Recruitment",
     Component: HiringNewDataAnalysts,
@@ -126,7 +114,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel10",
+    id: "panel9",
     title: "Web Developer",
     category: "Developer",
     Component: WebDeveloper,
@@ -136,7 +124,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel11",
+    id: "panel10",
     title: "Software Engineer",
     category: "Developer",
     Component: SoftwareEngineer,
@@ -146,7 +134,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel12",
+    id: "panel11",
     title: "Odoo Developer",
     category: "OdooDeveloper",
     Component: OdooDeveloper,
@@ -156,7 +144,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel13",
+    id: "panel12",
     title: "Social Media Coordi",
     category: "SocialMediaCoordi",
     Component: SocialMediaCoordi,
@@ -166,7 +154,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel14",
+    id: "panel13",
     title: "HR Manager",
     category: "Manager",
     Component: HRManager,
@@ -176,7 +164,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel15",
+    id: "panel14",
     title: "Sales Manager",
     category: "Manager",
     Component: SalesManager,
@@ -186,7 +174,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel16",
+    id: "panel15",
     title: "Software Developer",
     category: "SoftwareDeveloper",
     Component: SoftwareDeveloper,
@@ -196,7 +184,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel17",
+    id: "panel16",
     title: "Machine Learning Engineer",
     category: "MachineLearningEngineer",
     Component: MachineLearningEngineer,
@@ -209,7 +197,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel18",
+    id: "panel17",
     title: "Spring-25",
     category: "Spring25",
     Component: Spring25,
@@ -219,7 +207,7 @@ export const RecruitmentPipeline = [
     ],
   },
   {
-    id: "panel19",
+    id: "panel18",
     title: "Data Analyst",
     category: "DataAnalyst",
     Component: DataAnalyst,

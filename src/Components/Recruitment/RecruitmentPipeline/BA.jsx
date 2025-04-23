@@ -1,7 +1,4 @@
-// Import React library
 import * as React from "react";
-
-// Import MUI styled components and material components
 import { styled } from "@mui/material/styles";
 import MuiAccordion from "@mui/material/Accordion";
 import MuiAccordionSummary, {
@@ -9,8 +6,8 @@ import MuiAccordionSummary, {
 } from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
-import AddIcon from "@mui/icons-material/Add"; // Icon for expanding accordion
-import RemoveIcon from "@mui/icons-material/Remove"; // Icon for collapsing accordion
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import {
   Table,
   TableHead,
@@ -18,48 +15,62 @@ import {
   TableRow,
   TableCell,
   Checkbox,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 
-// Styled Accordion component
+// Styled Accordion
 const Accordion = styled(MuiAccordion)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   "&:not(:last-child)": { borderBottom: 0 },
   "&::before": { display: "none" },
 }));
 
-// Styled Accordion Summary component
+// Styled Accordion Summary
 const AccordionSummary = styled((props) => {
   const { expanded } = props;
   return (
     <MuiAccordionSummary
-      expandIcon={expanded ? <RemoveIcon /> : <AddIcon />} // Show appropriate icon based on state
+      expandIcon={expanded ? <RemoveIcon /> : <AddIcon />}
       {...props}
     />
   );
 })(({ theme }) => ({
   backgroundColor: "rgba(0, 0, 0, .03)",
   flexDirection: "row-reverse",
-  [`& .${accordionSummaryClasses.content}`]: { marginLeft: theme.spacing(1) },
+  [`& .${accordionSummaryClasses.content}`]: {
+    marginLeft: theme.spacing(1),
+  },
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1),
+    [`& .${accordionSummaryClasses.content}`]: {
+      flexDirection: "column",
+      alignItems: "flex-start",
+    },
+  },
 }));
 
-// Styled Accordion Details component
+// Styled Accordion Details
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: "1px solid rgba(0, 0, 0, .125)",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1),
+  },
 }));
 
-// Main component
 export default function CustomizedAccordions({ subAccordionList }) {
-  const [expanded, setExpanded] = React.useState(false); // State for tracking expanded accordion
-  const [selectedRows, setSelectedRows] = React.useState({}); // State for tracking selected rows
-  const [selectAll, setSelectAll] = React.useState(false); // State for tracking "Select All" checkbox
+  const [expanded, setExpanded] = React.useState(false);
+  const [selectedRows, setSelectedRows] = React.useState({});
+  const [selectAll, setSelectAll] = React.useState(false);
 
-  // Handle accordion expansion
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  // Handle individual row selection
   const handleRowSelect = (index) => {
     setSelectedRows((prev) => {
       const newSelectedRows = { ...prev, [index]: !prev[index] };
@@ -68,7 +79,6 @@ export default function CustomizedAccordions({ subAccordionList }) {
     });
   };
 
-  // Handle "Select All" checkbox toggle
   const handleSelectAll = () => {
     const newSelectAll = !selectAll;
     setSelectAll(newSelectAll);
@@ -79,7 +89,6 @@ export default function CustomizedAccordions({ subAccordionList }) {
     );
   };
 
-  // Table headers
   const tableHeaders = [
     "Candidate",
     "Email",
@@ -93,7 +102,6 @@ export default function CustomizedAccordions({ subAccordionList }) {
     "+ Task",
   ];
 
-  // Sample table data
   const tableData = [
     {
       Candidate: "John Doe",
@@ -118,7 +126,7 @@ export default function CustomizedAccordions({ subAccordionList }) {
   ];
 
   return (
-    <div>
+    <div style={{ padding: isMobile ? "8px" : "16px" }}>
       {subAccordionList.map(({ id, title }) => (
         <Accordion
           key={id}
@@ -133,19 +141,24 @@ export default function CustomizedAccordions({ subAccordionList }) {
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            {/* Scrollable table container */}
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+            <div
+              style={{
+                maxHeight: "300px",
+                overflowY: "auto",
+                overflowX: isMobile ? "auto" : "unset",
+              }}
+            >
               <Table
                 stickyHeader
                 sx={{
                   border: "1px solid #ddd",
                   margin: "10px",
                   borderRadius: "5px",
+                  minWidth: isMobile ? "700px" : "auto",
                 }}
               >
                 <TableHead>
                   <TableRow>
-                    {/* Select All checkbox */}
                     <TableCell>
                       <Checkbox
                         checked={selectAll}
@@ -155,7 +168,12 @@ export default function CustomizedAccordions({ subAccordionList }) {
                     {tableHeaders.map((header, index) => (
                       <TableCell
                         key={index}
-                        sx={{ fontWeight: "bold", textAlign: "center" }}
+                        sx={{
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          fontSize: isMobile ? "12px" : "14px",
+                          padding: isMobile ? "6px" : "default",
+                        }}
                       >
                         {header}
                       </TableCell>
@@ -172,7 +190,14 @@ export default function CustomizedAccordions({ subAccordionList }) {
                         />
                       </TableCell>
                       {tableHeaders.map((header, colIndex) => (
-                        <TableCell key={colIndex} textAlign="center">
+                        <TableCell
+                          key={colIndex}
+                          sx={{
+                            textAlign: "center",
+                            fontSize: isMobile ? "12px" : "14px",
+                            padding: isMobile ? "6px" : "default",
+                          }}
+                        >
                           {row[header] || "-"}
                         </TableCell>
                       ))}

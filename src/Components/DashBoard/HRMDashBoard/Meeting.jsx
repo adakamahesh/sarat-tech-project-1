@@ -64,7 +64,7 @@ export default function AccessibleTable() {
                   </span>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="#93A0B4"
                     onClick={handleButtonClick}
                     size="small"
                     sx={{ "@media (max-width: 600px)": { fontSize: '12px' } }}

@@ -18,7 +18,6 @@ import OverTime from './OverTime';
 import OnLeave from './OnLeave';
 import LeaveReq from './LeaveReq';
 import { Divider, CircularProgress } from "@mui/material";
-import Quotation from './Qutions';
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
@@ -99,16 +98,9 @@ export default function HRMDashboard() {
   return (
     <>
       {/* Top Section: Cards + Right Sidebar */}
-      <Box sx={{
-        display: "flex",
-        flexDirection: { xs: "column", md: "row" },
-        width: "100%",
-        gap: 2,
-        p: 2
-      }}>
         {/* Left Section */}
         <Box sx={{
-          width: { xs: "100%", md: "75%" },
+          width: { xs: "100%", md: "100%" },
           display: "flex",
           flexDirection: "column",
           gap: 2,
@@ -194,20 +186,6 @@ export default function HRMDashboard() {
             </Box>
           </Box>
         </Box>
-
-        {/* Right Section */}
-        <Box sx={{
-          width: { xs: "100%", md: "25%" },
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-          mt: { xs: 2, md: 0 },
-          border: "1px solid rgb(237,237,237)",
-          p: 2
-        }}>
-          <Quotation />
-        </Box>
-      </Box>
 
       {/* Bottom Section: Meeting & Calendar */}
       <Box sx={{

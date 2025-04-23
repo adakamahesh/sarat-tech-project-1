@@ -66,7 +66,7 @@ export default function EmployeeTable() {
 
   const handleRowClick = (employeeId) => {
     // Navigate to the EmployeeProfile page with the employee's ID
-    navigate(`/Employee/Profile`);
+    navigate(`/Employee/Profile/${employeeId}`);
   };
 
   const filteredRows = rows.filter((row) =>
@@ -111,7 +111,7 @@ export default function EmployeeTable() {
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody>+.
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id} onClick={() => handleRowClick(row.EmployeeId)} style={{ cursor: 'pointer' }}>
                   <TableCell sx={{ textAlign: 'center' }}>{row.EmployeeId}</TableCell>

@@ -8,7 +8,6 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Table, TableHead, TableBody, TableRow, TableCell, Checkbox } from '@mui/material';
 
-// Styled Accordion
 const Accordion = styled(MuiAccordion)(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
@@ -19,7 +18,6 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   },
 }));
 
-// Styled Accordion Summary
 const AccordionSummary = styled((props) => {
   const { expanded } = props;
   return (
@@ -41,7 +39,24 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function CustomizedAccordions({subAccordionList}) {
+const TableWrapper = styled('div')(({ theme }) => ({
+  maxHeight: '300px',
+  overflowY: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    overflowX: 'auto',
+    maxHeight: 'none',
+  },
+}));
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  textAlign: 'center',
+  [theme.breakpoints.down('sm')]: {
+    padding: '4px',
+    fontSize: '0.75rem',
+  },
+}));
+
+export default function CustomizedAccordions({ subAccordionList }) {
   const [expanded, setExpanded] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState({});
   const [selectAll, setSelectAll] = React.useState(false);
@@ -66,51 +81,87 @@ export default function CustomizedAccordions({subAccordionList}) {
     );
   };
 
-  const tableHeaders = ["Candidate", "Email", "Job Position", "Mobile", "Joining Date", "Portal Status", "Task Status", "Stage", "Options", "+ Task"];
+  const tableHeaders = [
+    'Candidate',
+    'Email',
+    'Job Position',
+    'Mobile',
+    'Joining Date',
+    'Portal Status',
+    'Task Status',
+    'Stage',
+    'Options',
+    '+ Task',
+  ];
 
   const tableData = [
-    { Candidate: "John Doe", Email: "john@example.com", JobPosition: "Software Engineer", Mobile: "+1234567890", JoiningDate: "01-01-2025", PortalStatus: "Active", TaskStatus: "Pending", Stage: "Interview" },
-    { Candidate: "Jane Smith", Email: "jane@example.com", JobPosition: "Project Manager", Mobile: "+9876543210", JoiningDate: "05-03-2025", PortalStatus: "Inactive", TaskStatus: "Completed", Stage: "Hired" }
+    {
+      Candidate: 'John Doe',
+      Email: 'john@example.com',
+      JobPosition: 'Software Engineer',
+      Mobile: '+1234567890',
+      JoiningDate: '01-01-2025',
+      PortalStatus: 'Active',
+      TaskStatus: 'Pending',
+      Stage: 'Interview',
+    },
+    {
+      Candidate: 'Jane Smith',
+      Email: 'jane@example.com',
+      JobPosition: 'Project Manager',
+      Mobile: '+9876543210',
+      JoiningDate: '05-03-2025',
+      PortalStatus: 'Inactive',
+      TaskStatus: 'Completed',
+      Stage: 'Hired',
+    },
   ];
 
   return (
     <div>
       {subAccordionList.map(({ id, title }) => (
         <Accordion key={id} expanded={expanded === id} onChange={handleChange(id)}>
-          <AccordionSummary aria-controls={`${id}-content`} id={`${id}-header`} expanded={expanded === id}>
+          <AccordionSummary
+            aria-controls={`${id}-content`}
+            id={`${id}-header`}
+            expanded={expanded === id}
+          >
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-              <Table stickyHeader sx={{ border: "1px solid #ddd", margin: "10px", borderRadius: "5px" }}>
+            <TableWrapper>
+              <Table stickyHeader sx={{ border: '1px solid #ddd', margin: '10px', borderRadius: '5px' }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>
+                    <StyledTableCell>
                       <Checkbox checked={selectAll} onChange={handleSelectAll} />
-                    </TableCell>
+                    </StyledTableCell>
                     {tableHeaders.map((header, index) => (
-                      <TableCell key={index} sx={{ fontWeight: "bold", textAlign: "center" }}>
+                      <StyledTableCell key={index} sx={{ fontWeight: 'bold' }}>
                         {header}
-                      </TableCell>
+                      </StyledTableCell>
                     ))}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {tableData.map((row, rowIndex) => (
                     <TableRow key={rowIndex}>
-                      <TableCell>
-                        <Checkbox checked={!!selectedRows[rowIndex]} onChange={() => handleRowSelect(rowIndex)} />
-                      </TableCell>
+                      <StyledTableCell>
+                        <Checkbox
+                          checked={!!selectedRows[rowIndex]}
+                          onChange={() => handleRowSelect(rowIndex)}
+                        />
+                      </StyledTableCell>
                       {tableHeaders.map((header, colIndex) => (
-                        <TableCell key={colIndex} textAlign="center">
-                          {row[header] || "-"}
-                        </TableCell>
+                        <StyledTableCell key={colIndex}>
+                          {row[header] || '-'}
+                        </StyledTableCell>
                       ))}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
           </AccordionDetails>
         </Accordion>
       ))}

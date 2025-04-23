@@ -26,6 +26,9 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   "&::before": {
     display: "none",
   },
+  [theme.breakpoints.down("sm")]: {
+    margin: "5px 0", // Reduced margin for mobile
+  },
 }));
 
 // Styled Accordion Summary
@@ -43,11 +46,28 @@ const AccordionSummary = styled((props) => {
   [`& .${accordionSummaryClasses.content}`]: {
     marginLeft: theme.spacing(1),
   },
+  [theme.breakpoints.down("sm")]: {
+    padding: "5px", // Reduced padding on mobile
+    flexDirection: "column", // Stack content vertically on mobile
+    alignItems: "flex-start", // Align items to the start on small screens
+  },
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: "1px solid rgba(0, 0, 0, .125)",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1), // Reduced padding on mobile
+  },
+}));
+
+// Wrapper for table responsiveness
+const TableWrapper = styled("div")(({ theme }) => ({
+  maxHeight: "300px",
+  overflowY: "auto",
+  [theme.breakpoints.down("sm")]: {
+    overflowX: "auto", // Enable horizontal scroll on small screens
+  },
 }));
 
 export default function CustomizedAccordions({ subAccordionList }) {
@@ -129,13 +149,21 @@ export default function CustomizedAccordions({ subAccordionList }) {
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+            <TableWrapper>
               <Table
                 stickyHeader
                 sx={{
                   border: "1px solid #ddd",
                   margin: "10px",
                   borderRadius: "5px",
+                  minWidth: 600,
+                  "& th, & td": {
+                    textAlign: "center",
+                    "@media (max-width:600px)": {
+                      fontSize: "12px", // Smaller font size on mobile
+                      padding: "6px", // Reduced padding on mobile
+                    },
+                  },
                 }}
               >
                 <TableHead>
@@ -174,7 +202,7 @@ export default function CustomizedAccordions({ subAccordionList }) {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
           </AccordionDetails>
         </Accordion>
       ))}

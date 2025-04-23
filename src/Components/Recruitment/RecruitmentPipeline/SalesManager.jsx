@@ -17,6 +17,9 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   '&::before': {
     display: 'none',
   },
+  [theme.breakpoints.down('sm')]: {
+    margin: '8px 0', // Margin adjustment for small screens
+  },
 }));
 
 // Styled Accordion Summary
@@ -33,15 +36,35 @@ const AccordionSummary = styled((props) => {
   flexDirection: 'row-reverse',
   [`& .${accordionSummaryClasses.content}`]: {
     marginLeft: theme.spacing(1),
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column', // Stack content vertically on small screens
+      alignItems: 'flex-start',
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: '8px', // Adjust padding on small screens
   },
 }));
 
+// Styled Accordion Details
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1), // Reduced padding on small screens
+  },
 }));
 
-export default function CustomizedAccordions({subAccordionList}) {
+// Wrapper for table responsiveness
+const TableWrapper = styled('div')(({ theme }) => ({
+  maxHeight: '300px',
+  overflowY: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    overflowX: 'auto', // Allow horizontal scrolling on small screens
+  },
+}));
+
+export default function CustomizedAccordions({ subAccordionList }) {
   const [expanded, setExpanded] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState({});
   const [selectAll, setSelectAll] = React.useState(false);
@@ -66,30 +89,60 @@ export default function CustomizedAccordions({subAccordionList}) {
     );
   };
 
-  const tableHeaders = ["Candidate", "Email", "Job Position", "Mobile", "Joining Date", "Portal Status", "Task Status", "Stage", "Options", "+ Task"];
+  const tableHeaders = [
+    "Candidate", "Email", "Job Position", "Mobile", "Joining Date",
+    "Portal Status", "Task Status", "Stage", "Options", "+ Task"
+  ];
 
   const tableData = [
-    { Candidate: "John Doe", Email: "john@example.com", JobPosition: "Software Engineer", Mobile: "+1234567890", JoiningDate: "01-01-2025", PortalStatus: "Active", TaskStatus: "Pending", Stage: "Interview" },
-    { Candidate: "Jane Smith", Email: "jane@example.com", JobPosition: "Project Manager", Mobile: "+9876543210", JoiningDate: "05-03-2025", PortalStatus: "Inactive", TaskStatus: "Completed", Stage: "Hired" }
+    {
+      Candidate: "John Doe", Email: "john@example.com", JobPosition: "Software Engineer",
+      Mobile: "+1234567890", JoiningDate: "01-01-2025", PortalStatus: "Active",
+      TaskStatus: "Pending", Stage: "Interview"
+    },
+    {
+      Candidate: "Jane Smith", Email: "jane@example.com", JobPosition: "Project Manager",
+      Mobile: "+9876543210", JoiningDate: "05-03-2025", PortalStatus: "Inactive",
+      TaskStatus: "Completed", Stage: "Hired"
+    }
   ];
 
   return (
     <div>
       {subAccordionList.map(({ id, title }) => (
         <Accordion key={id} expanded={expanded === id} onChange={handleChange(id)}>
-          <AccordionSummary aria-controls={`${id}-content`} id={`${id}-header`} expanded={expanded === id}>
+          <AccordionSummary
+            aria-controls={`${id}-content`}
+            id={`${id}-header`}
+            expanded={expanded === id}
+          >
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-              <Table stickyHeader sx={{ border: "1px solid #ddd", margin: "10px", borderRadius: "5px" }}>
+            <TableWrapper>
+              <Table
+                stickyHeader
+                sx={{
+                  border: "1px solid #ddd",
+                  margin: "10px",
+                  borderRadius: "5px",
+                  minWidth: 600,
+                  '& th, & td': {
+                    textAlign: 'center',
+                    '@media (max-width:600px)': {
+                      fontSize: '11px', // Smaller text for mobile
+                      padding: '6px', // Reduced padding on small screens
+                    },
+                  },
+                }}
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>
                       <Checkbox checked={selectAll} onChange={handleSelectAll} />
                     </TableCell>
                     {tableHeaders.map((header, index) => (
-                      <TableCell key={index} sx={{ fontWeight: "bold", textAlign: "center" }}>
+                      <TableCell key={index} sx={{ fontWeight: "bold" }}>
                         {header}
                       </TableCell>
                     ))}
@@ -99,10 +152,13 @@ export default function CustomizedAccordions({subAccordionList}) {
                   {tableData.map((row, rowIndex) => (
                     <TableRow key={rowIndex}>
                       <TableCell>
-                        <Checkbox checked={!!selectedRows[rowIndex]} onChange={() => handleRowSelect(rowIndex)} />
+                        <Checkbox
+                          checked={!!selectedRows[rowIndex]}
+                          onChange={() => handleRowSelect(rowIndex)}
+                        />
                       </TableCell>
                       {tableHeaders.map((header, colIndex) => (
-                        <TableCell key={colIndex} textAlign="center">
+                        <TableCell key={colIndex}>
                           {row[header] || "-"}
                         </TableCell>
                       ))}
@@ -110,7 +166,7 @@ export default function CustomizedAccordions({subAccordionList}) {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
           </AccordionDetails>
         </Accordion>
       ))}

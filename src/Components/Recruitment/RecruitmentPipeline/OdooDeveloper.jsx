@@ -17,6 +17,9 @@ const Accordion = styled(MuiAccordion)(({ theme }) => ({
   '&::before': {
     display: 'none',
   },
+  [theme.breakpoints.down('sm')]: {
+    margin: '5px 0', // Reduce margin on mobile
+  },
 }));
 
 // Styled Accordion Summary
@@ -34,14 +37,31 @@ const AccordionSummary = styled((props) => {
   [`& .${accordionSummaryClasses.content}`]: {
     marginLeft: theme.spacing(1),
   },
+  [theme.breakpoints.down('sm')]: {
+    padding: '5px', // Reduce padding on mobile
+    flexDirection: 'column', // Stack the content vertically on mobile
+    alignItems: 'flex-start', // Align items to the start
+  },
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: '1px solid rgba(0, 0, 0, .125)',
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(1), // Reduced padding on mobile
+  },
 }));
 
-export default function CustomizedAccordions({subAccordionList}) {
+// Table Wrapper for responsiveness
+const TableWrapper = styled('div')(({ theme }) => ({
+  maxHeight: '300px',
+  overflowY: 'auto',
+  [theme.breakpoints.down('sm')]: {
+    overflowX: 'auto', // Enable horizontal scroll for mobile
+  },
+}));
+
+export default function CustomizedAccordions({ subAccordionList }) {
   const [expanded, setExpanded] = React.useState(false);
   const [selectedRows, setSelectedRows] = React.useState({});
   const [selectAll, setSelectAll] = React.useState(false);
@@ -81,8 +101,23 @@ export default function CustomizedAccordions({subAccordionList}) {
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-              <Table stickyHeader sx={{ border: "1px solid #ddd", margin: "10px", borderRadius: "5px" }}>
+            <TableWrapper>
+              <Table
+                stickyHeader
+                sx={{
+                  border: "1px solid #ddd",
+                  margin: "10px",
+                  borderRadius: "5px",
+                  minWidth: 600,
+                  "& th, & td": {
+                    textAlign: "center",
+                    "@media (max-width:600px)": {
+                      fontSize: "12px", // Smaller font size on mobile
+                      padding: "6px", // Reduced padding on mobile
+                    },
+                  },
+                }}
+              >
                 <TableHead>
                   <TableRow>
                     <TableCell>
@@ -110,7 +145,7 @@ export default function CustomizedAccordions({subAccordionList}) {
                   ))}
                 </TableBody>
               </Table>
-            </div>
+            </TableWrapper>
           </AccordionDetails>
         </Accordion>
       ))}

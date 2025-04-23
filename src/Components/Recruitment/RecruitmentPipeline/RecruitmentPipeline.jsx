@@ -15,6 +15,7 @@ import {
   Button,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
 
 // Import Material-UI Accordion components
@@ -57,11 +58,13 @@ const AccordionSummary = styled((props) => {
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: "1px solid rgba(0, 0, 0, .125)",
+  [theme.breakpoints.down("sm")]: {
+    padding: theme.spacing(1),
+  },
 }));
 
 // Main component function
 export default function CustomizedAccordions() {
-  // Define state variables
   const [expanded, setExpanded] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [filter, setFilter] = React.useState("");
@@ -69,27 +72,20 @@ export default function CustomizedAccordions() {
   const [newAccordionTitle, setNewAccordionTitle] = React.useState("");
   const [showCreateCard, setShowCreateCard] = React.useState(false);
   const [createForms, setCreateForms] = React.useState({});
-  const [subRecruitment, setSubRecruitment] = React.useState({
-    id: "",
-    title: "",
-  });
+  const [subRecruitment, setSubRecruitment] = React.useState({ id: "", title: "" });
 
-  // Handle accordion expansion
   const handleChange = (panel) => (event, newExpanded) => {
     setExpanded(newExpanded ? panel : false);
   };
 
-  // Handle search input change
   const handleSearch = (event) => {
     setSearchQuery(event.target.value.toLowerCase());
   };
 
-  // Handle filter change
   const handleFilterChange = (event) => {
     setFilter(event.target.value);
   };
 
-  // Handle creating a new accordion
   const handleCreateNewAccordion = () => {
     if (newAccordionTitle.trim()) {
       const newAccordion = {
@@ -104,8 +100,7 @@ export default function CustomizedAccordions() {
   };
 
   const handleCreateSubRecruitment = () => {
-    console.log(createForms);
-    if (subRecruitment.value.trim()) {
+    if (subRecruitment.value?.trim()) {
       const newAccordion = {
         id: `panel-${filteredData.length + 1}`,
         title: subRecruitment.value,
@@ -122,28 +117,28 @@ export default function CustomizedAccordions() {
     }
   };
 
-  // Toggle create form visibility
   const toggleCreateForm = (id) => {
     setCreateForms((prev) => ({ ...prev, [id]: !prev[id] }));
     setSubRecruitment({ ...subRecruitment, id: id });
   };
 
-  // Filter accordion data based on search and filter criteria
   const filteredData = accordionData
     .filter((item) => !filter || item.category === filter)
     .filter((item) => item.title.toLowerCase().includes(searchQuery));
 
   return (
-    <div>
-      {/* Header with search and filter options */}
-      <div
-        style={{
+    <Box>
+      {/* Header */}
+      <Box
+        sx={{
           display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: 2,
           justifyContent: "space-between",
-          marginBottom: 16,
+          mb: 2,
         }}
       >
-        <Typography variant="h5" style={{ fontWeight: "bold" }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold" }}>
           Recruitment Pipeline
         </Typography>
         <TextField
@@ -151,15 +146,11 @@ export default function CustomizedAccordions() {
           variant="outlined"
           size="small"
           onChange={handleSearch}
-          style={{ width: "30%" }}
+          sx={{ width: { xs: "100%", sm: "30%" } }}
         />
-        <FormControl variant="outlined" size="small" style={{ width: "30%" }}>
+        <FormControl variant="outlined" size="small" sx={{ width: { xs: "100%", sm: "30%" } }}>
           <InputLabel>Filter By</InputLabel>
-          <Select
-            value={filter}
-            onChange={handleFilterChange}
-            label="Filter By"
-          >
+          <Select value={filter} onChange={handleFilterChange} label="Filter By">
             <MenuItem value="">None</MenuItem>
             <MenuItem value="Recruitment">Recruitment</MenuItem>
             <MenuItem value="Developer">Developer</MenuItem>
@@ -169,16 +160,16 @@ export default function CustomizedAccordions() {
         <Button
           variant="contained"
           color="primary"
-          sx={{ width: "10%", height: "40px" }}
+          sx={{ width: { xs: "100%", sm: "10%" }, height: "40px" }}
           onClick={() => setShowCreateCard(true)}
         >
           Create
         </Button>
-      </div>
+      </Box>
 
-      {/* Create new accordion form */}
+      {/* Create Accordion Form */}
       {showCreateCard && (
-        <Card sx={{ marginBottom: 2, padding: 2 }}>
+        <Card sx={{ mb: 2, p: { xs: 1, sm: 2 } }}>
           <CardContent>
             <Typography variant="h6">Create New Accordion</Typography>
             <TextField
@@ -188,76 +179,55 @@ export default function CustomizedAccordions() {
               size="small"
               value={newAccordionTitle}
               onChange={(e) => setNewAccordionTitle(e.target.value)}
-              sx={{ marginBottom: 2 }}
+              sx={{ mb: 2 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCreateNewAccordion}
-              sx={{ marginRight: 2 }}
-            >
+            <Button variant="contained" color="primary" onClick={handleCreateNewAccordion} sx={{ mr: 2 }}>
               Add Accordion
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => setShowCreateCard(false)}
-            >
+            <Button variant="outlined" color="secondary" onClick={() => setShowCreateCard(false)}>
               Cancel
             </Button>
           </CardContent>
         </Card>
       )}
 
-      {/* Render accordions */}
+      {/* Accordions */}
       {filteredData.map(({ id, title, Component, subAccordionList }) => (
-        <Accordion
-          key={id}
-          expanded={expanded === id}
-          onChange={handleChange(id)}
-        >
-          <AccordionSummary
-            aria-controls={`${id}-content`}
-            id={`${id}-header`}
-            expanded={expanded === id}
-          >
+        <Accordion key={id} expanded={expanded === id} onChange={handleChange(id)}>
+          <AccordionSummary aria-controls={`${id}-content`} id={`${id}-header`} expanded={expanded === id}>
             <Typography component="span">{title}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             {expanded === id && (
               <>
-                  {Component ? (
-                    <Component key={id} subAccordionList={subAccordionList} />
-                  ) : (
-                    "--"
-                  )}
-                  {/* {Component} */}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ marginTop: 2 }}
-                    onClick={() => toggleCreateForm(id)}
-                  >
-                    Create
-                  </Button>
-                  {createForms[id] && (
-                    <Card sx={{ marginTop: 2, padding: 2 }}>
-                      <CardContent>
-                        <Typography variant="h6">Add New Accordion</Typography>
-                        <TextField
-                          fullWidth
-                          label="Entry Title"
-                          variant="outlined"
-                          size="small"
-                          value={subRecruitment.value}
-                          onChange={(e) =>
-                            setSubRecruitment({
-                              ...subRecruitment,
-                              value: e.target.value,
-                            })
-                          }
-                          sx={{ marginBottom: 2 }}
-                        />
+                {Component ? (
+                  <Component key={id} subAccordionList={subAccordionList} />
+                ) : (
+                  "--"
+                )}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ mt: 2 }}
+                  onClick={() => toggleCreateForm(id)}
+                >
+                  Create
+                </Button>
+                {createForms[id] && (
+                  <Card sx={{ mt: 2, p: 2 }}>
+                    <CardContent>
+                      <Typography variant="h6">Add New Accordion</Typography>
+                      <TextField
+                        fullWidth
+                        label="Entry Title"
+                        variant="outlined"
+                        size="small"
+                        value={subRecruitment.value}
+                        onChange={(e) =>
+                          setSubRecruitment({ ...subRecruitment, value: e.target.value })
+                        }
+                        sx={{ mb: 2 }}
+                      />
                       <Button
                         variant="contained"
                         color="primary"
@@ -276,6 +246,6 @@ export default function CustomizedAccordions() {
           </AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </Box>
   );
 }

@@ -13,43 +13,46 @@ import Bargraph from "./Bargraph";
 const cards = [
   {
     id: 1,
-    icon:<PersonIcon/>,
+    icon: <PersonIcon />,
     title: 'Total Vacancies',
-    description: '50', 
-    backgroundColor: "#4CAF50", // Blue
+    description: '50',
+    backgroundColor: "#4CAF50",
   },
   {
     id: 2,
-    icon:<HailIcon/>,
+    icon: <HailIcon />,
     title: 'Ongoing Recruitments',
     description: '20',
-    backgroundColor: "#2196F3", // Green
+    backgroundColor: "#2196F3",
   },
   {
     id: 3,
-    icon:<WorkOutlineIcon/>,
+    icon: <WorkOutlineIcon />,
     title: 'Hired Candidates',
     description: '8',
-    backgroundColor: "orange", // red
+    backgroundColor: "orange",
   },
-
 ];
 
 export default function HRMDashboard() {
   const [selectedCard, setSelectedCard] = React.useState(null);
 
-  
   return (
     <>
-    <Box
+      {/* Card Grid */}
+      <Box
         sx={{
           width: "100%",
           display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+          },
           gap: 2,
         }}
       >
-      {cards.map((card) => (
+        {cards.map((card) => (
           <Card key={card.id} sx={{ backgroundColor: card.backgroundColor, color: "white" }}>
             <CardActionArea
               onClick={() => setSelectedCard(prev => prev === card.id ? null : card.id)}
@@ -61,43 +64,62 @@ export default function HRMDashboard() {
                   "&:hover": { backgroundColor: "action.selectedHover" },
                 },
               }}
-          >
-            <CardContent sx={{ height: '100%', display:'flex', alignItems:'center',gap:2 }}>
-              <Box 
-                sx={{ 
-                  width: 40, // Adjust size
-                  height: 40, 
-                  borderRadius: '50%', // Circle shape
-                  backgroundColor: 'rgb(236,239,253)', // Change to desired color
+            >
+              <CardContent
+                sx={{
+                  height: '100%',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#7C76E7', // Icon color
+                  gap: 2,
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  textAlign: { xs: 'center', sm: 'left' },
                 }}
               >
-               {card.icon}
-              </Box>
-            <Box sx={{flex:1}}>
-              <Typography variant="h6" component="div" sx={{fontSize:'20px'}} >
-                {card.title}
-              </Typography>
-              <Typography variant="h5" color="black" sx={{fontSize:'30px'}}>
-                {card.description}
-              </Typography>
-            </Box>
-            </CardContent>
-          </CardActionArea>
-        </Card>
-      ))}
-    </Box>
-    <Box sx={{display:"flex", gap:2}}>
-    <Box sx={{mt:4,width: "50%"}}>
-      <HiringPipline/>
-    </Box>
-    <Box sx={{mt:4,width: "50%"}}>
-      <Bargraph/>
-    </Box>
-    </Box>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: '50%',
+                    backgroundColor: 'rgb(236,239,253)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#7C76E7',
+                    mx: { xs: 'auto', sm: 0 },
+                  }}
+                >
+                  {card.icon}
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="h6" sx={{ fontSize: '20px' }}>
+                    {card.title}
+                  </Typography>
+                  <Typography variant="h5" color="black" sx={{ fontSize: '30px' }}>
+                    {card.description}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </CardActionArea>
+          </Card>
+        ))}
+      </Box>
+
+      {/* Charts */}
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 2,
+          mt: 4,
+        }}
+      >
+        <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+          <HiringPipline />
+        </Box>
+        <Box sx={{ width: { xs: "100%", md: "50%" } }}>
+          <Bargraph />
+        </Box>
+      </Box>
     </>
   );
 }

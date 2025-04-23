@@ -25,10 +25,26 @@ const rows = [
 
 export default function BasicTable() {
   return (
-    <Paper sx={{ padding: 2 }}>
-      <Typography variant="h5" sx={{ marginBottom: 2 }}>
+    <Paper
+      sx={{
+        padding: { xs: 1, sm: 2 },
+        mt: { xs: 2, sm: 4 },
+        boxShadow: { xs: "none", sm: 3 },
+        borderRadius: 2,
+        overflowX: "auto",
+      }}
+    >
+      <Typography
+        variant="h6"
+        sx={{
+          mb: { xs: 1, sm: 2 },
+          fontSize: { xs: "16px", sm: "20px" },
+          textAlign: { xs: "center", sm: "left" },
+        }}
+      >
         Current Hiring Pipeline
       </Typography>
+
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -39,15 +55,20 @@ export default function BasicTable() {
                   left: 0,
                   backgroundColor: "#fff",
                   zIndex: 1000,
+                  fontSize: { xs: "12px", sm: "14px" },
                 }}
               >
                 Job Position
               </TableCell>
-              <TableCell align="center">Initial</TableCell>
-              <TableCell align="center">Test</TableCell>
-              <TableCell align="center">Interview</TableCell>
-              <TableCell align="center">Hired</TableCell>
-              <TableCell align="center">Cancelled</TableCell>
+              {["Initial", "Test", "Interview", "Hired", "Cancelled"].map((header) => (
+                <TableCell
+                  key={header}
+                  align="center"
+                  sx={{ fontSize: { xs: "12px", sm: "14px" } }}
+                >
+                  {header}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -61,15 +82,22 @@ export default function BasicTable() {
                     left: 0,
                     backgroundColor: "#fff",
                     zIndex: 999,
+                    fontSize: { xs: "12px", sm: "14px" },
                   }}
                 >
                   {row.JobPosition}
                 </TableCell>
-                <TableCell align="center">{row.Initial}</TableCell>
-                <TableCell align="center">{row.Test}</TableCell>
-                <TableCell align="center">{row.Interview}</TableCell>
-                <TableCell align="center">{row.Hired}</TableCell>
-                <TableCell align="center">{row.Cancelled}</TableCell>
+                {[row.Initial, row.Test, row.Interview, row.Hired, row.Cancelled].map(
+                  (value, idx) => (
+                    <TableCell
+                      key={idx}
+                      align="center"
+                      sx={{ fontSize: { xs: "12px", sm: "14px" } }}
+                    >
+                      {value}
+                    </TableCell>
+                  )
+                )}
               </TableRow>
             ))}
           </TableBody>
