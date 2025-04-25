@@ -10,6 +10,7 @@ import {
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
+import { useParams } from "react-router-dom";
 import BankInformation from "./BankInformation";
 import PersonalInfoCard from "./Personalinf";
 
@@ -19,10 +20,11 @@ export default function EmployeeCard() {
   const [isEditing, setIsEditing] = useState(false);
   const [employee, setEmployee] = useState(null);
   const [editedData, setEditedData] = useState({});
+  const { id } = useParams(); // URL param
 
   useEffect(() => {
     const fetchEmployee = async () => {
-      const employeeId = localStorage.getItem("employeeId");
+      const employeeId = id || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -35,7 +37,7 @@ export default function EmployeeCard() {
           profileImage: "/default-profile.png",
           designation: data.designation,
           phoneNumber: data.phoneNumber,
-          alternateNumber: data.alternateNumber|| "",
+          alternateNumber: data.alternateNumber || "",
           emailId: data.emailId,
         };
         setEmployee(empData);
@@ -46,12 +48,12 @@ export default function EmployeeCard() {
     };
 
     fetchEmployee();
-  }, []);
+  }, [id]);
 
   const handleSave = () => {
     setEmployee(editedData);
     setIsEditing(false);
-    // Optionally send editedData to backend with PUT request here
+    // Optional: Add PUT request to update employee on the backend
   };
 
   const handleCancel = () => {

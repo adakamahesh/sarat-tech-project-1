@@ -16,11 +16,13 @@ import SchoolIcon from "@mui/icons-material/School";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import CallIcon from "@mui/icons-material/Call";
+import { useParams } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Personalinf() {
   const [isEditing, setIsEditing] = useState(false);
+  const { id } = useParams(); 
   const [personalDetails, setPersonalDetails] = useState({
     dob: "",
     gender: "",
@@ -34,7 +36,7 @@ export default function Personalinf() {
 
   useEffect(() => {
     const fetchPersonalDetails = async () => {
-      const employeeId = localStorage.getItem("employeeId");
+      const employeeId = id || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -47,7 +49,7 @@ export default function Personalinf() {
     };
 
     fetchPersonalDetails();
-  }, []);
+  }, [id]);
 
   const handleChange = (e) => {
     setPersonalDetails({ ...personalDetails, [e.target.name]: e.target.value });

@@ -15,10 +15,13 @@ import StoreIcon from "@mui/icons-material/Store";
 import CodeIcon from "@mui/icons-material/Code";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PublicIcon from "@mui/icons-material/Public";
+import { useParams } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
+
 export default function BankInformation() {
   const [isEditing, setIsEditing] = useState(false);
+  const { id } = useParams();
   const [bankDetails, setBankDetails] = useState({
     bankDetailId: null,
     bankName: "",
@@ -33,7 +36,7 @@ export default function BankInformation() {
 
   useEffect(() => {
     const fetchBankDetails = async () => {
-      const employeeId = localStorage.getItem("employeeId");
+      const employeeId = id || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -51,7 +54,7 @@ export default function BankInformation() {
     };
 
     fetchBankDetails();
-  }, []);
+  }, [id]);
 
   const handleChange = (e) => {
     setBankDetails({ ...bankDetails, [e.target.name]: e.target.value });
