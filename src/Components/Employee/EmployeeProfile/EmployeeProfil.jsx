@@ -10,7 +10,6 @@ import {
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import EditNoteIcon from "@mui/icons-material/EditNote";
-import { useParams } from "react-router-dom";
 import BankInformation from "./BankInformation";
 import PersonalInfoCard from "./Personalinf";
 
@@ -20,11 +19,10 @@ export default function EmployeeCard() {
   const [isEditing, setIsEditing] = useState(false);
   const [employee, setEmployee] = useState(null);
   const [editedData, setEditedData] = useState({});
-  const { id } = useParams(); // URL param
 
   useEffect(() => {
     const fetchEmployee = async () => {
-      const employeeId = id || localStorage.getItem("employeeId");
+      const employeeId = localStorage.getItem("newEmyID") || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -48,12 +46,11 @@ export default function EmployeeCard() {
     };
 
     fetchEmployee();
-  }, [id]);
+  }, []);
 
   const handleSave = () => {
     setEmployee(editedData);
     setIsEditing(false);
-    // Optional: Add PUT request to update employee on the backend
   };
 
   const handleCancel = () => {
@@ -65,7 +62,6 @@ export default function EmployeeCard() {
 
   return (
     <Box>
-      {/* Main Card */}
       <Box
         sx={{
           p: 3,
@@ -85,8 +81,23 @@ export default function EmployeeCard() {
           <EditNoteIcon />
         </IconButton>
 
-        <Box sx={{ display: "flex", gap: 5 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 5,
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "center", sm: "flex-start" },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+              flexDirection: { xs: "column", sm: "row" },
+              textAlign: { xs: "center", sm: "left" },
+            }}
+          >
             <Avatar
               src={employee.profileImage}
               alt={`${employee.firstName} ${employee.lastName}`}
@@ -102,7 +113,7 @@ export default function EmployeeCard() {
                       setEditedData({ ...editedData, firstName: e.target.value })
                     }
                     size="small"
-                    sx={{ mb: 1 }}
+                    sx={{ mb: 1, width: "100%" }}
                   />
                   <TextField
                     label="Last Name"
@@ -111,6 +122,7 @@ export default function EmployeeCard() {
                       setEditedData({ ...editedData, lastName: e.target.value })
                     }
                     size="small"
+                    sx={{ width: "100%" }}
                   />
                   <Typography variant="body2" color="textSecondary">
                     EmployeeId: {employee.employeeId}
@@ -136,9 +148,9 @@ export default function EmployeeCard() {
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "center",
               gap: 1,
-              mt: 2,
+              alignItems: { xs: "center", sm: "flex-start" },
+              width: { xs: "100%", sm: "auto" },
             }}
           >
             {isEditing ? (
@@ -150,6 +162,7 @@ export default function EmployeeCard() {
                     setEditedData({ ...editedData, emailId: e.target.value })
                   }
                   size="small"
+                  sx={{ width: "100%" }}
                 />
                 <TextField
                   label="Phone"
@@ -158,7 +171,7 @@ export default function EmployeeCard() {
                     setEditedData({ ...editedData, phoneNumber: e.target.value })
                   }
                   size="small"
-                  sx={{ mt: 1 }}
+                  sx={{ width: "100%" }}
                 />
                 <TextField
                   label="Alternate Phone"
@@ -170,7 +183,7 @@ export default function EmployeeCard() {
                     })
                   }
                   size="small"
-                  sx={{ mt: 1 }}
+                  sx={{ width: "100%" }}
                 />
               </>
             ) : (
@@ -197,25 +210,38 @@ export default function EmployeeCard() {
           </Box>
         </Box>
 
-        {/* Save / Cancel Buttons */}
         {isEditing && (
-          <Box sx={{ display: "flex", gap: 2, justifyContent: "flex-end", mt: 2 }}>
-            <Button variant="outlined" onClick={handleCancel}>
+          <Box
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: { xs: "center", sm: "flex-end" },
+              mt: 2,
+              flexDirection: { xs: "column", sm: "row" },
+            }}
+          >
+            <Button variant="outlined" onClick={handleCancel} fullWidth={true}>
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleSave}>
+            <Button variant="contained" onClick={handleSave} fullWidth={true}>
               Save
             </Button>
           </Box>
         )}
       </Box>
 
-      {/* Additional Info */}
-      <Box sx={{ display: "flex", gap: 4, mt: 4, width: "100%" }}>
-        <Box sx={{ mt: 4, width: "50%" }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 4,
+          mt: 4,
+          flexDirection: { xs: "column", sm: "row" },
+        }}
+      >
+        <Box sx={{ width: { xs: "100%", sm: "50%" } }}>
           <PersonalInfoCard />
         </Box>
-        <Box sx={{ mt: 4, width: "50%" }}>
+        <Box sx={{ width: { xs: "100%", sm: "50%" } }}>
           <BankInformation />
         </Box>
       </Box>

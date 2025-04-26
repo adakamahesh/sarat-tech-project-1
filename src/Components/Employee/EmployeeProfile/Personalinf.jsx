@@ -16,13 +16,11 @@ import SchoolIcon from "@mui/icons-material/School";
 import FamilyRestroomIcon from "@mui/icons-material/FamilyRestroom";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import CallIcon from "@mui/icons-material/Call";
-import { useParams } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function Personalinf() {
   const [isEditing, setIsEditing] = useState(false);
-  const { id } = useParams(); 
   const [personalDetails, setPersonalDetails] = useState({
     dob: "",
     gender: "",
@@ -36,7 +34,8 @@ export default function Personalinf() {
 
   useEffect(() => {
     const fetchPersonalDetails = async () => {
-      const employeeId = id || localStorage.getItem("employeeId");
+      const employeeId =
+        localStorage.getItem("newEmyID") || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -49,7 +48,7 @@ export default function Personalinf() {
     };
 
     fetchPersonalDetails();
-  }, [id]);
+  }, []);
 
   const handleChange = (e) => {
     setPersonalDetails({ ...personalDetails, [e.target.name]: e.target.value });
@@ -70,8 +69,20 @@ export default function Personalinf() {
   };
 
   return (
-    <Box>
-      <Card sx={{ maxWidth: 600, p: 3, boxShadow: 3, position: "relative" }}>
+    <Box sx={{ px: 2 }}>
+      <Card
+        sx={{
+          maxWidth: 600,
+          p: 3,
+          boxShadow: 3,
+          position: "relative",
+          mx: "auto",
+          [theme => theme.breakpoints.down("sm")]: {
+            p: 2,
+            maxWidth: "100%",
+          },
+        }}
+      >
         {!isEditing && (
           <IconButton
             sx={{ position: "absolute", top: 10, right: 10, color: "gray" }}
@@ -87,7 +98,16 @@ export default function Personalinf() {
           </Typography>
 
           {isEditing ? (
-            <Box display="flex" flexDirection="column" gap={2}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap={2}
+              sx={{
+                [theme => theme.breakpoints.down("sm")]: {
+                  gap: 1.5,
+                },
+              }}
+            >
               <TextField
                 label="Date of Birth"
                 name="dob"
@@ -145,12 +165,20 @@ export default function Personalinf() {
                 fullWidth
               />
 
-              <Box display="flex" justifyContent="space-between" mt={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSave}
-                >
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                mt={2}
+                sx={{
+                  flexDirection: "row",
+                  gap: 2,
+                  [theme => theme.breakpoints.down("sm")]: {
+                    flexDirection: "column",
+                    alignItems: "stretch",
+                  },
+                }}
+              >
+                <Button variant="contained" color="primary" onClick={handleSave}>
                   Save
                 </Button>
                 <Button
@@ -163,7 +191,16 @@ export default function Personalinf() {
               </Box>
             </Box>
           ) : (
-            <Box display="flex" flexDirection="column" gap={1}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap={1.5}
+              sx={{
+                [theme => theme.breakpoints.down("sm")]: {
+                  gap: 1,
+                },
+              }}
+            >
               {[
                 {
                   icon: <CalendarTodayIcon />,
@@ -187,7 +224,7 @@ export default function Personalinf() {
                 },
                 {
                   icon: <CalendarTodayIcon />,
-                  label: "dateOfJoining",
+                  label: "Date Of Joining",
                   value: personalDetails.dateOfJoining,
                 },
                 {
@@ -206,7 +243,19 @@ export default function Personalinf() {
                   value: personalDetails.emergencyContactNumber,
                 },
               ].map((item, index) => (
-                <Box key={index} display="flex" alignItems="center" gap={1}>
+                <Box
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  sx={{
+                    [theme => theme.breakpoints.down("sm")]: {
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: 0.5,
+                    },
+                  }}
+                >
                   <Box sx={{ color: "gray" }}>{item.icon}</Box>
                   <Typography sx={{ color: "gray" }}>{item.label}:</Typography>
                   <Typography sx={{ color: "black" }}>{item.value}</Typography>

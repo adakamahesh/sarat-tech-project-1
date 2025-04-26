@@ -15,13 +15,11 @@ import StoreIcon from "@mui/icons-material/Store";
 import CodeIcon from "@mui/icons-material/Code";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PublicIcon from "@mui/icons-material/Public";
-import { useParams } from "react-router-dom";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function BankInformation() {
   const [isEditing, setIsEditing] = useState(false);
-  const { id } = useParams();
   const [bankDetails, setBankDetails] = useState({
     bankDetailId: null,
     bankName: "",
@@ -36,15 +34,13 @@ export default function BankInformation() {
 
   useEffect(() => {
     const fetchBankDetails = async () => {
-      const employeeId = id || localStorage.getItem("employeeId");
+      const employeeId = localStorage.getItem("newEmyID") || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
         const response = await fetch(`${API_URL}bank-details`);
         const data = await response.json();
-        const employeeData = data.find(
-          (item) => item.employeeId === +employeeId
-        );
+        const employeeData = data.find((item) => item.employeeId === +employeeId);
         if (employeeData) {
           setBankDetails(employeeData);
         }
@@ -54,7 +50,7 @@ export default function BankInformation() {
     };
 
     fetchBankDetails();
-  }, [id]);
+  }, []);
 
   const handleChange = (e) => {
     setBankDetails({ ...bankDetails, [e.target.name]: e.target.value });
@@ -62,10 +58,6 @@ export default function BankInformation() {
 
   const handleSave = async () => {
     const employeeId = localStorage.getItem("employeeId");
-    // const isUpdate = bankDetails.bankDetailId;
-    // const url = isUpdate
-    //   ? `${API_URL}bank-details/${bankDetails.bankDetailId}`
-    //   : `${API_URL}bank-details`;
     try {
       await fetch(`${API_URL}bank-details/${employeeId}`, {
         method: "PUT",
@@ -76,13 +68,25 @@ export default function BankInformation() {
       });
       setIsEditing(false);
     } catch (error) {
-      console.error("Error saving personal details:", error);
+      console.error("Error saving bank details:", error);
     }
   };
 
   return (
-    <Box>
-      <Card sx={{ maxWidth: 600, p: 3, boxShadow: 3, position: "relative" }}>
+    <Box sx={{ px: 2 }}>
+      <Card
+        sx={{
+          maxWidth: 600,
+          p: 3,
+          boxShadow: 3,
+          position: "relative",
+          mx: "auto",
+          [theme => theme.breakpoints.down("sm")]: {
+            p: 2,
+            maxWidth: "100%",
+          },
+        }}
+      >
         {!isEditing && (
           <IconButton
             sx={{ position: "absolute", top: 10, right: 10, color: "gray" }}
@@ -98,7 +102,16 @@ export default function BankInformation() {
           </Typography>
 
           {isEditing ? (
-            <Box display="flex" flexDirection="column" gap={2}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap={2}
+              sx={{
+                [theme => theme.breakpoints.down("sm")]: {
+                  gap: 1.5,
+                },
+              }}
+            >
               <TextField
                 label="Bank Name"
                 name="bankName"
@@ -156,7 +169,17 @@ export default function BankInformation() {
                 fullWidth
               />
 
-              <Box display="flex" justifyContent="space-between" mt={2}>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                mt={2}
+                sx={{
+                  [theme => theme.breakpoints.down("sm")]: {
+                    flexDirection: "column",
+                    gap: 1.5,
+                  },
+                }}
+              >
                 <Button
                   variant="contained"
                   color="primary"
@@ -174,7 +197,16 @@ export default function BankInformation() {
               </Box>
             </Box>
           ) : (
-            <Box display="flex" flexDirection="column" gap={1}>
+            <Box
+              display="flex"
+              flexDirection="column"
+              gap={1.5}
+              sx={{
+                [theme => theme.breakpoints.down("sm")]: {
+                  gap: 1,
+                },
+              }}
+            >
               {[
                 {
                   icon: <AccountBalanceIcon />,
@@ -208,7 +240,19 @@ export default function BankInformation() {
                   value: bankDetails.country,
                 },
               ].map((item, index) => (
-                <Box key={index} display="flex" alignItems="center" gap={1}>
+                <Box
+                  key={index}
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  sx={{
+                    [theme => theme.breakpoints.down("sm")]: {
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: 0.5,
+                    },
+                  }}
+                >
                   <Box sx={{ color: "gray" }}>{item.icon}</Box>
                   <Typography sx={{ color: "gray" }}>{item.label}:</Typography>
                   <Typography sx={{ color: "black" }}>{item.value}</Typography>

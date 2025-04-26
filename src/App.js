@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Home from "./Layouts/Home";
 import Login from "./Components/LoginSignup/Login";
 import ForgotPassword from "./Components/LoginSignup/ForgotPassword";
-import EmployeeProfile from './Components/Employee/EmployeeProfile/EmployeeProfil';
 
 // Authentication check
 const isAuthenticated = () => localStorage.getItem("isAuthenticated") === "true";
@@ -70,11 +69,11 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route
-        path="/Employee/Profile/:id"
+       <Route
+        path="/Employee/ProfileUser"
         element={
           <ProtectedRoute>
-            <EmployeeProfile />
+            <Home />
           </ProtectedRoute>
         }
       />

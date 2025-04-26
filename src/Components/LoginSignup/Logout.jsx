@@ -12,12 +12,21 @@ const Logout = () => {
 
   return (
     <Button 
-      variant="contained" 
-      color="primary" 
-      onClick={handleLogout}
-    >
-      Logout
-    </Button>
+    variant="contained" 
+    sx={{
+      display:'flex',
+      alignItems:'center',
+      justifyContent:'center',
+      backgroundColor: "#1976D2",  // Custom color
+      color: "#ffffff",            // Text color for the button
+      "&:hover": {
+        backgroundColor: "#1976D2", // Hover effect color
+      },
+    }}
+    onClick={handleLogout}
+  >
+    Logout
+  </Button>  
   );
 };
 

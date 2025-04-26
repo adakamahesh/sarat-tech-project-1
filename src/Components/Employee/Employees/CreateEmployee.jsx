@@ -12,6 +12,7 @@ const CreateEmployeeForm = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const [formData, setFormData] = useState({
+    applicantId: "", // Optional
     firstName: "",
     lastName: "",
     designation: "",
@@ -32,8 +33,8 @@ const CreateEmployeeForm = () => {
     bankAddress: "",
     country: "",
     accountType: "",
-    dateOfBirth: "",  // Added Date of Birth
-    dateOfJoining: "",  // Added Date of Joining
+    dateOfBirth: "",
+    dateOfJoining: "",
   });
 
   const handleChange = (field) => (e) =>
@@ -41,6 +42,15 @@ const CreateEmployeeForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const hasEmptyField = Object.entries(formData).some(
+      ([key, value]) => key !== "applicantId" && value.trim() === ""
+    );
+
+    if (hasEmptyField) {
+      alert("Please fill out all required fields.");
+      return;
+    }
 
     const payload = {
       ...formData,
@@ -63,6 +73,7 @@ const CreateEmployeeForm = () => {
 
       alert("Employee created!");
       setFormData({
+        applicantId: "",
         firstName: "",
         lastName: "",
         designation: "",
@@ -83,8 +94,8 @@ const CreateEmployeeForm = () => {
         bankAddress: "",
         country: "",
         accountType: "",
-        dateOfBirth: "",  // Reset Date of Birth
-        dateOfJoining: "",  // Reset Date of Joining
+        dateOfBirth: "",
+        dateOfJoining: "",
       });
     } catch (error) {
       console.error("Submission Error:", error);
@@ -92,8 +103,9 @@ const CreateEmployeeForm = () => {
     }
   };
 
-  const renderInput = (label, field, type = "text") => (
+  const renderInput = (label, field, type = "text", required = true) => (
     <TextField
+      required={required}
       label={label}
       type={type}
       value={formData[field]}
@@ -102,24 +114,14 @@ const CreateEmployeeForm = () => {
       autoComplete="off"
       sx={{
         mb: 2,
-        "& .MuiInputLabel-root": {
-          fontSize: 18, // Label size
-        },
-        "& .MuiInputBase-root": {
-          fontSize: 18, // Input text size
-          height: 60,   // Height of input
-          "&.Mui-focused": {
-            borderColor: "#f0f0f0", // Set focus border color to smoke white
-          },
-        },
+        "& .MuiInputLabel-root": { fontSize: 18 },
+        "& .MuiInputBase-root": { fontSize: 18, height: 60 },
       }}
       InputLabelProps={{
-        shrink: formData[field] !== "", // Shrinks label only if field has a value
+        shrink: formData[field] !== "",
         sx: { fontSize: 18 },
       }}
-      InputProps={{
-        sx: { fontSize: 18, height: 60 },
-      }}
+      InputProps={{ sx: { fontSize: 18, height: 60 } }}
     />
   );
 
@@ -132,8 +134,8 @@ const CreateEmployeeForm = () => {
         boxShadow: 4,
         borderRadius: 4,
         backgroundColor: "white",
-        width: "100%", // Full width of the container
-        mx: "auto",    // Center the form
+        width: "100%",
+        mx: "auto",
         display: "flex",
         flexDirection: "column",
         gap: 4,
@@ -149,6 +151,11 @@ const CreateEmployeeForm = () => {
           Employee Information
         </Typography>
 
+        {/* Applicant ID (Optional) */}
+        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+          {renderInput("Applicant ID (Optional)", "applicantId", "text", false)}
+        </Box>
+
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("First Name", "firstName")}
           {renderInput("Last Name", "lastName")}
@@ -157,6 +164,7 @@ const CreateEmployeeForm = () => {
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("Designation", "designation")}
           <TextField
+            required
             select
             label="Department"
             value={formData.departmentId}
@@ -186,6 +194,7 @@ const CreateEmployeeForm = () => {
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           <TextField
+            required
             select
             label="Gender"
             value={formData.gender}
@@ -207,6 +216,7 @@ const CreateEmployeeForm = () => {
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("Address", "address")}
           <TextField
+            required
             select
             label="Marital Status"
             value={formData.maritalStatus}
@@ -229,6 +239,7 @@ const CreateEmployeeForm = () => {
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           <TextField
+            required
             label="Date of Birth"
             type="date"
             value={formData.dateOfBirth}
@@ -238,6 +249,7 @@ const CreateEmployeeForm = () => {
             sx={{ mb: 2 }}
           />
           <TextField
+            required
             label="Date of Joining"
             type="date"
             value={formData.dateOfJoining}
@@ -254,6 +266,7 @@ const CreateEmployeeForm = () => {
         <Typography variant="h6" fontWeight={600} mb={2}>
           Bank Information
         </Typography>
+
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("Bank Name", "bankName")}
           {renderInput("Account Number", "accountNumber")}
@@ -272,6 +285,7 @@ const CreateEmployeeForm = () => {
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("Country", "country")}
           <TextField
+            required
             select
             label="Account Type"
             value={formData.accountType}

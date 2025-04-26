@@ -74,8 +74,9 @@ export default function DashboardLayoutBasic() {
       case "Employees":
         return <Employee />;
       case "Profile":
+        localStorage.removeItem("newEmyID");
         return <EmployeeProfile />;
-      case "Profile/:id":
+      case "ProfileUser":
         return <EmployeeProfile />;
       case "RecruitmentDashboard":
         return <RecruitmentDashboard />;
@@ -358,7 +359,7 @@ export default function DashboardLayoutBasic() {
             color: "#ffffff",
             minHeight: "55px",
             "& .MuiSvgIcon-root": {
-              color: "#ffffff !important", // Force the color to be white
+              color: "#ffffff !important",
             },
           },
         },
@@ -366,20 +367,20 @@ export default function DashboardLayoutBasic() {
       MuiDrawer: {
         styleOverrides: {
           paper: {
-            backgroundColor: "#333333", // New background color (change as needed)
-            color: "#ffffff", // Text color for the drawer content
+            backgroundColor: "#333333",
+            color: "#ffffff",
             maxWidth: "280px",
-            borderRadius: "4px", // Rounded corners
-            boxShadow: "none", // Remove any box shadow
+            borderRadius: "4px",
+            boxShadow: "none",
             position: "relative",
             "&::before": {
               content: '""',
               position: "absolute",
-              top:'10px',
+              top: "10px",
               left: 0,
               right: 0,
-              height: "16px", // height of the top bar
-              backgroundColor: "#ffffff", // 👈 your custom color for the top area
+              height: "16px",
+              backgroundColor: "#ffffff",
             },
           },
         },
@@ -387,31 +388,44 @@ export default function DashboardLayoutBasic() {
       MuiListItemIcon: {
         styleOverrides: {
           root: {
-            color: "#ffffff", // Ensures icons in ListItemIcon are white
-            minWidth: "40px", // Optional: tighter spacing
+            color: "#ffffff",
+            minWidth: "40px",
           },
         },
       },
       MuiListItemText: {
         styleOverrides: {
           primary: {
-            color: "#ffffff", // White text in drawer
+            color: "#ffffff",
           },
         },
       },
       MuiAppBar: {
         styleOverrides: {
           root: {
-            backgroundColor: "#333333", // Header background
-            color: "#ffffff", // Header text/icons
+            backgroundColor: "#333333",
+            color: "#ffffff",
           },
         },
       },
       MuiListItemButton: {
         styleOverrides: {
           root: {
+            transition: "background-color 0.3s ease",
+            "&:hover, &.Mui-selected:hover": {
+              backgroundColor: "#1976d2 !important",
+            },
+            "&.Mui-selected": {
+              backgroundColor: "#333333",
+              display: "flex", // Enable flexbox
+              justifyContent: "center", // Center horizontally
+              alignItems: "center",
+              "&:hover, &.Mui-selected:hover": {
+                backgroundColor: "#333333 !important",
+              },
+            },
             "& .MuiSvgIcon-root": {
-              color: "#ffffff !important", // Set icon color to white using !important
+              color: "#ffffff !important",
             },
           },
         },
@@ -419,9 +433,10 @@ export default function DashboardLayoutBasic() {
     },
     palette: {
       action: {
-        active: "#ffffff", // Override the active color for icons globally
+        active: "#ffffff",
       },
     },
+    // Apply custom styles for the logout button outside of the theme overrides
   });
 
   const NAVIGATION = createNavigation(navigate);

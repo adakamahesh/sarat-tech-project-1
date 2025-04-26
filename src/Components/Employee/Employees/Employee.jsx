@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Table,
@@ -16,16 +16,16 @@ import {
   Typography,
   Dialog,
   Avatar,
-} from '@mui/material';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import CreateEmployee from './CreateEmployee';  // Employee creation form
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import CreateEmployee from "./CreateEmployee"; // Employee creation form
 
 export default function EmployeeTable() {
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('DateOfJoining');
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('');
+  const [order, setOrder] = useState("asc");
+  const [orderBy, setOrderBy] = useState("DateOfJoining");
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("");
   const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -39,7 +39,9 @@ export default function EmployeeTable() {
 
   const fetchEmployees = async () => {
     try {
-      const { data } = await axios.get('http://192.168.1.49:8084/api/employees/active');
+      const { data } = await axios.get(
+        "http://192.168.1.49:8084/api/employees/active"
+      );
       const formatted = data.map((emp, index) => ({
         id: index + 1,
         Employee: `${emp.firstName} ${emp.lastName}`,
@@ -47,8 +49,10 @@ export default function EmployeeTable() {
         Phone: emp.phoneNumber,
         EmployeeId: emp.employeeId,
         JobPosition: emp.designation,
-        Department: emp.departmentName || '—',
-        shift: emp.shiftType ? `${emp.shiftType} (${emp.shiftStartTime} - ${emp.shiftEndTime})` : '—',
+        Department: emp.departmentName || "—",
+        shift: emp.shiftType
+          ? `${emp.shiftType} (${emp.shiftStartTime} - ${emp.shiftEndTime})`
+          : "—",
         DateOfJoining: emp.dateOfJoining,
       }));
       setRows(formatted);
@@ -58,36 +62,46 @@ export default function EmployeeTable() {
   };
 
   const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
   const handleRowClick = (employeeId) => {
-    navigate(`/Employee/Profile/${employeeId}`);
+    localStorage.setItem('newEmyID',employeeId)
+    navigate(`/Employee/ProfileUser`);
   };
 
   const filteredRows = rows
-    .filter(row =>
-      row.Employee.toLowerCase().includes(search.toLowerCase()) &&
-      (filter ? row.JobPosition === filter : true)
+    .filter(
+      (row) =>
+        row.Employee.toLowerCase().includes(search.toLowerCase()) &&
+        (filter ? row.JobPosition === filter : true)
     )
     .sort((a, b) => {
-      if (orderBy === 'DateOfJoining') {
-        return (order === 'asc'
+      if (orderBy === "DateOfJoining") {
+        return order === "asc"
           ? new Date(a.DateOfJoining) - new Date(b.DateOfJoining)
-          : new Date(b.DateOfJoining) - new Date(a.DateOfJoining));
+          : new Date(b.DateOfJoining) - new Date(a.DateOfJoining);
       }
-      return order === 'asc'
+      return order === "asc"
         ? a[orderBy].localeCompare(b[orderBy])
         : b[orderBy].localeCompare(a[orderBy]);
     });
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <Box sx={{ width: "100%" }}>
       {/* Employee Table */}
-      <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      <Paper sx={{ width: "100%", mb: 2, p: 2, backgroundColor: "#f5f5f5" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 10,
+            mb: 2,
+            flexWrap: "wrap",
+            alignItems: "center",
+          }}
+        >
           <Typography variant="h6">Employee List</Typography>
           <TextField
             label="Search Employee"
@@ -98,72 +112,142 @@ export default function EmployeeTable() {
           <TextField
             select
             label="Filter by Job Position"
-            size="small"
+            sx={{ width: "30%" }}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           >
             <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map(row => row.JobPosition))].map((job) => (
-              <MenuItem key={job} value={job}>{job}</MenuItem>
+            {[...new Set(rows.map((row) => row.JobPosition))].map((job) => (
+              <MenuItem key={job} value={job}>
+                {job}
+              </MenuItem>
             ))}
           </TextField>
-          <Button variant="contained" onClick={() => setOpen(true)}>Create</Button>
+          <Button variant="contained" onClick={() => setOpen(true)}>
+            Create
+          </Button>
         </Box>
 
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">Employee ID</TableCell>
-                <TableCell align="center">
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Employee ID
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
                   <TableSortLabel
-                    active={orderBy === 'Employee'}
+                    active={orderBy === "Employee"}
                     direction={order}
-                    onClick={() => handleRequestSort('Employee')}
+                    onClick={() => handleRequestSort("Employee")}
                   >
                     Employee
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align="center">Email</TableCell>
-                <TableCell align="center">Phone</TableCell>
-                <TableCell align="center">Job Position</TableCell>
-                <TableCell align="center">Department</TableCell>
-                <TableCell align="center">Shift</TableCell>
-                <TableCell align="center">
-                  <TableSortLabel
-                    active={orderBy === 'DateOfJoining'}
-                    direction={order}
-                    onClick={() => handleRequestSort('DateOfJoining')}
-                  >
-                    Date of Joining
-                  </TableSortLabel>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Email
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Phone
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Job Position
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Department
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Shift
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    color: "#fff",
+                    backgroundColor: "#93A0B4",
+                  }}
+                >
+                  Date of Joining
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.length > 0 ? (
-                filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                  <TableRow
-                    key={row.id}
-                    hover
-                    onClick={() => handleRowClick(row.EmployeeId)}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell align="center">{row.EmployeeId}</TableCell>
-                    <TableCell align="left">
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Avatar>{row.Employee[0]}</Avatar>
-                        {row.Employee}
-                      </Box>
-                    </TableCell>
-                    <TableCell align="center">{row.Email}</TableCell>
-                    <TableCell align="center">{row.Phone}</TableCell>
-                    <TableCell align="center">{row.JobPosition}</TableCell>
-                    <TableCell align="center">{row.Department}</TableCell>
-                    <TableCell align="center">{row.shift}</TableCell>
-                    <TableCell align="center">{row.DateOfJoining}</TableCell>
-                  </TableRow>
-                ))
+                filteredRows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row) => (
+                    <TableRow
+                      key={row.id}
+                      hover
+                      onClick={() => handleRowClick(row.EmployeeId)}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      <TableCell align="center">{row.EmployeeId}</TableCell>
+                      <TableCell align="left">
+                        <Box
+                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        >
+                          <Avatar>{row.Employee[0]}</Avatar>
+                          {row.Employee}
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">{row.Email}</TableCell>
+                      <TableCell align="center">{row.Phone}</TableCell>
+                      <TableCell align="center">{row.JobPosition}</TableCell>
+                      <TableCell align="center">{row.Department}</TableCell>
+                      <TableCell align="center">{row.shift}</TableCell>
+                      <TableCell align="center">{row.DateOfJoining}</TableCell>
+                    </TableRow>
+                  ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
@@ -185,18 +269,33 @@ export default function EmployeeTable() {
             setRowsPerPage(parseInt(e.target.value, 10));
             setPage(0);
           }}
+          sx={{
+            "& .MuiTablePagination-root": {
+              color: "black", // Change color of all content to black
+            },
+            "& .MuiTablePagination-select, .MuiTablePagination-actions, .MuiTablePagination-caption, .MuiTablePagination-selectLabel, .MuiTablePagination-input": {
+              color: "black", // Change text color of all pagination content to black
+            },
+          }}
         />
       </Paper>
 
       {/* Employee Creation Form (Dialog) */}
-      <Dialog open={open} onClose={() => {
-        setOpen(false);
-        fetchEmployees();
-      }} maxWidth="md" fullWidth>
-        <CreateEmployee onClose={() => {
+      <Dialog
+        open={open}
+        onClose={() => {
           setOpen(false);
           fetchEmployees();
-        }} />
+        }}
+        maxWidth="md"
+        fullWidth
+      >
+        <CreateEmployee
+          onClose={() => {
+            setOpen(false);
+            fetchEmployees();
+          }}
+        />
       </Dialog>
     </Box>
   );
