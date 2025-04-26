@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import CreateEmployee from "./CreateEmployee"; // Employee creation form
+import CreateEmployee from "./CreateEmployee";
 
 export default function EmployeeTable() {
   const [order, setOrder] = useState("asc");
@@ -68,7 +68,7 @@ export default function EmployeeTable() {
   };
 
   const handleRowClick = (employeeId) => {
-    localStorage.setItem('newEmyID',employeeId)
+    localStorage.setItem('newEmyID', employeeId);
     navigate(`/Employee/ProfileUser`);
   };
 
@@ -91,7 +91,6 @@ export default function EmployeeTable() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      {/* Employee Table */}
       <Paper sx={{ width: "100%", mb: 2, p: 2, backgroundColor: "#f5f5f5" }}>
         <Box
           sx={{
@@ -100,6 +99,12 @@ export default function EmployeeTable() {
             mb: 2,
             flexWrap: "wrap",
             alignItems: "center",
+            justifyContent: "space-between",
+            "@media (max-width:600px)": {
+              flexDirection: "column",
+              gap: 2,
+              alignItems: "stretch",
+            },
           }}
         >
           <Typography variant="h6">Employee List</Typography>
@@ -108,13 +113,24 @@ export default function EmployeeTable() {
             size="small"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            sx={{
+              width: "250px",
+              "@media (max-width:600px)": {
+                width: "100%",
+              },
+            }}
           />
           <TextField
             select
             label="Filter by Job Position"
-            sx={{ width: "30%" }}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
+            sx={{
+              width: "250px",
+              "@media (max-width:600px)": {
+                width: "100%",
+              },
+            }}
           >
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.JobPosition))].map((job) => (
@@ -123,101 +139,50 @@ export default function EmployeeTable() {
               </MenuItem>
             ))}
           </TextField>
-          <Button variant="contained" onClick={() => setOpen(true)}>
+          <Button
+            variant="contained"
+            onClick={() => setOpen(true)}
+            sx={{
+              "@media (max-width:600px)": {
+                width: "100%",
+              },
+            }}
+          >
             Create
           </Button>
         </Box>
 
-        <TableContainer>
+        <TableContainer sx={{
+          "@media (max-width:600px)": {
+            overflowX: "auto",
+          },
+        }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Employee ID
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  <TableSortLabel
-                    active={orderBy === "Employee"}
-                    direction={order}
-                    onClick={() => handleRequestSort("Employee")}
+                {["Employee ID", "Employee", "Email", "Phone", "Job Position", "Department", "Shift", "Date of Joining"].map((head, idx) => (
+                  <TableCell
+                    key={idx}
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      color: "#fff",
+                      backgroundColor: "#93A0B4",
+                    }}
                   >
-                    Employee
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Email
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Phone
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Job Position
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Department
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Shift
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Date of Joining
-                </TableCell>
+                    {head === "Employee" ? (
+                      <TableSortLabel
+                        active={orderBy === "Employee"}
+                        direction={order}
+                        onClick={() => handleRequestSort("Employee")}
+                      >
+                        {head}
+                      </TableSortLabel>
+                    ) : (
+                      head
+                    )}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -233,9 +198,7 @@ export default function EmployeeTable() {
                     >
                       <TableCell align="center">{row.EmployeeId}</TableCell>
                       <TableCell align="left">
-                        <Box
-                          sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                        >
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                           <Avatar>{row.Employee[0]}</Avatar>
                           {row.Employee}
                         </Box>
@@ -271,16 +234,15 @@ export default function EmployeeTable() {
           }}
           sx={{
             "& .MuiTablePagination-root": {
-              color: "black", // Change color of all content to black
+              color: "black",
             },
             "& .MuiTablePagination-select, .MuiTablePagination-actions, .MuiTablePagination-caption, .MuiTablePagination-selectLabel, .MuiTablePagination-input": {
-              color: "black", // Change text color of all pagination content to black
+              color: "black",
             },
           }}
         />
       </Paper>
 
-      {/* Employee Creation Form (Dialog) */}
       <Dialog
         open={open}
         onClose={() => {

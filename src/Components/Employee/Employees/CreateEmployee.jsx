@@ -12,7 +12,7 @@ const CreateEmployeeForm = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   const [formData, setFormData] = useState({
-    applicantId: "", // Optional
+    applicantId: "",
     firstName: "",
     lastName: "",
     designation: "",
@@ -113,15 +113,13 @@ const CreateEmployeeForm = () => {
       fullWidth
       autoComplete="off"
       sx={{
-        mb: 2,
-        "& .MuiInputLabel-root": { fontSize: 18 },
-        "& .MuiInputBase-root": { fontSize: 18, height: 60 },
+        mb: isMobile ? 1.5 : 2,
+        "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
+        "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
       }}
       InputLabelProps={{
         shrink: formData[field] !== "",
-        sx: { fontSize: 18 },
       }}
-      InputProps={{ sx: { fontSize: 18, height: 60 } }}
     />
   );
 
@@ -130,28 +128,34 @@ const CreateEmployeeForm = () => {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        p: 6,
+        p: isMobile ? 3 : 6,
         boxShadow: 4,
         borderRadius: 4,
         backgroundColor: "white",
         width: "100%",
+        maxWidth: 1000,
         mx: "auto",
         display: "flex",
         flexDirection: "column",
-        gap: 4,
+        gap: isMobile ? 3 : 4,
       }}
     >
-      <Typography variant="h4" fontWeight={600} textAlign="center" mb={2}>
+      <Typography
+        variant="h4"
+        fontWeight={600}
+        textAlign="center"
+        mb={isMobile ? 2 : 3}
+        fontSize={isMobile ? 24 : 32}
+      >
         Create New Employee
       </Typography>
 
       {/* Employee Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2}>
+        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
           Employee Information
         </Typography>
 
-        {/* Applicant ID (Optional) */}
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
           {renderInput("Applicant ID (Optional)", "applicantId", "text", false)}
         </Box>
@@ -171,9 +175,11 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("departmentId")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
-            InputProps={{ sx: { fontSize: 18, height: 60 } }}
-            InputLabelProps={{ sx: { fontSize: 18 } }}
+            sx={{
+              mb: isMobile ? 1.5 : 2,
+              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
+              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
+            }}
           >
             <MenuItem value="IT">IT</MenuItem>
             <MenuItem value="NONIT">NONIT</MenuItem>
@@ -188,7 +194,7 @@ const CreateEmployeeForm = () => {
 
       {/* Personal Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2}>
+        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
           Personal Information
         </Typography>
 
@@ -201,9 +207,11 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("gender")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
-            InputProps={{ sx: { fontSize: 18, height: 60 } }}
-            InputLabelProps={{ sx: { fontSize: 18 } }}
+            sx={{
+              mb: isMobile ? 1.5 : 2,
+              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
+              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
+            }}
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
@@ -223,9 +231,11 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("maritalStatus")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
-            InputProps={{ sx: { fontSize: 18, height: 60 } }}
-            InputLabelProps={{ sx: { fontSize: 18 } }}
+            sx={{
+              mb: isMobile ? 1.5 : 2,
+              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
+              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
+            }}
           >
             <MenuItem value="Married">Married</MenuItem>
             <MenuItem value="Unmarried">Unmarried</MenuItem>
@@ -246,7 +256,7 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dateOfBirth")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            sx={{ mb: isMobile ? 1.5 : 2 }}
           />
           <TextField
             required
@@ -256,14 +266,14 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dateOfJoining")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            sx={{ mb: isMobile ? 1.5 : 2 }}
           />
         </Box>
       </Box>
 
       {/* Bank Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2}>
+        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
           Bank Information
         </Typography>
 
@@ -292,9 +302,11 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("accountType")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
-            InputProps={{ sx: { fontSize: 18, height: 60 } }}
-            InputLabelProps={{ sx: { fontSize: 18 } }}
+            sx={{
+              mb: isMobile ? 1.5 : 2,
+              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
+              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
+            }}
           >
             <MenuItem value="Saving">Saving</MenuItem>
             <MenuItem value="Current">Current</MenuItem>
@@ -309,9 +321,10 @@ const CreateEmployeeForm = () => {
           alignSelf: "center",
           backgroundColor: "#1976d2",
           color: "white",
-          fontSize: 18,
-          mt: 4,
+          fontSize: isMobile ? 16 : 18,
+          mt: isMobile ? 3 : 4,
           height: 50,
+          width: isMobile ? "100%" : "auto",
         }}
       >
         Create Employee

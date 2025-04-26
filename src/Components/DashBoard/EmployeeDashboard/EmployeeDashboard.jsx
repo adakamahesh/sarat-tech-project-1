@@ -13,6 +13,7 @@ import Announcement from './Announcement';
 import AttendanceLeave from './AttendanceLeave';
 import LiveChat from './LiveChat';
 import Notifications from './Notification';
+import ShiftReq from './ShiftReq';
 
 const cards = [
   {
@@ -176,6 +177,9 @@ export default function EmployeeDashboard() {
         >
           <LiveChat/>
         </Box>
+      </Box>
+      <Box sx={{mt:4}}>
+        <ShiftReq/>
       </Box>
     </>
   );
