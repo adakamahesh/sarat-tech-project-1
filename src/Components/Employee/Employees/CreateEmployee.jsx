@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   TextField,
@@ -25,6 +25,8 @@ const CreateEmployeeForm = () => {
     maritalStatus: "",
     emergencyContactName: "",
     emergencyContactNumber: "",
+    shift: "",
+    alternateNumber: "",
     bankName: "",
     accountNumber: "",
     branch: "",
@@ -33,24 +35,125 @@ const CreateEmployeeForm = () => {
     bankAddress: "",
     country: "",
     accountType: "",
-    dateOfBirth: "",
+    dob: "",
     dateOfJoining: "",
+    workStatus: "Active",
+    startDate: new Date().toISOString().split('T')[0],
+    endDate: null,
   });
+  const [departments, setDepartments] = useState([]);
+  const [shifts, setShifts] = useState([]);
+  const [applicantInfo, setApplicantInfo] = useState(null);
 
-  const handleChange = (field) => (e) =>
+  useEffect(() => {
+    // Fetch departments from backend
+    const fetchDepartments = async () => {
+      try {
+        const response = await fetch("http://192.168.1.49:8084/api/department");
+        const data = await response.json();
+        setDepartments(data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    // Fetch Shifts from backend
+    const fetchShifts = async () => {
+      try {
+        const response = await fetch("http://192.168.1.49:8084/shifts");
+        const data = await response.json();
+        setShifts(data);
+      } catch (error) {
+        console.error("Error fetching shifts:", error);
+      }
+    };
+    fetchShifts();
+  }, []);
+
+  const fetchApplicantDetails = async (applicantId) => {
+    if (applicantId) {
+      try {
+        const response = await fetch(
+          `http://192.168.1.49:8084/recruitment/applicant/${applicantId}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setApplicantInfo(data);
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            gender: data.gender || "",
+            emailId: data.email || "",
+            phoneNumber: data.mobileNumber || "",
+            alternateNumber: data.alternateNumber || "",
+            address: data.address || "",
+            maritalStatus: data.maritalStatus || "",
+            qualification: data.qualification || "",
+            emergencyContactName: data.emergencyContactName || "",
+            emergencyContactNumber: data.emergencyContactNumber || "",
+            dob: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split('T')[0] : "",
+          }));
+        } else if (response.status === 404) {
+          setApplicantInfo(null);
+          // Optionally clear fields if applicant not found
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            firstName: "",
+            lastName: "",
+            gender: "",
+            emailId: "",
+            phoneNumber: "",
+            alternateNumber: "",
+            address: "",
+            maritalStatus: "",
+            qualification: "",
+            emergencyContactName: "",
+            emergencyContactNumber: "",
+            dob: "",
+          }));
+          alert(`Applicant with ID ${applicantId} not found.`);
+        } else {
+          console.error("Error fetching applicant details:", response.status);
+          alert("Failed to fetch applicant details.");
+        }
+      } catch (error) {
+        console.error("Error fetching applicant details:", error);
+        alert("Failed to fetch applicant details.");
+      }
+    } else {
+      setApplicantInfo(null);
+      // Optionally clear fields if applicant ID is cleared
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        firstName: "",
+        lastName: "",
+        gender: "",
+        emailId: "",
+        phoneNumber: "",
+        alternateNumber: "",
+        address: "",
+        maritalStatus: "",
+        qualification: "",
+        emergencyContactName: "",
+        emergencyContactNumber: "",
+        dob: "",
+      }));
+    }
+  };
+
+  const handleChange = (field) => (e) => {
     setFormData({ ...formData, [field]: e.target.value });
+    if (field === "applicantId") {
+      fetchApplicantDetails(e.target.value);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const hasEmptyField = Object.entries(formData).some(
-      ([key, value]) => key !== "applicantId" && value.trim() === ""
-    );
-
-    if (hasEmptyField) {
-      alert("Please fill out all required fields.");
-      return;
-    }
 
     const payload = {
       ...formData,
@@ -58,20 +161,68 @@ const CreateEmployeeForm = () => {
     };
 
     try {
-      const res = await fetch("http://192.168.1.49:8084/api/employees", {
+      const employeeRes = await fetch("http://192.168.1.49:8084/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const employeeData = await employeeRes.json();
 
-      if (!res.ok) {
-        console.error("Response Error:", data);
-        throw new Error(data.message || "Failed to create employee");
+      if (!employeeRes.ok) {
+        console.error("Employee Creation Error:", employeeData);
+        throw new Error(employeeData.message || "Failed to create employee");
       }
 
-      alert("Employee created!");
+      const employeeId = employeeData.employeeId;
+
+      const bankDetails = {
+        employeeId,
+        bankName: formData.bankName,
+        accountNumber: formData.accountNumber,
+        branch: formData.branch,
+        ifsc: formData.ifsc,
+        bankCode: formData.bankCode,
+        bankAddress: formData.bankAddress,
+        country: formData.country,
+        accountType: formData.accountType,
+      };
+
+      const bankRes = await fetch("http://192.168.1.49:8084/bank-details", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(bankDetails),
+      });
+
+      const bankData = await bankRes.json();
+
+      if (!bankRes.ok) {
+        console.error("Bank Details Error:", bankData);
+        throw new Error(bankData.message || "Failed to save bank details");
+      }
+
+      const empShift = {
+        employeeId,
+        shiftId: formData.shift,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+      };
+
+      const shiftRes = await fetch("http://192.168.1.49:8084/employee-shifts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(empShift),
+      });
+
+      const shiftData = await shiftRes.json();
+
+      if (!shiftRes.ok) {
+        console.error("Shift Details Error:", shiftData);
+        throw new Error(shiftData.message || "Failed to save shift details");
+      }
+
+      alert("Employee and related details created successfully!");
+
       setFormData({
         applicantId: "",
         firstName: "",
@@ -86,6 +237,8 @@ const CreateEmployeeForm = () => {
         maritalStatus: "",
         emergencyContactName: "",
         emergencyContactNumber: "",
+        shift: "",
+        alternateNumber: "",
         bankName: "",
         accountNumber: "",
         branch: "",
@@ -94,16 +247,20 @@ const CreateEmployeeForm = () => {
         bankAddress: "",
         country: "",
         accountType: "",
-        dateOfBirth: "",
+        dob: "",
         dateOfJoining: "",
+        workStatus: "Active",
+        startDate: new Date().toISOString().split('T')[0],
+        endDate: null,
       });
+      setApplicantInfo(null);
     } catch (error) {
       console.error("Submission Error:", error);
-      alert("Error creating employee: " + error.message);
+      alert("Error: " + error.message);
     }
   };
 
-  const renderInput = (label, field, type = "text", required = true) => (
+  const renderInput = (label, field, type = "text", required = false, disabled = false) => (
     <TextField
       required={required}
       label={label}
@@ -113,13 +270,16 @@ const CreateEmployeeForm = () => {
       fullWidth
       autoComplete="off"
       sx={{
-        mb: isMobile ? 1.5 : 2,
-        "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
-        "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
+        mb: 2,
+        "& .MuiInputLabel-root": { fontSize: 18 },
+        "& .MuiInputBase-root": { fontSize: 18, height: 60 },
       }}
       InputLabelProps={{
         shrink: formData[field] !== "",
+        sx: { fontSize: 18 },
       }}
+      InputProps={{ sx: { fontSize: 18, height: 60 }, disabled: disabled }}
+      disabled={disabled}
     />
   );
 
@@ -128,41 +288,34 @@ const CreateEmployeeForm = () => {
       component="form"
       onSubmit={handleSubmit}
       sx={{
-        p: isMobile ? 3 : 6,
+        p: 6,
         boxShadow: 4,
         borderRadius: 4,
         backgroundColor: "white",
         width: "100%",
-        maxWidth: 1000,
         mx: "auto",
         display: "flex",
         flexDirection: "column",
-        gap: isMobile ? 3 : 4,
+        gap: 4,
       }}
     >
-      <Typography
-        variant="h4"
-        fontWeight={600}
-        textAlign="center"
-        mb={isMobile ? 2 : 3}
-        fontSize={isMobile ? 24 : 32}
-      >
+      <Typography variant="h4" fontWeight={600} textAlign="center" mb={2}>
         Create New Employee
       </Typography>
 
       {/* Employee Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
+        <Typography variant="h6" fontWeight={600} mb={2}>
           Employee Information
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Applicant ID (Optional)", "applicantId", "text", false)}
+          {renderInput("Applicant ID (Optional)", "applicantId", "text", false, false)}
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("First Name", "firstName")}
-          {renderInput("Last Name", "lastName")}
+          {renderInput("First Name", "firstName", "text", true, applicantInfo !== null)}
+          {renderInput("Last Name", "lastName", "text", true, applicantInfo !== null)}
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
@@ -175,26 +328,27 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("departmentId")}
             fullWidth
             autoComplete="off"
-            sx={{
-              mb: isMobile ? 1.5 : 2,
-              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
-              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
-            }}
+            sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: 18, height: 60 } }}
+            InputLabelProps={{ sx: { fontSize: 18 } }}
           >
-            <MenuItem value="IT">IT</MenuItem>
-            <MenuItem value="NONIT">NONIT</MenuItem>
+            {departments.map((dept) => (
+              <MenuItem key={dept.departmentId} value={dept.departmentId}>
+                {dept.departmentName}
+              </MenuItem>
+            ))}
           </TextField>
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Email", "emailId")}
-          {renderInput("Phone", "phoneNumber")}
+          {renderInput("Email", "emailId", "text", true, applicantInfo !== null)}
+          {renderInput("Phone", "phoneNumber", "text", true, applicantInfo !== null)}
         </Box>
       </Box>
 
       {/* Personal Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
+        <Typography variant="h6" fontWeight={600} mb={2}>
           Personal Information
         </Typography>
 
@@ -207,22 +361,21 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("gender")}
             fullWidth
             autoComplete="off"
-            sx={{
-              mb: isMobile ? 1.5 : 2,
-              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
-              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
-            }}
+            sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: 18, height: 60 } }}
+            InputLabelProps={{ sx: { fontSize: 18 } }}
+            disabled={applicantInfo !== null}
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
             <MenuItem value="Others">Others</MenuItem>
           </TextField>
 
-          {renderInput("Qualification", "qualification")}
+          {renderInput("Qualification", "qualification", "text", false, applicantInfo !== null)}
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Address", "address")}
+          {renderInput("Address", "address", "text", false, applicantInfo !== null)}
           <TextField
             required
             select
@@ -231,11 +384,10 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("maritalStatus")}
             fullWidth
             autoComplete="off"
-            sx={{
-              mb: isMobile ? 1.5 : 2,
-              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
-              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
-            }}
+            sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: 18, height: 60 } }}
+            InputLabelProps={{ sx: { fontSize: 18 } }}
+            disabled={applicantInfo !== null}
           >
             <MenuItem value="Married">Married</MenuItem>
             <MenuItem value="Unmarried">Unmarried</MenuItem>
@@ -243,8 +395,32 @@ const CreateEmployeeForm = () => {
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Emergency Contact Name", "emergencyContactName")}
-          {renderInput("Emergency Contact Number", "emergencyContactNumber")}
+          {renderInput("Emergency Contact Name", "emergencyContactName", "text", false, applicantInfo !== null)}
+          {renderInput("Emergency Contact Number", "emergencyContactNumber", "text", false, applicantInfo !== null)}
+        </Box>
+
+        {/* NEW FIELDS */}
+        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+          <TextField
+            required
+            select
+            label="Shift"
+            value={formData.shift}
+            onChange={handleChange("shift")}
+            fullWidth
+            autoComplete="off"
+            sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: 18, height: 60 } }}
+            InputLabelProps={{ sx: { fontSize: 18 } }}
+          >
+            {shifts.map((shift) => (
+              <MenuItem key={shift.shiftId} value={shift.shiftId}>
+                {shift.shiftType}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {renderInput("Alternate Number", "alternateNumber", "text", false, applicantInfo !== null)}
         </Box>
 
         <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
@@ -252,11 +428,12 @@ const CreateEmployeeForm = () => {
             required
             label="Date of Birth"
             type="date"
-            value={formData.dateOfBirth}
-            onChange={handleChange("dateOfBirth")}
+            value={formData.dob}
+            onChange={handleChange("dob")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: isMobile ? 1.5 : 2 }}
+            sx={{ mb: 2 }}
+            disabled={applicantInfo !== null}
           />
           <TextField
             required
@@ -266,14 +443,14 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dateOfJoining")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: isMobile ? 1.5 : 2 }}
+            sx={{ mb: 2 }}
           />
         </Box>
       </Box>
 
       {/* Bank Information */}
       <Box>
-        <Typography variant="h6" fontWeight={600} mb={2} fontSize={isMobile ? 20 : 24}>
+        <Typography variant="h6" fontWeight={600} mb={2}>
           Bank Information
         </Typography>
 
@@ -302,15 +479,41 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("accountType")}
             fullWidth
             autoComplete="off"
-            sx={{
-              mb: isMobile ? 1.5 : 2,
-              "& .MuiInputLabel-root": { fontSize: isMobile ? 16 : 18 },
-              "& .MuiInputBase-root": { fontSize: isMobile ? 16 : 18, height: isMobile ? 50 : 60 },
-            }}
+            sx={{ mb: 2 }}
+            InputProps={{ sx: { fontSize: 18, height: 60 } }}
+            InputLabelProps={{ sx: { fontSize: 18 } }}
           >
             <MenuItem value="Saving">Saving</MenuItem>
             <MenuItem value="Current">Current</MenuItem>
           </TextField>
+        </Box>
+      </Box>
+
+      {/* Shift Assignment - Added UI for startDate and endDate */}
+      <Box>
+        <Typography variant="h6" fontWeight={600} mb={2}>
+          Shift Assignment
+        </Typography>
+        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+          <TextField
+            required
+            label="Start Date"
+            type="date"
+            value={formData.startDate}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            sx={{ mb: 2 }}
+            disabled // Set to current date on load, so disable editing
+          />
+          <TextField
+            label="End Date (Optional)"
+            type="date"
+            value={formData.endDate || ''}
+            onChange={handleChange("endDate")}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            sx={{ mb: 2 }}
+          />
         </Box>
       </Box>
 
@@ -321,10 +524,9 @@ const CreateEmployeeForm = () => {
           alignSelf: "center",
           backgroundColor: "#1976d2",
           color: "white",
-          fontSize: isMobile ? 16 : 18,
-          mt: isMobile ? 3 : 4,
+          fontSize: 18,
+          mt: 4,
           height: 50,
-          width: isMobile ? "100%" : "auto",
         }}
       >
         Create Employee

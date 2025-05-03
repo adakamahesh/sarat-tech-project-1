@@ -6,7 +6,6 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   TableSortLabel,
   Paper,
@@ -27,8 +26,6 @@ export default function EmployeeTable() {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
   const [rows, setRows] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
@@ -68,7 +65,7 @@ export default function EmployeeTable() {
   };
 
   const handleRowClick = (employeeId) => {
-    localStorage.setItem('newEmyID', employeeId);
+    localStorage.setItem("newEmyID", employeeId);
     navigate(`/Employee/ProfileUser`);
   };
 
@@ -99,12 +96,6 @@ export default function EmployeeTable() {
             mb: 2,
             flexWrap: "wrap",
             alignItems: "center",
-            justifyContent: "space-between",
-            "@media (max-width:600px)": {
-              flexDirection: "column",
-              gap: 2,
-              alignItems: "stretch",
-            },
           }}
         >
           <Typography variant="h6">Employee List</Typography>
@@ -113,24 +104,13 @@ export default function EmployeeTable() {
             size="small"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            sx={{
-              width: "250px",
-              "@media (max-width:600px)": {
-                width: "100%",
-              },
-            }}
           />
           <TextField
             select
             label="Filter by Job Position"
+            sx={{ width: "30%" }}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            sx={{
-              width: "250px",
-              "@media (max-width:600px)": {
-                width: "100%",
-              },
-            }}
           >
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.JobPosition))].map((job) => (
@@ -139,30 +119,34 @@ export default function EmployeeTable() {
               </MenuItem>
             ))}
           </TextField>
-          <Button
-            variant="contained"
-            onClick={() => setOpen(true)}
-            sx={{
-              "@media (max-width:600px)": {
-                width: "100%",
-              },
-            }}
-          >
+          <Button variant="contained" onClick={() => setOpen(true)}>
             Create
           </Button>
         </Box>
 
-        <TableContainer sx={{
-          "@media (max-width:600px)": {
+        <TableContainer
+          component={Box}
+          sx={{
+            maxHeight: 400,
+            overflowY: "auto",
             overflowX: "auto",
-          },
-        }}>
-          <Table>
+          }}
+        >
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
-                {["Employee ID", "Employee", "Email", "Phone", "Job Position", "Department", "Shift", "Date of Joining"].map((head, idx) => (
+                {[
+                  "Employee ID",
+                  "Employee",
+                  "Email",
+                  "Phone",
+                  "Job Position",
+                  "Department",
+                  "Shift",
+                  "Date of Joining",
+                ].map((header, index) => (
                   <TableCell
-                    key={idx}
+                    key={index}
                     align="center"
                     sx={{
                       fontWeight: "bold",
@@ -170,16 +154,26 @@ export default function EmployeeTable() {
                       backgroundColor: "#93A0B4",
                     }}
                   >
-                    {head === "Employee" ? (
+                    {header === "Employee" ? (
                       <TableSortLabel
                         active={orderBy === "Employee"}
                         direction={order}
                         onClick={() => handleRequestSort("Employee")}
+                        sx={{ color: "white" }}
                       >
-                        {head}
+                        {header}
+                      </TableSortLabel>
+                    ) : header === "Date of Joining" ? (
+                      <TableSortLabel
+                        active={orderBy === "DateOfJoining"}
+                        direction={order}
+                        onClick={() => handleRequestSort("DateOfJoining")}
+                        sx={{ color: "white" }}
+                      >
+                        {header}
                       </TableSortLabel>
                     ) : (
-                      head
+                      header
                     )}
                   </TableCell>
                 ))}
@@ -187,30 +181,28 @@ export default function EmployeeTable() {
             </TableHead>
             <TableBody>
               {filteredRows.length > 0 ? (
-                filteredRows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <TableRow
-                      key={row.id}
-                      hover
-                      onClick={() => handleRowClick(row.EmployeeId)}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      <TableCell align="center">{row.EmployeeId}</TableCell>
-                      <TableCell align="left">
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                          <Avatar>{row.Employee[0]}</Avatar>
-                          {row.Employee}
-                        </Box>
-                      </TableCell>
-                      <TableCell align="center">{row.Email}</TableCell>
-                      <TableCell align="center">{row.Phone}</TableCell>
-                      <TableCell align="center">{row.JobPosition}</TableCell>
-                      <TableCell align="center">{row.Department}</TableCell>
-                      <TableCell align="center">{row.shift}</TableCell>
-                      <TableCell align="center">{row.DateOfJoining}</TableCell>
-                    </TableRow>
-                  ))
+                filteredRows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    hover
+                    onClick={() => handleRowClick(row.EmployeeId)}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    <TableCell align="center">{row.EmployeeId}</TableCell>
+                    <TableCell align="left">
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Avatar>{row.Employee[0]}</Avatar>
+                        {row.Employee}
+                      </Box>
+                    </TableCell>
+                    <TableCell align="center">{row.Email}</TableCell>
+                    <TableCell align="center">{row.Phone}</TableCell>
+                    <TableCell align="center">{row.JobPosition}</TableCell>
+                    <TableCell align="center">{row.Department}</TableCell>
+                    <TableCell align="center">{row.shift}</TableCell>
+                    <TableCell align="center">{row.DateOfJoining}</TableCell>
+                  </TableRow>
+                ))
               ) : (
                 <TableRow>
                   <TableCell colSpan={8} align="center">
@@ -221,26 +213,6 @@ export default function EmployeeTable() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(e, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => {
-            setRowsPerPage(parseInt(e.target.value, 10));
-            setPage(0);
-          }}
-          sx={{
-            "& .MuiTablePagination-root": {
-              color: "black",
-            },
-            "& .MuiTablePagination-select, .MuiTablePagination-actions, .MuiTablePagination-caption, .MuiTablePagination-selectLabel, .MuiTablePagination-input": {
-              color: "black",
-            },
-          }}
-        />
       </Paper>
 
       <Dialog

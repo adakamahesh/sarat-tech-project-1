@@ -11,8 +11,6 @@ import Meeting from "./Meeting";
 import Calender from "./Calender";
 import Announcement from './Announcement';
 import AttendanceLeave from './AttendanceLeave';
-import LiveChat from './LiveChat';
-import Notifications from './Notification';
 import ShiftReq from './ShiftReq';
 
 const cards = [
@@ -38,19 +36,10 @@ export default function EmployeeDashboard() {
   return (
     <>
       {/* Top Grid */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          width: "100%",
-          gap: 2,
-          px: 2,
-        }}
-      >
-        {/* Left Panel */}
+       
         <Box
           sx={{
-            width: { xs: "100%", md: "75%" },
+            width: { xs: "100%" },
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -119,36 +108,11 @@ export default function EmployeeDashboard() {
           </Box>
         </Box>
 
-        {/* Right Panel (Notifications) */}
-        <Box
-          sx={{
-            width: { xs: "100%", md: "25%" },
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            border: "1px solid rgb(237,237,237)",
-            p: 2,
-          }}
-        >
-          <Notifications/>
-        </Box>
-      </Box>
-
       {/* Bottom Grid */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          mt: 2,
-          width: "100%",
-          gap: 2,
-          px: 2,
-        }}
-      >
         {/* Announcement & Calendar */}
         <Box
           sx={{
-            width: { xs: "100%", md: "65%" },
+            width: { xs: "100%"},
             display: "flex",
             flexDirection: "column",
             gap: 2,
@@ -162,21 +126,6 @@ export default function EmployeeDashboard() {
           <Box sx={{ mt: 2, pr: { xs: 0}, border: '1px solid rgb(237,237,237)' }}>
             <Calender />
           </Box>
-        </Box>
-
-        {/* Live Chat */}
-        <Box
-          sx={{
-            width: { xs: "100%", md: "35%" },
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            border: "1px solid rgb(237,237,237)",
-            p: 2,
-          }}
-        >
-          <LiveChat/>
-        </Box>
       </Box>
       <Box sx={{mt:4}}>
         <ShiftReq/>

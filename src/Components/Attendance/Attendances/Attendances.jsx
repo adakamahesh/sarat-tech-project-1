@@ -1,376 +1,312 @@
-// React & MUI Imports
-import * as React from "react";
-
-// MUI styling
-import { styled } from "@mui/material/styles";
-
-// Base Accordion components
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary, {
-  accordionSummaryClasses,
-} from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-
-// MUI Components
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CheckIcon from "@mui/icons-material/Check";
-import {
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TextField,
-  MenuItem,
-  Checkbox,
-  Button,
-  Box,
-  Card,
-  CardContent,
-} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import { Box } from "@mui/material";
+import dayjs from "dayjs";
 
-// Mock data for initial accordion list
-import Attendances from "../../../mocks_data/Attendances/Attendances";
+const columns = [
+  { id: "SLNO", label: "SL.NO", minWidth: 80 },
+  { id: "EmpId", label: "EmpId", minWidth: 100 },
+  { id: "Employee", label: "Employee", minWidth: 170 },
+  { id: "Date", label: "Date", minWidth: 150 },
+  { id: "checkIn", label: "Check-in", minWidth: 150 },
+  { id: "checkOut", label: "Check-out", minWidth: 150 },
+  { id: "Status", label: "Status", minWidth: 120 },
+  { id: "Action", label: "Action", align: "center", minWidth: 180 },
+];
 
-// Styled Accordion with custom border and no default before content
-const Accordion = styled(MuiAccordion)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": { borderBottom: 0 },
-  "&::before": { display: "none" },
-}));
+const ActionCell = ({ row, onCheckIn, onCheckOut, onAbsent }) => {
+  const [checkInTime, setCheckInTime] = useState(row.checkIn || "");
+  const [checkOutTime, setCheckOutTime] = useState(row.checkOut || "");
+  const [status, setStatus] = useState(row.Status);
+  const [isCheckInDisabled, setIsCheckInDisabled] = useState(!!row.checkIn);
+  const [isCheckOutDisabled, setIsCheckOutDisabled] = useState(!!row.checkOut);
+  const [isAbsentDisabled, setIsAbsentDisabled] = useState(row.Status === "Absent");
 
-// Customized AccordionSummary with toggle icons
-const AccordionSummary = styled((props) => {
-  const { expanded } = props;
-  return (
-    <MuiAccordionSummary
-      expandIcon={expanded ? <RemoveIcon /> : <AddIcon />}
-      {...props}
-    />
-  );
-})(({ theme }) => ({
-  backgroundColor: "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  [`& .${accordionSummaryClasses.content}`]: {
-    marginLeft: theme.spacing(1),
-  },
-}));
+  const handleCheckInClick = async () => {
+    const now = dayjs();
+    const tenThirty = now.clone().hour(10).minute(30).second(0);
+    const statusValue = now.isBefore(tenThirty) ? "Present" : "Late";
+    const currentTime = now.format("HH:mm");
+    setCheckInTime(currentTime);
+    setStatus(statusValue);
+    setIsCheckInDisabled(true);
+    setIsAbsentDisabled(true);
 
-// AccordionDetails with padding and border
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
-// Main component
-export default function CustomizedAccordions() {
-  // State hooks
-  const [expanded, setExpanded] = React.useState(false); // Which accordion is expanded
-  const [search, setSearch] = React.useState(""); // Search value
-  const [filter, setFilter] = React.useState(""); // Dropdown filter
-  const [accordionList, setAccordionList] = React.useState(Attendances); // Accordion items
-  const [showCreateForm, setShowCreateForm] = React.useState(false); // Whether to show the create form
-  const [newTitle, setNewTitle] = React.useState(""); // Title for new accordion
-
-  // Sample table row data
-  const tableData = [
-    {
-      Employee: "John Doe",
-      Batch: "A1",
-      Date: "2024-04-01",
-      Day: "Monday",
-      "Check-in": "09:00",
-      "In Date": "2024-04-01",
-      "Check-out": "18:00",
-      "Out Date": "2024-04-01",
-      Shift: "Morning",
-      WorkType: "Remote",
-      "Min Hour": "8h",
-      "At Work": "8h",
-      "Pending Hour": "0h",
-      Overtime: "1h",
-    },
-  ];
-
-  // Open create accordion card
-  const handleCreateAccordion = () => setShowCreateForm(true);
-
-  // Add new accordion to list
-  const handleAddAccordion = () => {
-    if (!newTitle.trim()) return;
-    const newAccordion = {
-      id: Date.now(), // Unique ID
-      title: newTitle,
-      headers: [
-        "Employee",
-        "Batch",
-        "Date",
-        "Day",
-        "Check-in",
-        "In Date",
-        "Check-out",
-        "Out Date",
-        "Shift",
-        "WorkType",
-        "Min Hour",
-        "At Work",
-        "Pending Hour",
-        "Overtime",
-        "Confirmation",
-        "Action",
-      ],
-    };
-    setAccordionList((prev) => [...prev, newAccordion]);
-    setNewTitle("");
-    setShowCreateForm(false);
+    try {
+      const response = await axios.post("http://192.168.1.49:8084/attendance", {
+        employeeId: row.EmpId,
+        attendanceDate: now.format("YYYY-MM-DD"),
+        clockInTime: now.format("HH:mm:ss"),
+        status: statusValue,
+        shiftId: 1,
+      });
+      if (response.status !== 200) throw new Error("Failed to CheckIn");
+      onCheckIn(row.EmpId, currentTime, statusValue);
+    } catch (error) {
+      console.error("Error during CheckIn", error);
+      alert("Failed to CheckIn");
+    }
   };
 
-  // Filter accordions by search input
-  const filteredAccordions = accordionList.filter(({ title }) =>
-    title.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleCheckOutClick = async () => {
+    const now = dayjs();
+    const currentTime = now.format("HH:mm");
+    setCheckOutTime(currentTime);
+    setIsCheckOutDisabled(true);
+    try {
+      const response = await axios.post("http://192.168.1.49:8084/attendance", {
+        employeeId: row.EmpId,
+        attendanceDate: now.format("YYYY-MM-DD"),
+        clockOutTime: now.format("HH:mm:ss"),
+      });
+      if (response.status !== 200) throw new Error("Failed to CheckOut");
+      onCheckOut(row.EmpId, currentTime);
+    } catch (error) {
+      console.error("Error during CheckOut", error);
+      alert("Failed to CheckOut");
+    }
+  };
 
-  // Handle action button events
-  const handleConfirm = (row) => alert(`Confirmed for ${row.Employee}`);
-  const handleEdit = (row) => alert(`Edit clicked for ${row.Employee}`);
-  const handleDelete = (row) => alert(`Delete clicked for ${row.Employee}`);
+  const handleAbsentClick = async () => {
+    setStatus("Absent");
+    setIsAbsentDisabled(true);
+    setIsCheckInDisabled(true);
+    try {
+      const response = await axios.post("http://192.168.1.49:8084/attendance", {
+        employeeId: row.EmpId,
+        attendanceDate: dayjs().format("YYYY-MM-DD"),
+        status: "Absent",
+      });
+      if (response.status !== 200) throw new Error("Failed to mark Absent");
+      onAbsent(row.EmpId, "Absent");
+    } catch (error) {
+      console.error("Error marking Absent", error);
+      alert("Failed to mark Absent");
+    }
+  };
 
   return (
-    <div style={{ position: "relative" }}>
-      {/* Header Row */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginBottom: "10px",
-          alignItems: "center",
-          justifyContent: "space-between",
+    <Box sx={{ display: "flex", justifyContent: "center", gap: 1, flexWrap: "wrap" }}>
+      <IconButton
+        sx={{
+          backgroundColor: "green",
+          color: "white",
+          width: { xs: 80, sm: 100 },
+          height: 30,
+          borderRadius: 1,
+          fontSize: "12px",
+          "&:hover": { backgroundColor: "darkgreen" },
         }}
+        onClick={handleCheckInClick}
+        disabled={isCheckInDisabled}
       >
-        <Typography variant="h5" fontWeight="bold">
-          Attendances
-        </Typography>
+        Check-In
+      </IconButton>
+      <IconButton
+        sx={{
+          backgroundColor: "orange",
+          color: "white",
+          width: { xs: 80, sm: 100 },
+          height: 30,
+          borderRadius: 1,
+          fontSize: "12px",
+          "&:hover": { backgroundColor: "darkorange" },
+        }}
+        onClick={handleCheckOutClick}
+        disabled={isCheckOutDisabled}
+      >
+        Check-Out
+      </IconButton>
+      <IconButton
+        sx={{
+          backgroundColor: "red",
+          color: "white",
+          width: { xs: 80, sm: 100 },
+          height: 30,
+          borderRadius: 1,
+          fontSize: "12px",
+          "&:hover": { backgroundColor: "darkred" },
+        }}
+        onClick={handleAbsentClick}
+        disabled={isAbsentDisabled}
+      >
+        Absent
+      </IconButton>
+    </Box>
+  );
+};
 
-        {/* Search, Filter, Create Accordion Button */}
-        <div style={{ display: "flex", gap: "20px", flex: 1 }}>
-          <TextField
-            label="Search"
-            variant="outlined"
-            size="small"
-            value={search}
-            sx={{ width: "40%" }}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <TextField
-            select
-            label="Filter"
-            variant="outlined"
-            size="small"
-            value={filter}
-            sx={{ width: "40%" }}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            <MenuItem value="">All</MenuItem>
-            <MenuItem value="Annual Leave">Annual Leave</MenuItem>
-            <MenuItem value="Sick Leave">Sick Leave</MenuItem>
-          </TextField>
-          <Button
-            variant="contained"
-            onClick={handleCreateAccordion}
-            sx={{ whiteSpace: "nowrap" }}
-          >
-            Create Accordion
-          </Button>
-        </div>
-      </div>
+export default function AttendanceTable() {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-      {/* Create Accordion Form Modal */}
-      {showCreateForm && (
-        <Card
-          sx={{
-            width: 400,
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 999,
-            padding: 2,
-            backgroundColor: "#fff",
-            boxShadow: 10,
-          }}
-        >
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Add New Accordion
-            </Typography>
-            <TextField
-              fullWidth
-              label="Accordion Title"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <Box display="flex" justifyContent="flex-end" gap={1}>
-              <Button
-                onClick={() => setShowCreateForm(false)}
-                color="secondary"
-              >
-                Cancel
-              </Button>
-              <Button variant="contained" onClick={handleAddAccordion}>
-                Add
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
+  useEffect(() => {
+    fetchActiveEmployees();
+  }, []);
 
-      {/* Render each accordion */}
-      {filteredAccordions.map(({ id, title, headers }) => (
-        <Accordion
-          key={id}
-          expanded={expanded === id}
-          onChange={() => setExpanded(expanded === id ? false : id)}
-        >
-          <AccordionSummary aria-controls={`${id}-content`} id={`${id}-header`}>
-            <Typography component="span">{title}</Typography>
-          </AccordionSummary>
+  const fetchActiveEmployees = async () => {
+    try {
+      const response = await axios.get("http://192.168.1.49:8084/api/employees/active");
+      const employeeData = response.data;
+      const today = dayjs().format("YYYY-MM-DD");
+      const initialRows = employeeData.map((emp, index) => ({
+        SLNO: index + 1,
+        EmpId: emp.employeeId,
+        Employee: emp.firstName + " " + emp.lastName,
+        Date: today,
+        checkIn: "",
+        checkOut: "",
+        Status: "-",
+      }));
+      setRows(initialRows);
+      setLoading(false);
+    } catch (error) {
+      setError(error);
+      setLoading(false);
+      console.error("Error fetching active employees: ", error);
+    }
+  };
 
-          <AccordionDetails>
-            <div style={{ overflowX: "auto", maxHeight: "400px" }}>
-              <Table
-                stickyHeader
-                sx={{
-                  minWidth: 1000,
-                  border: "1px solid #ddd",
-                  margin: "10px 0",
-                  borderRadius: "5px",
-                }}
-              >
-                {/* Table Header */}
-                <TableHead>
-                  <TableRow>
+  const handleCheckIn = (employeeId, checkInTime, status) => {
+    setRows(prevRows =>
+      prevRows.map(row =>
+        row.EmpId === employeeId
+          ? { ...row, checkIn: checkInTime, Status: status }
+          : row
+      )
+    );
+  };
+
+  const handleCheckOut = (employeeId, checkOutTime) => {
+    setRows(prevRows =>
+      prevRows.map(row =>
+        row.EmpId === employeeId
+          ? { ...row, checkOut: checkOutTime }
+          : row
+      )
+    );
+  };
+
+  const handleAbsent = (employeeId, status) => {
+    setRows(prevRows =>
+      prevRows.map(row =>
+        row.EmpId === employeeId
+          ? { ...row, Status: status, checkIn: "", checkOut: "" }
+          : row
+      )
+    );
+  };
+
+  const handleFieldChange = (index, field, value) => {
+    const updatedRows = [...rows];
+    updatedRows[index][field] = value;
+    setRows(updatedRows);
+  };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  return (
+    <Paper sx={{ width: "100%", overflow: "auto" }}>
+      <Typography variant="h5" sx={{ p: 2 }}>
+        Attendance
+      </Typography>
+      <hr />
+      <TableContainer sx={{ maxHeight: 500 }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align}
+                  style={{ minWidth: column.minWidth }}
+                  sx={{
+                    fontWeight: "bold",
+                    background: "white",
+                    position: "sticky",
+                    top: 0,
+                    zIndex:
+                      column.id === "Employee" || column.id === "Action"
+                        ? 1200
+                        : 1100,
+                    left: column.id === "Employee" ? 0 : undefined,
+                    right: column.id === "Action" ? 0 : undefined,
+                  }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows.map((row, index) => (
+              <TableRow hover key={index}>
+                {columns.map((column) => {
+                  const value = row[column.id];
+                  return (
                     <TableCell
+                      key={column.id}
+                      align={column.align}
                       sx={{
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        position: "sticky",
-                        top: 0,
-                        background: "#fff",
-                        zIndex: 2,
+                        background:
+                          column.id === "Employee" || column.id === "Action"
+                            ? "white"
+                            : undefined,
+                        position:
+                          column.id === "Employee"
+                            ? "sticky"
+                            : column.id === "Action"
+                            ? "sticky"
+                            : undefined,
+                        left: column.id === "Employee" ? 0 : undefined,
+                        right: column.id === "Action" ? 0 : undefined,
+                        zIndex:
+                          column.id === "Employee" || column.id === "Action"
+                            ? 1000
+                            : undefined,
                       }}
                     >
-                      Select
+                      {column.id === "Action" ? (
+                        <ActionCell
+                          row={row}
+                          onCheckIn={handleCheckIn}
+                          onCheckOut={handleCheckOut}
+                          onAbsent={handleAbsent}
+                        />
+                      ) : column.id === "Date" ? (
+                        dayjs().format("YYYY-MM-DD")
+                      ) : column.id === "checkIn" || column.id === "checkOut" ? (
+                        <TextField
+                          type="time"
+                          value={value}
+                          size="small"
+                          onChange={(e) =>
+                            handleFieldChange(index, column.id, e.target.value)
+                          }
+                        />
+                      ) : (
+                        value
+                      )}
                     </TableCell>
-                    {headers.map((header, index) => (
-                      <TableCell
-                        key={index}
-                        sx={{
-                          fontWeight: "bold",
-                          textAlign: "center",
-                          position: "sticky",
-                          top: 0,
-                          background:
-                            header === "Confirmation" ? "#e8f5e9" : "#fff",
-                          zIndex:
-                            header === "Confirmation" || header === "Action"
-                              ? 3
-                              : 2,
-                          ...(header === "Action" && { right: 0 }),
-                          ...(header === "Confirmation" && { right: 0 }),
-                        }}
-                      >
-                        {header}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-
-                {/* Table Body */}
-                <TableBody>
-                  {tableData
-                    .filter((row) => !filter || row["Leave Type"] === filter)
-                    .map((row, rowIndex) => (
-                      <TableRow key={rowIndex}>
-                        {/* Select checkbox */}
-                        <TableCell align="center">
-                          <Checkbox />
-                        </TableCell>
-
-                        {/* Row data */}
-                        {headers.map((header, colIndex) => (
-                          <TableCell
-                            key={colIndex}
-                            align="center"
-                            sx={{
-                              ...(header === "Action" && {
-                                position: "sticky",
-                                right: 0,
-                                background: "#fff",
-                                zIndex: 1,
-                              }),
-                              ...(header === "Confirmation" && {
-                                position: "sticky",
-                                right: 0,
-                                background: "#e8f5e9",
-                                zIndex: 2,
-                              }),
-                            }}
-                          >
-                            {/* Render Action or Confirmation buttons, otherwise show cell text */}
-                            {header === "Action" ? (
-                              <Box display="flex" alignItems="center">
-                                <Button
-                                  onClick={() => handleEdit(row)}
-                                  size="small"
-                                  variant="outlined"
-                                  sx={{ minWidth: 30, marginRight: 1 }}
-                                >
-                                  <EditIcon fontSize="small" />
-                                </Button>
-                                <Button
-                                  onClick={() => handleDelete(row)}
-                                  size="small"
-                                  variant="outlined"
-                                  color="error"
-                                  sx={{ minWidth: 30, marginRight: 1 }}
-                                >
-                                  <DeleteIcon fontSize="small" />
-                                </Button>
-                              </Box>
-                            ) : header === "Confirmation" ? (
-                              <Button
-                                onClick={() => handleConfirm(row)}
-                                size="small"
-                                variant="contained"
-                                color="success"
-                                sx={{
-                                  minWidth: 50,
-                                  height: 25,
-                                  borderRadius: "4px",
-                                  padding: 0,
-                                }}
-                              >
-                                <CheckIcon />
-                              </Button>
-                            ) : (
-                              row[header] || "-"
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-            </div>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </div>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 }

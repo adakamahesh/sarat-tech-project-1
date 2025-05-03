@@ -11,8 +11,6 @@ import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import HailIcon from "@mui/icons-material/Hail";
 import AttendanceBarGraph from "./AttendanceAnalytic";
 import OvertimeToApprove from "./OvertimeToApprove";
-import AttendanceToValidate from "./AttendanceToValidate";
-import Attendance from "./Attendance";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
@@ -20,16 +18,19 @@ export default function HRMDashboard() {
   const [presentCount, setPresentCount] = useState(0);
   const [absentCount, setAbsentCount] = useState(0);
   const [lateCount, setLateCount] = useState(0);
+  const [onTimeCount, setOnTimeCount] = useState(0);
 
   const fetchTodayAttendance = async () => {
     try {
       const presentRes = await axios.get(`${API_URL}attendance/today/present`);
       const absentRes = await axios.get(`${API_URL}attendance/today/absent`);
       const lateRes = await axios.get(`${API_URL}attendance/today/late`);
+      const onTimeCount = await axios.get(`${API_URL}attendance/today/ontime`);
   
       setPresentCount(presentRes.data);
       setAbsentCount(absentRes.data);
       setLateCount(lateRes.data);
+      setOnTimeCount(onTimeCount.data);
     } catch (error) {
       console.error("Failed to fetch today's attendance:", error);
     }
@@ -44,14 +45,14 @@ export default function HRMDashboard() {
       id: 1,
       icon: <PersonIcon />,
       title: "Today Attendances",
-      description: presentCount + lateCount,
+      description: presentCount,
       backgroundColor: "#2196F3",
     },
     {
       id: 2,
       icon: <HailIcon />,
       title: "On Time",
-      description: presentCount, // Adjust if needed based on "on-time" logic
+      description: onTimeCount, // Adjust if needed based on "on-time" logic
       backgroundColor: "#4CAF50",
     },
     {
@@ -155,14 +156,6 @@ export default function HRMDashboard() {
       >
         <AttendanceBarGraph />
         <OvertimeToApprove sx={{ height: "200px" }} />
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
-        <Attendance/>
-      </Box>
-
-      <Box sx={{ mt: 4 }}>
-        <AttendanceToValidate />
       </Box>
     </>
   );

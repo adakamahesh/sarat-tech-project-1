@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, Paper, Button, Box, Card, CardContent, TextField
+  TableRow, Paper, Button, Box, TextField, Dialog,
+  DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function AccessibleTable() {
   const [meetingData, setMeetingData] = useState([]);
-  const [showForm, setShowForm] = useState(false);
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     meetingTitle: '',
     meetingDate: '',
@@ -26,8 +27,13 @@ export default function AccessibleTable() {
       });
   }, []);
 
-  const handleButtonClick = () => {
-    setShowForm(!showForm); // Toggle form
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setFormData({ meetingTitle: '', meetingDate: '', meetingTime: '' });
   };
 
   const handleInputChange = (e) => {
@@ -42,9 +48,8 @@ export default function AccessibleTable() {
     e.preventDefault();
     axios.post(`${API_URL}meeting-schedule`, formData)
       .then((response) => {
-        setMeetingData([...meetingData, response.data]);
-        setFormData({ meetingTitle: '', meetingDate: '', meetingTime: '' });
-        setShowForm(false);
+        setMeetingData([response.data, ...meetingData]);
+        handleClose();
       })
       .catch(error => {
         console.error('Error creating meeting:', error);
@@ -53,157 +58,124 @@ export default function AccessibleTable() {
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ mb: 3 }}>
-        <Table aria-label="meeting schedule table">
-          <TableHead>
-            <TableRow>
-              <TableCell colSpan={5} sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}>
-                <Box display="flex" justifyContent="space-between" alignItems="center">
-                  <span style={{ fontSize: '25px', fontWeight: 'bold' }}>
-                    Meeting Schedule
-                  </span>
-                  <Button
-                    variant="contained"
-                    color="#93A0B4"
-                    onClick={handleButtonClick}
-                    size="small"
-                    sx={{ "@media (max-width: 600px)": { fontSize: '12px' } }}
-                  >
-                    {showForm ? 'Close Form' : 'New Meeting'}
-                  </Button>
-                </Box>
-              </TableCell>
-            </TableRow>
-            <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
-              <TableCell sx={{
-                fontSize: { xs: '16px', sm: '20px' },
-                fontWeight: 'bold',
-                color: "#fff",
-                backgroundColor: '#93A0B4'
-              }}>
-                Meeting Title
-              </TableCell>
-              <TableCell align="center" sx={{
-                fontSize: { xs: '14px', sm: '20px' },
-                fontWeight: 'bold',
-                color: "#fff",
-                backgroundColor: '#93A0B4'
-              }}>
-                Meeting Date
-              </TableCell>
-              <TableCell align="center" sx={{
-                fontSize: { xs: '14px', sm: '20px' },
-                fontWeight: 'bold',
-                color: "#fff",
-                backgroundColor: '#93A0B4'
-              }}>
-                Meeting Time
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {meetingData.map((row) => (
-              <TableRow key={row.meetingId}>
-                <TableCell component="th" scope="row">
-                  {row.meetingTitle}
+      {/* Horizontal Scrollable Table with Top Scrollbar */}
+      <Box sx={{ overflowX: 'auto', mb: 3 }}>
+        <TableContainer component={Paper}>
+          <Table aria-label="meeting schedule table">
+            <TableHead>
+              <TableRow>
+                <TableCell colSpan={5} sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <span style={{ fontSize: '25px', fontWeight: 'bold' }}>
+                      Meeting Schedule
+                    </span>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleOpen}
+                      size="small"
+                      sx={{ "@media (max-width: 600px)": { fontSize: '12px' } }}
+                    >
+                      New Meeting
+                    </Button>
+                  </Box>
                 </TableCell>
-                <TableCell align="center">{row.meetingDate}</TableCell>
-                <TableCell align="center">{row.meetingTime}</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+              <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
+                <TableCell sx={{
+                  fontSize: { xs: '16px', sm: '20px' },
+                  fontWeight: 'bold',
+                  color: "#fff",
+                  backgroundColor: '#93A0B4'
+                }}>
+                  Meeting Title
+                </TableCell>
+                <TableCell align="center" sx={{
+                  fontSize: { xs: '14px', sm: '20px' },
+                  fontWeight: 'bold',
+                  color: "#fff",
+                  backgroundColor: '#93A0B4'
+                }}>
+                  Meeting Date
+                </TableCell>
+                <TableCell align="center" sx={{
+                  fontSize: { xs: '14px', sm: '20px' },
+                  fontWeight: 'bold',
+                  color: "#fff",
+                  backgroundColor: '#93A0B4'
+                }}>
+                  Meeting Time
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {meetingData.map((row) => (
+                <TableRow key={row.meetingId}>
+                  <TableCell component="th" scope="row">
+                    {row.meetingTitle}
+                  </TableCell>
+                  <TableCell align="center">{row.meetingDate}</TableCell>
+                  <TableCell align="center">{row.meetingTime}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
 
-      {showForm && (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          mt={2}
-          sx={{
-            "@media (max-width: 600px)": {
-              padding: '0 10px',
-            },
-          }}
-        >
-          <Card sx={{
-            width: { xs: '100%', sm: 500 },
-            padding: 2,
-            boxShadow: 4,
-            "@media (max-width: 600px)": {
-              boxShadow: 2,
-            }
-          }}>
-            <CardContent>
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                <span style={{ fontSize: '18px', fontWeight: 600 }}>Create New Meeting</span>
-                <Button variant="outlined" color="error" size="small" onClick={() => setShowForm(false)}>
-                  Close
-                </Button>
-              </Box>
+      {/* Create Meeting Dialog */}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Create New Meeting</DialogTitle>
+        <form onSubmit={handleFormSubmit}>
+          <DialogContent dividers>
+            <Box mb={2}>
+              <TextField
+                label="Meeting Title"
+                name="meetingTitle"
+                value={formData.meetingTitle}
+                onChange={handleInputChange}
+                fullWidth
+                required
+              />
+            </Box>
 
-              <form onSubmit={handleFormSubmit}>
-                <Box mb={2}>
-                  <TextField
-                    label="Meeting Title"
-                    name="meetingTitle"
-                    value={formData.meetingTitle}
-                    onChange={handleInputChange}
-                    fullWidth
-                    required
-                    sx={{
-                      "@media (max-width: 600px)": {
-                        fontSize: '14px',
-                      }
-                    }}
-                  />
-                </Box>
+            <Box mb={2}>
+              <TextField
+                label="Meeting Date"
+                name="meetingDate"
+                type="date"
+                value={formData.meetingDate}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                required
+              />
+            </Box>
 
-                <Box mb={2}>
-                  <TextField
-                    label="Date"
-                    name="meetingDate"
-                    type="date"
-                    value={formData.meetingDate}
-                    onChange={handleInputChange}
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                    required
-                    sx={{
-                      "@media (max-width: 600px)": {
-                        fontSize: '14px',
-                      }
-                    }}
-                  />
-                </Box>
+            <Box mb={2}>
+              <TextField
+                label="Meeting Time"
+                name="meetingTime"
+                type="time"
+                value={formData.meetingTime}
+                onChange={handleInputChange}
+                InputLabelProps={{ shrink: true }}
+                fullWidth
+                required
+              />
+            </Box>
+          </DialogContent>
 
-                <Box mb={2}>
-                  <TextField
-                    label="Time"
-                    name="meetingTime"
-                    type="time"
-                    value={formData.meetingTime}
-                    onChange={handleInputChange}
-                    InputLabelProps={{ shrink: true }}
-                    fullWidth
-                    required
-                    sx={{
-                      "@media (max-width: 600px)": {
-                        fontSize: '14px',
-                      }
-                    }}
-                  />
-                </Box>
-
-                <Button type="submit" variant="contained" color="primary" fullWidth>
-                  Submit Meeting
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
+          <DialogActions>
+            <Button onClick={handleClose} variant="outlined" color="error">
+              Cancel
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+              Create
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
     </>
   );
 }
