@@ -84,8 +84,8 @@ export default function DashboardLayoutBasic() {
         return <AttendanceDashboard />;
       case "LeaveDashboard":
         return <Dashboard />;
-      case "ShiftRequests":
-        return <ShiftRequests />;
+      // case "ShiftRequests":
+      //   return <ShiftRequests />;
       case "Applicant":
         return <Applicant />;
       case "RecruitmentPipeline":
@@ -94,8 +94,8 @@ export default function DashboardLayoutBasic() {
         return <CandidatesView />;
       case "AttendanceActivity":
         return <AttendanceActivity />;
-      case "EmployeeLate":
-        return <EmployeeLate />;
+      // case "EmployeeLate":
+      //   return <EmployeeLate />;
       case "MyAttendances":
         return <MyAttendances />;
       case "Attendances":
@@ -120,8 +120,8 @@ export default function DashboardLayoutBasic() {
         return <OnBoardingView />;
       case "ExitProcess":
         return <ExitProcess />;
-      case "AssignedLeave":
-        return <AssignedLeave />;
+      // case "AssignedLeave":
+      //   return <AssignedLeave />;
       case "HelpDesk":
         return <HelpDesk />;
       case "PayRollDashBoard":
@@ -164,11 +164,11 @@ export default function DashboardLayoutBasic() {
           title: "Employees",
           icon: <HorizontalRuleIcon />,
         },
-        {
-          segment: "ShiftRequests",
-          title: "Shift Requests",
-          icon: <HorizontalRuleIcon />,
-        },
+        // {
+        //   segment: "ShiftRequests",
+        //   title: "Shift Requests",
+        //   icon: <HorizontalRuleIcon />,
+        // },
       ],
     },
     {
@@ -235,11 +235,11 @@ export default function DashboardLayoutBasic() {
           title: "Attendance Activity",
           icon: <HorizontalRuleIcon />,
         },
-        {
-          segment: "EmployeeLate",
-          title: "Employee Late",
-          icon: <HorizontalRuleIcon />,
-        },
+        // {
+        //   segment: "EmployeeLate",
+        //   title: "Employee Late",
+        //   icon: <HorizontalRuleIcon />,
+        // },
         {
           segment: "MyAttendances",
           title: "My Attendances",
@@ -267,11 +267,11 @@ export default function DashboardLayoutBasic() {
           title: "Leave Type",
           icon: <HorizontalRuleIcon />,
         },
-        {
-          segment: "AssignedLeave",
-          title: "Assigned Leave",
-          icon: <HorizontalRuleIcon />,
-        },
+        // {
+        //   segment: "AssignedLeave",
+        //   title: "Assigned Leave",
+        //   icon: <HorizontalRuleIcon />,
+        // },
       ],
     },
     {

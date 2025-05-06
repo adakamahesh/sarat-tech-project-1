@@ -85,14 +85,14 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/Employee/ShiftRequests"
         element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/Recruitment"
         element={
@@ -189,14 +189,14 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/Attendance/EmployeeLate"
         element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/Attendance/MyAttendances"
         element={
@@ -237,14 +237,14 @@ const App = () => {
           </ProtectedRoute>
         }
       />
-      <Route
+      {/* <Route
         path="/Leave/AssignedLeave"
         element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         }
-      />
+      /> */}
       <Route
         path="/PayRoll"
         element={
