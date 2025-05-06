@@ -28,8 +28,6 @@ export default function ContractTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [rowToDelete, setRowToDelete] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [newEmployee, setNewEmployee] = React.useState({
     Contract:'',Employee: '', StartDate: '',EndDate:'',WageType:'',BasicSalary:'', FilingStatus:'',Status:''

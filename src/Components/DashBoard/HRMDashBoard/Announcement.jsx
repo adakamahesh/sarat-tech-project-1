@@ -115,7 +115,7 @@ export default function StickyHeadTable() {
           </Typography>
           <Button
             variant="contained"
-            color="#93A0B4"
+            color="primary"
             sx={{
               fontSize: { xs: "12px", sm: "14px" },
               padding: { xs: "6px 12px", sm: "8px 16px" },
@@ -130,7 +130,8 @@ export default function StickyHeadTable() {
 
         <TableContainer
           sx={{
-            maxHeight: 440,
+            height: 500, // Fixed height
+            overflowY: "auto",
             overflowX: "auto",
             [theme.breakpoints.down("sm")]: {
               maxWidth: "100%",

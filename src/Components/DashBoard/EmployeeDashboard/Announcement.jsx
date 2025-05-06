@@ -30,7 +30,6 @@ export default function StickyHeadTable() {
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  
 
   React.useEffect(() => {
     fetchAnnouncements();
@@ -64,12 +63,20 @@ export default function StickyHeadTable() {
           alignItems={isMobile ? "flex-start" : "center"}
           p={2}
           gap={isMobile ? 1 : 0}
-          sx={{ padding: '16px 24px',backgroundColor:'#f5f5f5',}}
+          sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}
         >
-          <Typography variant="h5" sx={{ fontSize: '25px', fontWeight: 'bold' }}>Announcements</Typography>
+          <Typography variant="h5" sx={{ fontSize: '25px', fontWeight: 'bold' }}>
+            Announcements
+          </Typography>
         </Box>
 
-        <TableContainer sx={{ maxHeight: 440 }}>
+        <TableContainer
+          sx={{
+            height: 500,           // Fixed height
+            overflowY: "auto",     // Enables vertical scrolling
+            overflowX: "hidden",   // Avoids horizontal scrolling
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
               <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
@@ -78,7 +85,7 @@ export default function StickyHeadTable() {
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
-                    sx={{ fontSize: '20px', fontWeight: 'bold',color: "#fff", backgroundColor: '#93A0B4' }}
+                    sx={{ fontSize: '20px', fontWeight: 'bold', color: "#fff", backgroundColor: '#93A0B4' }}
                   >
                     {column.label}
                   </TableCell>
@@ -116,7 +123,6 @@ export default function StickyHeadTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-
-       </>
+    </>
   );
 }

@@ -58,10 +58,13 @@ export default function AccessibleTable() {
 
   return (
     <>
-      {/* Horizontal Scrollable Table with Top Scrollbar */}
+      {/* Table with scroll and height */}
       <Box sx={{ overflowX: 'auto', mb: 3 }}>
-        <TableContainer component={Paper}>
-          <Table aria-label="meeting schedule table">
+        <TableContainer
+          component={Paper}
+          sx={{ maxHeight: 600, overflow: 'auto' }}
+        >
+          <Table stickyHeader aria-label="meeting schedule table">
             <TableHead>
               <TableRow>
                 <TableCell colSpan={5} sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}>
@@ -123,7 +126,7 @@ export default function AccessibleTable() {
         </TableContainer>
       </Box>
 
-      {/* Create Meeting Dialog */}
+      {/* Dialog for new meeting */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle>Create New Meeting</DialogTitle>
         <form onSubmit={handleFormSubmit}>

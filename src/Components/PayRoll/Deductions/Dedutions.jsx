@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
-  TableSortLabel,Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,IconButton
+  Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,IconButton
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -34,8 +34,6 @@ const columns = [
   ];
   
 export default function HolidayTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('');
   const [search, setSearch] = React.useState('');
   const [filter, setFilter] = React.useState('');
   const [rows, setRows] = React.useState(initialRows);
@@ -43,18 +41,10 @@ export default function HolidayTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [rowToDelete, setRowToDelete] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [newSpecificEmployee, setNewSpecificEmployee] = React.useState({
     Deduction:'',SpecificEmployee: '', ExcludedEmployees: '',IsPretax:'',IsConditionBased:'',Condition:'', IsFixed:'',Amount:'',BasedOn:'',Rate:''
   });
-
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
 
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));

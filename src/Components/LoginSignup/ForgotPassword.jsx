@@ -1,15 +1,47 @@
 import React, { useState } from "react";
-import { TextField, Button, Typography, Box, Paper } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Paper,
+  CircularProgress,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LoginBg from "../../assets/images/login.jpg";
 
+const API_URL = process.env.REACT_APP_BASE_URL;
+
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleResetPassword = () => {
-    console.log("Reset link sent to:", email);
-    navigate("/login");
+  const handleResetPassword = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}api/v1/user`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (data.status) {
+        alert("A password reset link has been sent to your email.");
+        navigate("/login");
+      } else {
+        alert(data.message || "Failed to send reset link.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Server error. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -29,10 +61,10 @@ const ForgotPassword = () => {
         elevation={0}
         sx={{
           width: {
-            xs: "90%",    // Mobile
-            sm: 300,      // Tablets
-            md: 480,      // Medium screens
-            lg: 500,      // Desktops
+            xs: "90%",
+            sm: 300,
+            md: 480,
+            lg: 500,
           },
           p: {
             xs: 3,
@@ -76,6 +108,7 @@ const ForgotPassword = () => {
         <Button
           variant="outlined"
           fullWidth
+          disabled={loading}
           onClick={handleResetPassword}
           sx={{
             mt: 2,
@@ -87,7 +120,7 @@ const ForgotPassword = () => {
             },
           }}
         >
-          Send Reset Link
+          {loading ? <CircularProgress size={24} color="inherit" /> : "Send Reset Link"}
         </Button>
       </Paper>
     </Box>

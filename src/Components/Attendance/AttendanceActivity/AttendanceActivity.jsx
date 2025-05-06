@@ -1,36 +1,44 @@
 import * as React from 'react';
-import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
-  TableSortLabel,Paper,TextField,MenuItem,Button,Typography,IconButton
+import {
+  Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow,
+  TableSortLabel, Paper, TextField, Typography, Avatar, Autocomplete
 } from '@mui/material';
-import { Avatar } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-function createData(id, Employee, InDate, CheckIn, EmployeeId, CheckOut,OutDate ) {
-  return { id, Employee, InDate, CheckIn, EmployeeId, CheckOut,OutDate };
+function createData(id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status) {
+  return { id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status };
 }
 
 const initialRows = [
-  createData(1, 'Mahesh', '13-3-25', "10:30AM", 501, "6:30PM", '13-3-25'),
-  createData(2, 'Vasu', '13-3-25', "9:30AM", 502, "6:30PM", '13-3-25'),
-  createData(3, 'Praveen', '13-3-25',"10:30AM" , 503, "6:30PM", '13-3-25'),
-  createData(4, 'Mahesh', '13-3-25', "10:45AM", 504, "6:30PM", '13-3-25'),
-  createData(5, 'Vasu', '13-3-25', "10:30AM", 505, "6:30PM", '13-3-25'),
-  createData(6, 'Praveen', '13-3-25', "10:00AM", 506, "6:30PM", '13-3-25'),
-  createData(7, 'Mahesh', '13-3-25', "10:30AM", 507, "6:30PM", '13-3-25'),
-  createData(8, 'Vasu', '13-3-25', "10:15AM", 508, "6:30PM", '13-3-25'),
-  createData(9, 'Praveen', '13-3-25',"10:30AM", 509, "6:30PM", '13-3-25'),
+  createData(1, '13-3-25', "10:30AM", 501, "6:30PM", '13-3-25'),
+  createData(2,  '13-3-25', "9:30AM", 502, "6:30PM", '13-3-25'),
+  createData(3,  '13-3-25', "10:30AM", 503, "6:30PM", '13-3-25'),
+  createData(4,  '13-3-25', "10:45AM", 504, "6:30PM", '13-3-25'),
+  createData(5,  '13-3-25', "10:30AM", 505, "6:30PM", '13-3-25'),
+  createData(6,  '13-3-25', "10:00AM", 506, "6:30PM", '13-3-25'),
+  createData(7,  '13-3-25', "10:30AM", 507, "6:30PM", '13-3-25'),
+  createData(8,  '13-3-25', "10:15AM", 508, "6:30PM", '13-3-25'),
+  createData(9,  '13-3-25', "10:30AM", 509, "6:30PM", '13-3-25'),
 ];
 
 export default function EmployeeTable() {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('DateOfJoining');
+  const [orderBy, setOrderBy] = React.useState('Employee');
   const [search, setSearch] = React.useState('');
-  const [filter, setFilter] = React.useState('');
   const [rows, setRows] = React.useState(initialRows);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [editId, setEditId] = React.useState(null);
-  const [editData, setEditData] = React.useState({});  
+  const [editData, setEditData] = React.useState({});
+  
+  // Set default date to current month and year
+  const currentDate = new Date();
+  const defaultDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+  const [selectedDate, setSelectedDate] = React.useState(defaultDate);
+
+  const uniqueEmployees = [...new Set(initialRows.map(row => row.Employee))];
 
   const handleEditChange = (event) => {
     setEditData({ ...editData, [event.target.name]: event.target.value });
@@ -40,103 +48,103 @@ export default function EmployeeTable() {
     setRows(rows.map((row) => (row.id === editId ? editData : row)));
     setEditId(null);
   };
-  
+
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-  const handleSearch = (event) => setSearch(event.target.value);
-  const handleFilter = (event) => setFilter(event.target.value);
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
-
   const handleDelete = (id) => {
     setRows(rows.filter((row) => row.id !== id));
   };
-  
 
-  const filteredRows = rows.filter((row) =>
-    row.Employee.toLowerCase().includes(search.toLowerCase()) &&
-    (filter ? row.CheckIn === filter : true)
-  );
+  const filteredRows = search
+    ? rows.filter((row) => row.Employee.toLowerCase().includes(search.toLowerCase()))
+    : rows;
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
-          <Typography variant="h6">Attendance Activity</Typography>
-          <TextField label="Search Employee" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
-            <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map((row) => row.CheckIn))].map((job) => (
-              <MenuItem key={job} value={job}>{job}</MenuItem>
-            ))}
-          </TextField>
+        {/* Filter/Search Section */}
+        <Box
+          sx={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: 2,
+            mb: 2,
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}
+        >
+          <Typography variant="h6" sx={{ flexGrow: 1, minWidth: 180 }}>
+            Attendance Activity
+          </Typography>
+
+          {/* Searchable Dropdown */}
+          <Autocomplete
+            options={uniqueEmployees}
+            value={search}
+            onInputChange={(e, value) => setSearch(value)}
+            renderInput={(params) => (
+              <TextField {...params} label="Search Employee" variant="outlined" size="small" />
+            )}
+            sx={{ minWidth: 250 }}
+            clearOnEscape
+            freeSolo
+          />
+          <Typography sx={{ flexGrow: 1, minWidth: 180 }}>
+            EmployeeId: 501
+          </Typography> 
+
+          {/* Date Picker */}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label="Select Month and Year"
+              inputFormat="MM/yyyy" // Format to show only month and year
+              value={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              renderInput={(params) => <TextField {...params} size="small" />}
+              views={['year', 'month']} // Restrict the picker to year and month
+            />
+          </LocalizationProvider>
         </Box>
+
+        {/* Table */}
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>EmployeeId</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                  <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
-                    Employee
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>In Date</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>SL.NO</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Date</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Check In</TableCell>
                 <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Check Out</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Out Date</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Actions</TableCell>          
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Work Hours</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.EmployeeId}</TableCell>
-                  <TableCell sx={{ 
-                     textAlign: 'left',
-                     display: 'flex', 
-                     alignItems: 'center',
-                     gap: 1, 
-                     justifyContent: 'flex-start',
-                     minWidth: 150
-                    }}>
-                    <Avatar sx={{ bgcolor: 'gray' }}>{row.Employee[0]}</Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
-                    {editId === row.id ? (
-                      <TextField name="Employee" value={editData.Employee} onChange={handleEditChange} size="small" variant="outlined" fullWidth />
-                    ) : (
-                      <Typography variant="body1">{row.Employee}</Typography>
-                    )}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.InDate}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.SLNO}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.Date}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.CheckIn}</TableCell>
                   <TableCell sx={{ textAlign: 'center' }}>{row.CheckOut}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.OutDate}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>
-                    {editId === row.id ? (
-                      <Button variant="contained" color="success" size="small" onClick={handleSave}>Save</Button>
-                    ) : (
-                      <>
-                      <IconButton color="error" onClick={() => handleDelete(row.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                      </>
-                    )}
-                  </TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.WorkHours}</TableCell>
+                  <TableCell sx={{ textAlign: 'center' }}>{row.Status}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
+        {/* Pagination */}
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"

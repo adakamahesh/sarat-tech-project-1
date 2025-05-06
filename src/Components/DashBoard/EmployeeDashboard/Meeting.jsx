@@ -28,8 +28,16 @@ export default function AccessibleTable() {
   }, []);
 
   return (
-    <TableContainer component={Paper} sx={{ mb: 3 }}>
-      <Table aria-label="meeting schedule table">
+    <TableContainer
+      component={Paper}
+      sx={{
+        mb: 3,
+        height: 500,           // Fixed height for the container
+        overflowY: "auto",     // Enables vertical scrolling
+        overflowX: "hidden",   // Prevents horizontal scroll
+      }}
+    >
+      <Table stickyHeader aria-label="meeting schedule table">
         <TableHead>
           <TableRow>
             <TableCell

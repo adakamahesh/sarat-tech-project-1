@@ -28,8 +28,6 @@ export default function PayslipTable() {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
-  const [openDialog, setOpenDialog] = React.useState(false);
-  const [rowToDelete, setRowToDelete] = React.useState(null);
   const [open, setOpen] = React.useState(false);
   const [newEmployee, setNewEmployee] = React.useState({
     Employee: '', StartDate: '',EndDate:'',Batch:'',GrossPay:'', Deduction:'',NetPay:'',Status:''
