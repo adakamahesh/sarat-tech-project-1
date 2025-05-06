@@ -6,20 +6,20 @@ import {
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
-function createData(id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status) {
-  return { id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status };
+function createData(id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status,Employee) {
+  return { id,  Date, CheckIn, SLNO, CheckOut, WorkHours, Status,Employee };
 }
 
 const initialRows = [
-  createData(1, '13-3-25', "10:30AM", 501, "6:30PM", '13-3-25'),
-  createData(2,  '13-3-25', "9:30AM", 502, "6:30PM", '13-3-25'),
-  createData(3,  '13-3-25', "10:30AM", 503, "6:30PM", '13-3-25'),
-  createData(4,  '13-3-25', "10:45AM", 504, "6:30PM", '13-3-25'),
-  createData(5,  '13-3-25', "10:30AM", 505, "6:30PM", '13-3-25'),
-  createData(6,  '13-3-25', "10:00AM", 506, "6:30PM", '13-3-25'),
-  createData(7,  '13-3-25', "10:30AM", 507, "6:30PM", '13-3-25'),
-  createData(8,  '13-3-25', "10:15AM", 508, "6:30PM", '13-3-25'),
-  createData(9,  '13-3-25', "10:30AM", 509, "6:30PM", '13-3-25'),
+  createData(1, '13-3-25', "10:30AM", 501, "6:30PM", '13-3-25',"pending",'Mahesh'),
+  createData(2,  '13-3-25', "9:30AM", 502, "6:30PM", '13-3-25',"pending",'Mahesh'),
+  createData(3,  '13-3-25', "10:30AM", 503, "6:30PM", '13-3-25',"pending",'Mahesh'),
+  createData(4,  '13-3-25', "10:45AM", 504, "6:30PM", '13-3-25',"pending",'Mahesh'),
+  createData(5,  '13-3-25', "10:30AM", 505, "6:30PM", '13-3-25',"pending",'Vasu'),
+  createData(6,  '13-3-25', "10:00AM", 506, "6:30PM", '13-3-25',"pending",'Vasu'),
+  createData(7,  '13-3-25', "10:30AM", 507, "6:30PM", '13-3-25',"pending",'Vasu'),
+  createData(8,  '13-3-25', "10:15AM", 508, "6:30PM", '13-3-25',"pending",'Vasu'),
+  createData(9,  '13-3-25', "10:30AM", 509, "6:30PM", '13-3-25',"pending",'Vasu'),
 ];
 
 export default function EmployeeTable() {

@@ -13,9 +13,14 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 
 const columns = [
-  { id: 'Employee', label: 'Employee', minWidth: 170 },
-  { id: 'Overtime', label: 'Overtime', align: 'center', minWidth: 100 },
-  { id: 'Action', label: 'Action', align: 'center', minWidth: 100 },
+  { id: "Employee", label: "Employee", minWidth: 170 },
+  { id: "EmployeeId", label: "EmployeeId", minWidth: 100 },
+  { id: "OverTimeDate", label: "OverTimeDate", minWidth: 100 },
+  { id: "Check-In", label: "Check-In", minWidth: 100 },
+  { id: "Check-Out", label: "Check-Out", minWidth: 100 },
+  { id: "Overtime", label: "Overtime", align: "center", minWidth: 100 },
+  { id: "Reason", label: "Reason", align: "center", minWidth: 100 },
+  { id: "Action", label: "Action", align: "center", minWidth: 100 },
 ];
 
 function createData(Employee, Overtime) {
