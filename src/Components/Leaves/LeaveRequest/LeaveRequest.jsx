@@ -14,6 +14,10 @@ import {
   Divider,
   Autocomplete,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import axios from "axios";
 
@@ -22,6 +26,20 @@ export default function TotalLeaves() {
   const [orderBy, setOrderBy] = useState("");
   const [rows, setRows] = useState([]);
   const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const [formData, setFormData] = useState({
+    employeeId: "501",
+    empFirstName: "",
+    empLastName: "",
+    leaveType: "",
+    startDate: "",
+    endDate: "",
+    reason: "",
+    requestedDays: "",
+    requestedDate: "",
+    actionDate: "",
+  });
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -35,24 +53,19 @@ export default function TotalLeaves() {
 
   const fetchLeaveRequests = async () => {
     try {
-      const response = await axios.get(
-        "http://192.168.1.49:8084/leave-requests"
-      );
+      const response = await axios.get("http://192.168.1.49:8084/leave-requests");
       const leaveRequestData = response.data.map((leaveRequest, index) => {
         let requestedDays = "N/A";
         if (leaveRequest.startDate && leaveRequest.endDate) {
           const startDateObj = new Date(leaveRequest.startDate);
           const endDateObj = new Date(leaveRequest.endDate);
-          const timeDiff = Math.abs(
-            endDateObj.getTime() - startDateObj.getTime()
-          );
+          const timeDiff = Math.abs(endDateObj - startDateObj);
           requestedDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
         }
         return {
           id: index + 1,
           EmployeeId: leaveRequest?.employee || "N/A",
-          Employee:
-            `${leaveRequest.empFirstName} ${leaveRequest.empLastName}` || "N/A",
+          Employee: `${leaveRequest.empFirstName} ${leaveRequest.empLastName}` || "N/A",
           LeaveType: leaveRequest?.leaveTypeName || "N/A",
           StartDate: leaveRequest.startDate
             ? new Date(leaveRequest.startDate).toLocaleDateString()
@@ -77,8 +90,33 @@ export default function TotalLeaves() {
     }
   };
 
-  const uniqueEmployees = [...new Set(rows.map((row) => row.Employee))];
+  const handleFormChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
+  const handleFormSubmit = async () => {
+    try {
+      await axios.post("http://192.168.1.49:8084/leave-requests", {
+        employee: formData.employeeId,
+        empFirstName: formData.empFirstName,
+        empLastName: formData.empLastName,
+        leaveTypeName: formData.leaveType,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        reason: formData.reason,
+        submissionDate: formData.requestedDate || new Date().toISOString(),
+        approvalDate: formData.actionDate || null,
+        status: "Pending",
+        requestedDays: formData.requestedDays,
+      });
+      setOpen(false);
+      fetchLeaveRequests();
+    } catch (error) {
+      console.error("Error creating leave request:", error);
+    }
+  };
+
+  const uniqueEmployees = [...new Set(rows.map((row) => row.Employee))];
   const filteredRows = rows.filter((row) =>
     row.Employee.toLowerCase().includes(search.toLowerCase())
   );
@@ -113,96 +151,162 @@ export default function TotalLeaves() {
             clearOnEscape
             freeSolo
           />
-          <Typography sx={{ flexGrow: 1, minWidth: 180 }}>
-            EmployeeId: 501
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography>EmployeeId: 501</Typography>
+            <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+              New Request
+            </Button>
+          </Box>
         </Box>
+
         <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+
         <TableContainer sx={{ overflowX: "auto" }}>
           <Table sx={{ minWidth: 1500 }}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Sr No
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  EmployeeId
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  <TableSortLabel
-                    active={orderBy === "Employee"}
-                    direction={order}
-                    onClick={() => handleRequestSort("Employee")}
+                {[
+                  "Sr No",
+                  "EmployeeId",
+                  "Employee",
+                  "LeaveType",
+                  "StartDate",
+                  "EndDate",
+                  "Requested Days",
+                  "Requested Date",
+                  "Reason",
+                  "Action Date",
+                  "Status",
+                ].map((headCell) => (
+                  <TableCell
+                    key={headCell}
+                    sx={{ fontWeight: "bold", textAlign: "center" }}
                   >
-                    Employee
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  LeaveType
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  StartDate
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  EndDate
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Requested Days
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Requested Date
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Reason
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Action Date
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Status
-                </TableCell>
+                    {headCell === "Employee" ? (
+                      <TableSortLabel
+                        active={orderBy === "Employee"}
+                        direction={order}
+                        onClick={() => handleRequestSort("Employee")}
+                      >
+                        {headCell}
+                      </TableSortLabel>
+                    ) : (
+                      headCell
+                    )}
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.map((row) => (
                 <TableRow key={row.id}>
                   <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.EmployeeId}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Employee}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.LeaveType}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.StartDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.EndDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.RequestedDays}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.RequestedDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Reason}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.ActionDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Status}
-                  </TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.EmployeeId}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.Employee}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.LeaveType}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.StartDate}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.EndDate}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.RequestedDays}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.RequestedDate}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.Reason}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.ActionDate}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{row.Status}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
+
+      {/* Dialog for Create Leave Request */}
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+        <DialogTitle>Create Leave Request</DialogTitle>
+        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+          <TextField
+            name="employeeId"
+            label="Employee ID"
+            value={formData.employeeId}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="empFirstName"
+            label="First Name"
+            value={formData.empFirstName}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="empLastName"
+            label="Last Name"
+            value={formData.empLastName}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="leaveType"
+            label="Leave Type"
+            value={formData.leaveType}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="startDate"
+            type="date"
+            label="Start Date"
+            InputLabelProps={{ shrink: true }}
+            value={formData.startDate}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="endDate"
+            type="date"
+            label="End Date"
+            InputLabelProps={{ shrink: true }}
+            value={formData.endDate}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="reason"
+            label="Reason"
+            value={formData.reason}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="requestedDays"
+            label="Requested Days"
+            type="number"
+            value={formData.requestedDays}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="requestedDate"
+            type="date"
+            label="Requested Date"
+            InputLabelProps={{ shrink: true }}
+            value={formData.requestedDate}
+            onChange={handleFormChange}
+            fullWidth
+          />
+          <TextField
+            name="actionDate"
+            type="date"
+            label="Action Date"
+            InputLabelProps={{ shrink: true }}
+            value={formData.actionDate}
+            onChange={handleFormChange}
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleFormSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
