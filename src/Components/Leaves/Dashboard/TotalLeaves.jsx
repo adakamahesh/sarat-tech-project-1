@@ -1,210 +1,233 @@
 import React, { useEffect, useState } from "react";
 import {
-  Box,
-  Table,
-  TableBody,
-  Button,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  Paper,
-  Typography,
-  Divider,
+    Box,
+    Table,
+    TableBody,
+    Button,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    Paper,
+    Typography,
+    Divider,
 } from "@mui/material";
 import axios from "axios";
 
 export default function TotalLeaves() {
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState("");
-  const [rows, setRows] = useState([]);
+    const [order, setOrder] = useState("asc");
+    const [orderBy, setOrderBy] = useState("");
+    const [rows, setRows] = useState([]);
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
+    const handleRequestSort = (property) => {
+        const isAsc = orderBy === property && order === "asc";
+        setOrder(isAsc ? "desc" : "asc");
+        setOrderBy(property);
+    };
 
-  useEffect(() => {
-    fetchLeaveRequests();
-  }, []);
+    useEffect(() => {
+        fetchLeaveRequests();
+    }, []);
 
-  const fetchLeaveRequests = async () => {
-    try {
-      const response = await axios.get(
-        "http://192.168.1.49:8084/leave-requests"
-      );
-      const leaveRequestData = response.data.map((leaveRequest, index) => {
-        let requestedDays = "N/A";
-        if (leaveRequest.startDate && leaveRequest.endDate) {
-          const startDateObj = new Date(leaveRequest.startDate);
-          const endDateObj = new Date(leaveRequest.endDate);
-          const timeDiff = Math.abs(
-            endDateObj.getTime() - startDateObj.getTime()
-          );
-          requestedDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    const fetchLeaveRequests = async () => {
+        try {
+            const response = await axios.get(
+                "http://192.168.1.49:8084/leave-requests"
+            );
+            const leaveRequestData = response.data.map((leaveRequest, index) => {
+                let requestedDays = "N/A";
+                if (leaveRequest.startDate && leaveRequest.endDate) {
+                    const startDateObj = new Date(leaveRequest.startDate);
+                    const endDateObj = new Date(leaveRequest.endDate);
+                    const timeDiff = Math.abs(endDateObj.getTime() - startDateObj.getTime());
+                    requestedDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                }
+    
+                const status = leaveRequest.status || "Pending";
+                const isDisabled = status === "Approved" || status === "Rejected";
+    
+                return {
+                    id: index + 1,
+                    leaveRequestId: leaveRequest.leaveRequestId,
+                    EmployeeId: leaveRequest?.employee || "N/A",
+                    Employee: `${leaveRequest.empFirstName} ${leaveRequest.empLastName}` || "N/A",
+                    LeaveType: leaveRequest?.leaveTypeName || "N/A",
+                    StartDate: leaveRequest.startDate
+                        ? new Date(leaveRequest.startDate).toLocaleDateString()
+                        : "N/A",
+                    EndDate: leaveRequest.endDate
+                        ? new Date(leaveRequest.endDate).toLocaleDateString()
+                        : "N/A",
+                    RequestedDays: requestedDays,
+                    Reason: leaveRequest.reason || "N/A",
+                    RequestedDate: leaveRequest.submissionDate
+                        ? new Date(leaveRequest.submissionDate).toLocaleDateString()
+                        : "N/A",
+                    ActionDate: leaveRequest.approvalDate
+                        ? new Date(leaveRequest.approvalDate).toLocaleDateString()
+                        : "-",
+                    Status: status,
+                    disableActions: isDisabled, 
+                };
+            });
+            setRows(leaveRequestData);
+        } catch (error) {
+            console.error("Error fetching leave requests:", error);
         }
-        return {
-          id: index + 1,
-          EmployeeId: leaveRequest?.employee || "N/A",
-          Employee:
-            `${leaveRequest.empFirstName} ${leaveRequest.lastName}` || "N/A",
-          LeaveType: leaveRequest?.leaveTypeName || "N/A",
-          StartDate: leaveRequest.startDate
-            ? new Date(leaveRequest.startDate).toLocaleDateString()
-            : "N/A",
-          EndDate: leaveRequest.endDate
-            ? new Date(leaveRequest.endDate).toLocaleDateString()
-            : "N/A",
-          RequestedDays: requestedDays,
-          Reason: leaveRequest.reason || "N/A",
-          Status: leaveRequest.status || "N/A",
-        };
-      });
-      setRows(leaveRequestData);
-    } catch (error) {
-      console.error("Error fetching leave requests:", error);
-    }
-  };
+    };
 
-  return (
-    <Box sx={{ width: "100%", overflowX: "auto" }}>
-      <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            gap: 4,
-            mb: 2,
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography variant="h6">Leave Requests</Typography>
-        </Box>
-        <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
-        <TableContainer sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 1500 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Sr No
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  EmployeeId
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  <TableSortLabel
-                    active={orderBy === "Employee"}
-                    direction={order}
-                    onClick={() => handleRequestSort("Employee")}
-                  >
-                    Employee
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  LeaveType
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  StartDate
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  EndDate
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Requested Days
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Requested Date
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Reason
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Action Date
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Status
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontWeight: "bold",
-                    textAlign: "center",
-                    position: "sticky",
-                    right: 0,
-                    background: "white",
-                    zIndex: 2,
-                  }}
-                >
-                  Action
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.EmployeeId}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Employee}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.LeaveType}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.StartDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.EndDate}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.RequestedDays}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Reason}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Status}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Status}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>
-                    {row.Status}
-                  </TableCell>
-                  <TableCell
+    const handleReject = async (row) => {
+        try {
+            const updatedLeaveRequest = {
+                ...row,
+                Status: "Rejected",
+                ActionDate: new Date().toISOString(),
+            };
+
+            await axios.put(`http://192.168.1.49:8084/leave-requests/${row.leaveRequestId}`, {
+                status: "Rejected",
+                approvalDate: updatedLeaveRequest.ActionDate,
+            });
+
+            const updatedRows = rows.map((r) =>
+                r.leaveRequestId === row.leaveRequestId 
+                    ? { ...updatedLeaveRequest, disableActions: true }
+                    : r
+            );
+
+            setRows(updatedRows);
+        } catch (error) {
+            console.error("Error rejecting leave request:", error);
+        }
+    };
+
+    const handleAccept = async (row) => {
+        try {
+            const updatedLeaveRequest = {
+                ...row,
+                Status: "Approved",
+                ActionDate: new Date().toISOString(),
+            };
+
+            await axios.put(`http://192.168.1.49:8084/leave-requests/${row.leaveRequestId}`, {
+                status: "Approved",
+                approvalDate: updatedLeaveRequest.ActionDate,
+            });
+
+            const updatedRows = rows.map((r) =>
+                r.leaveRequestId === row.leaveRequestId
+                    ? { ...updatedLeaveRequest, disableActions: true }
+                    : r
+            );
+
+            setRows(updatedRows);
+        } catch (error) {
+            console.error("Error accepting leave request:", error);
+        }
+    };
+
+    return (
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+            <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
+                <Box
                     sx={{
-                      textAlign: "center",
-                      position: "sticky",
-                      right: 0,
-                      background: "white",
-                      zIndex: 1,
-                      whiteSpace: "nowrap",
+                        display: "flex",
+                        gap: 4,
+                        mb: 2,
+                        alignItems: "center",
+                        justifyContent: "space-between",
                     }}
-                  >
-                    <Button
-                      variant="contained"
-                      sx={{ bgcolor: "green", color: "white", mx: 1 }}
-                      onClick={() => alert(`Accepted ${row.EmployeeId}`)}
-                    >
-                      Accept
-                    </Button>
-                    <Button
-                      variant="contained"
-                      sx={{ bgcolor: "red", color: "white", mx: 1 }}
-                      onClick={() => alert(`Rejected ${row.EmployeeId}`)}
-                    >
-                      Reject
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
-  );
+                >
+                    <Typography variant="h6">Leave Requests</Typography>
+                </Box>
+                <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+                <TableContainer sx={{ overflowX: "auto" }}>
+                    <Table sx={{ minWidth: 1500 }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Sr No</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Leave Request ID</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>EmployeeId</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                                    <TableSortLabel
+                                        active={orderBy === "Employee"}
+                                        direction={order}
+                                        onClick={() => handleRequestSort("Employee")}
+                                    >
+                                        Employee
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>LeaveType</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>StartDate</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>EndDate</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Requested Days</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Requested Date</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Reason</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Action Date</TableCell>
+                                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Status</TableCell>
+                                <TableCell
+                                    sx={{
+                                        fontWeight: "bold",
+                                        textAlign: "center",
+                                        position: "sticky",
+                                        right: 0,
+                                        background: "white",
+                                        zIndex: 2,
+                                    }}
+                                >
+                                    Action
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {rows.map((row) => (
+                                <TableRow key={row.leaveRequestId}>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.leaveRequestId}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.EmployeeId}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.Employee}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.LeaveType}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.StartDate}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.EndDate}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.RequestedDays}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.RequestedDate}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.Reason}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.ActionDate}</TableCell>
+                                    <TableCell sx={{ textAlign: "center" }}>{row.Status}</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            textAlign: "center",
+                                            position: "sticky",
+                                            right: 0,
+                                            background: "white",
+                                            zIndex: 1,
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        <Button
+                                            variant="contained"
+                                            sx={{ bgcolor: "green", color: "white", mx: 1 }}
+                                            disabled={row.disableActions}
+                                            onClick={() => handleAccept(row)}
+                                        >
+                                            Approve
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            sx={{ bgcolor: "red", color: "white", mx: 1 }}
+                                            disabled={row.disableActions}
+                                            onClick={() => handleReject(row)}
+                                        >
+                                            Reject
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Paper>
+        </Box>
+    );
 }

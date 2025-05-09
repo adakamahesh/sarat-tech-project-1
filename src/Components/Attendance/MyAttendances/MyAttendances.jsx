@@ -1,127 +1,187 @@
 import * as React from 'react';
-import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
-  TableSortLabel,Paper,TextField,MenuItem,Typography} from '@mui/material';
-import { Avatar } from '@mui/material';
+import {
+    Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow,
+    Paper, TextField, Typography, CircularProgress
+} from '@mui/material';
+import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { format } from 'date-fns';
 
-function createData(id,EmployeeId, Employee, Date, Day, CheckIn, InDate, Checkout, OutDate , Shift, MinHours,AtWork,PendingHour,OverTime) {
-  return {id,EmployeeId, Employee, Date, Day, CheckIn, InDate, Checkout, OutDate , Shift, MinHours,AtWork,PendingHour,OverTime };
-}
+export default function MyAttendances() {
+    const [attendanceData, setAttendanceData] = React.useState([]);
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [selectedDate, setSelectedDate] = React.useState(new Date());
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
+    const [loggedInEmployeeName, setLoggedInEmployeeName] = React.useState('');
+    const [loggedInEmployeeId, setLoggedInEmployeeId] = React.useState(null);
 
-const initialRows = [
-  createData(1,501, 'Mahesh', '13-03-2025', 'Thursday', "10:30AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(2,502, 'Vasu', '13-03-2025', 'Thursday', "10:20AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(3,503, 'Praveen', '13-03-2025', 'Thursday', "10:15AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(4,504, 'Mahesh', '13-03-2025', 'Thursday', "10:00AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(5,505, 'Vasu', '13-03-2025', 'Thursday', "10:05AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(6,506, 'Praveen', '13-03-2025', 'Thursday', "10:00AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(7,507, 'Mahesh', '13-03-2025', 'Thursday', "10:15AM", '13-03-2025', "06:30PM", "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(8,508, 'Vasu', '13-03-2025', 'Thursday', "10:20AM", '13-03-2025', "06:30PM",  "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-  createData(9,509, 'Praveen', '13-03-2025', 'Thursday', "10:30AM", '13-03-2025', "06:30PM",  "13-03-2025", "Regular Shift",'08:10','06:10','01:50','00:10'),
-];
+    React.useEffect(() => {
+        const fetchLoggedInEmployeeInfo = async () => {
+            const employeeIdFromLocalStorage = localStorage.getItem('employeeId');
 
-export default function EmployeeTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('DateOfJoining');
-  const [search, setSearch] = React.useState('');
-  const [filter, setFilter] = React.useState('');
-  const [rows, setRows] = React.useState(initialRows);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+            if (employeeIdFromLocalStorage) {
+                setLoggedInEmployeeId(parseInt(employeeIdFromLocalStorage, 10));
+                try {
+                    // Fetch employee name from your backend API
+                    const employeeResponse = await fetch(`http://192.168.1.49:8084/api/employees/${employeeIdFromLocalStorage}`); // Adjust the URL
+                    if (!employeeResponse.ok) {
+                        throw new Error(`Failed to fetch employee name: ${employeeResponse.status}`);
+                    }
+                    const employeeData = await employeeResponse.json();
+                    setLoggedInEmployeeName(employeeData.firstName + " " + employeeData.lastName ); // Adjust how you get the name
+                } catch (error) {
+                    console.error("Error fetching employee name:", error);
+                    setError("Failed to fetch employee name. Please check your connection.");
+                    setLoading(false);
+                    return;
+                }
+            } else {
+                setError("Employee ID not found. Please log in.");
+                setLoading(false);
+                return;
+            }
+        };
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+        fetchLoggedInEmployeeInfo();
+    }, []);
 
-  const handleSearch = (event) => setSearch(event.target.value);
-  const handleFilter = (event) => setFilter(event.target.value);
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    React.useEffect(() => {
+        if (loggedInEmployeeId) {
+            fetchAttendanceData(selectedDate, loggedInEmployeeId);
+        }
+    }, [selectedDate, loggedInEmployeeId]);
 
-  const filteredRows = rows.filter((row) =>
-    row.Employee.toLowerCase().includes(search.toLowerCase()) &&
-    (filter ? row.Date === filter : true)
-  );
+    const fetchAttendanceData = async (date, employeeId) => {
+        setLoading(true);
+        setError(null);
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        try {
+            const response = await fetch(
+                `http://192.168.1.49:8084/attendance/by-month?year=${year}&month=${month}&employeeId=${employeeId}`
+            );
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setAttendanceData(data);
+        } catch (e) {
+            setError(e.message);
+            setAttendanceData([]);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '150%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap:90, mb: 2 }}>
-          <Typography variant="h6">My Attendances</Typography>
-          <TextField select label="Filter by Date" variant="outlined" size="small" value={filter} onChange={handleFilter}>
-            <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map((row) => row.Date))].map((job) => (
-              <MenuItem key={job} value={job}>{job}</MenuItem>
-            ))}
-          </TextField>
+    const handleChangePage = (event, newPage) => setPage(newPage);
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+    const handleDateChange = (date) => {
+        setSelectedDate(date);
+    };
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return <Typography color="error">Error: {error}</Typography>;
+    }
+
+    return (
+        <Box sx={{ width: '100%' }}>
+            <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 2,
+                        mb: 2,
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Typography variant="h6" sx={{ flexGrow: 1, minWidth: 200 }}>
+                        My Attendance
+                    </Typography>
+
+                    <Typography variant="subtitle1" sx={{ minWidth: 200, textAlign: 'right' }}>
+                        Employee Name: {loggedInEmployeeName}
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ minWidth: 150, textAlign: 'right' }}>
+                        Employee ID: {loggedInEmployeeId !== null ? loggedInEmployeeId : 'N/A'}
+                    </Typography>
+
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DesktopDatePicker
+                            label="Select Month and Year"
+                            inputFormat="MM/yyyy"
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                            renderInput={(params) => <TextField {...params} size="small" />}
+                            views={['year', 'month']}
+                        />
+                    </LocalizationProvider>
+                </Box>
+
+                <TableContainer>
+                    <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ fontWeight: 'bold' }}>SL.NO</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Check In</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Check Out</TableCell>
+                                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {attendanceData
+                                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                                .map((row, index) => (
+                                    <TableRow key={row.attendanceId}>
+                                        <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                                        <TableCell>{format(new Date(row.attendanceDate), 'dd-MM-yy')}</TableCell>
+                                        <TableCell>
+                                            {row.clockInTime ? format(new Date(`2000-01-01T${row.clockInTime}`), 'hh:mm a') : '-'}
+                                        </TableCell>
+                                        <TableCell>
+                                            {row.clockOutTime ? format(new Date(`2000-01-01T${row.clockOutTime}`), 'hh:mm a') : '-'}
+                                        </TableCell>
+                                        <TableCell>{row.status}</TableCell>
+                                    </TableRow>
+                                ))}
+                            {attendanceData.length === 0 && (
+                                <TableRow>
+                                    <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
+                                        No attendance data found for the selected month.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={attendanceData.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
         </Box>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>EmployeeId</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                  <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
-                    Employee
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Date</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Day</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Check-In</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>InDate</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Check-Out</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>OutDate</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Shift</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Min Hours</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>At Work</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>PendingHour</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>OverTime</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.EmployeeId}</TableCell>
-                  <TableCell sx={{ 
-                     textAlign: 'left',
-                     display: 'flex', 
-                     alignItems: 'center',
-                     gap: 1, 
-                     justifyContent: 'flex-start'
-                    }}>
-                    <Avatar sx={{ bgcolor: 'gray' }}>{row.Employee[0]}</Avatar>
-                    {row.Employee}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Date}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Day}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.CheckIn}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.InDate}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Checkout}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.OutDate}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Shift}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.MinHours}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.AtWork}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.PendingHour}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.OverTime}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
-  );
+    );
 }

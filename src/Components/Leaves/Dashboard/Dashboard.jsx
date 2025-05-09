@@ -24,7 +24,7 @@ export default function HRMDashboard() {
       try {
         const pendingRes = await axios.get(
           "http://192.168.1.49:8084/leave-requests/count/pending"
-        );
+        );  
         const approvedRes = await axios.get(
           "http://192.168.1.49:8084/leave-requests/count/approved"
         );

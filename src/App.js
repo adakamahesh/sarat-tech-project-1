@@ -27,10 +27,17 @@ const App = () => {
         element={isAuthenticated() ? <Navigate to="/home" /> : <Login />}
       />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-
       {/* Protected Routes */}
       <Route
         path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/NewRegister"
         element={
           <ProtectedRoute>
             <Home />
