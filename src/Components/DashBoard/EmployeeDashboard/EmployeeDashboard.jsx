@@ -11,7 +11,7 @@ import Meeting from "./Meeting";
 import Calender from "./Calender";
 import Announcement from './Announcement';
 import AttendanceLeave from './AttendanceLeave';
-import ShiftReq from './ShiftReq';
+import Leavereq from '../../Leaves/LeaveRequest/LeaveRequest';
 
 const cards = [
   {
@@ -128,7 +128,7 @@ export default function EmployeeDashboard() {
           </Box>
       </Box>
       <Box sx={{mt:4}}>
-        <ShiftReq/>
+        <Leavereq/>
       </Box>
     </>
   );

@@ -53,6 +53,7 @@ import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import NewRegister from "../Components/LoginSignup/Signup";
 import { addMilliseconds } from "date-fns";
 import { ADMIN } from "../constants/user_permission";
+import bg from "../assets/images/login.jpg";
 
 // Styles
 const isMobile = window.innerWidth <= 768;
@@ -65,31 +66,31 @@ export default function DashboardLayoutBasic() {
   const location = useLocation();
   const navigate = useNavigate();
   const [role, setRole] = useState(null);
-  const employeeId = localStorage.getItem("employeeId"); 
+  const employeeId = localStorage.getItem("employeeId");
   const currentPage = location.pathname.split("/").pop();
 
-//   useEffect(() => {
-//     const fetchUserPermission = async () => {
-//       try {
-//         const response = await fetch(`http://192.168.1.49:8084/api/v1/user/permission/${employeeId}`);
-//         const data = await response.text();
-//         setRole(data); // adjust this if your API returns a different structure
-//       } catch (error) {
-//         console.error("Error fetching user permission:", error);
-//       }
-//     };
+  //   useEffect(() => {
+  //     const fetchUserPermission = async () => {
+  //       try {
+  //         const response = await fetch(`http://192.168.1.49:8084/api/v1/user/permission/${employeeId}`);
+  //         const data = await response.text();
+  //         setRole(data); // adjust this if your API returns a different structure
+  //       } catch (error) {
+  //         console.error("Error fetching user permission:", error);
+  //       }
+  //     };
 
-//     if (employeeId) {
-//       fetchUserPermission();
-//     }
-//   }, []);
-//   // if(2LIST.includes(parseInt(employeeId)))
-// // const permision=localStorage.getItem("userPermission");
+  //     if (employeeId) {
+  //       fetchUserPermission();
+  //     }
+  //   }, []);
+  //   // if(2LIST.includes(parseInt(employeeId)))
+  // // const permision=localStorage.getItem("userPermission");
 
-//  console.log(role) 
-
+  //  console.log(role)
+  // if (employeeId == ADMIN) 
   const renderComponent = () => {
-    if (employeeId == ADMIN) {
+   if(ADMIN.includes(parseInt(employeeId))) {
       switch (currentPage) {
         case "home":
         case "Dashboard":
@@ -130,7 +131,7 @@ export default function DashboardLayoutBasic() {
         case "Holidays":
           return <Holidays />;
         case "NewRegister":
-          return <NewRegister/>;
+          return <NewRegister />;
         case "CompanyLeaves":
           return <CompanyLeaves />;
         case "ResignationLater":
@@ -235,7 +236,7 @@ export default function DashboardLayoutBasic() {
   };
 
   const createNavigation = (navigate) => {
-    if (employeeId == ADMIN) {
+    if(ADMIN.includes(parseInt(employeeId))) {
       return [
         {
           segment: "Dashboard",
@@ -389,11 +390,11 @@ export default function DashboardLayoutBasic() {
               title: "Payroll Dashboard",
               icon: <HorizontalRuleIcon />,
             },
-            {
-              segment: "Contract",
-              title: "Contract",
-              icon: <HorizontalRuleIcon />,
-            },
+            // {
+            //   segment: "Contract",
+            //   title: "Contract",
+            //   icon: <HorizontalRuleIcon />,
+            // },
             {
               segment: "Allowances",
               title: "Allowances",
@@ -548,6 +549,15 @@ export default function DashboardLayoutBasic() {
     ];
   };
 
+  const backgroundStyle = {
+    backgroundImage: `url(${bg})`,
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    minHeight: "100vh",
+    width: "100%",
+  };
+
   const demoTheme = extendTheme({
     components: {
       MuiToolbar: {
@@ -638,46 +648,48 @@ export default function DashboardLayoutBasic() {
   const NAVIGATION = createNavigation(navigate);
 
   return (
-    <AppProvider
-      navigation={NAVIGATION}
-      theme={demoTheme}
-      window={window || undefined}
-      branding={{
-        logo: (
-          <img
-            src={logo}
-            alt="Custom Logo"
-            style={{
-              height: isMobile ? 30 : 42,
-              margin: isMobile ? "4px 0" : "0 0",
-            }}
-          />
-        ),
-        title: "",
-        homeUrl:
-          role == ADMIN
-            ? "/dashboard/EmployeeDashboard"
-            : "/dashboard/HRMDashboard",
-      }}
-    >
-      <DashboardLayout
-        slotProps={{
-          drawer: {
-            sx: { flexShrink: 0 },
-            PaperProps: {
-              sx: {
-                maxWidth: "280px",
-                backgroundColor: "#212121",
-                color: "#ffffff",
-              },
-            },
-          },
+    <div style={backgroundStyle}>
+      <AppProvider
+        navigation={NAVIGATION}
+        theme={demoTheme}
+        window={window || undefined}
+        branding={{
+          logo: (
+            <img
+              src={logo}
+              alt="Custom Logo"
+              style={{
+                height: isMobile ? 30 : 42,
+                margin: isMobile ? "4px 0" : "0 0",
+              }}
+            />
+          ),
+          title: "",
+          homeUrl:
+          ADMIN.includes(parseInt(employeeId))
+              ? "/dashboard/EmployeeDashboard"
+              : "/dashboard/HRMDashboard",
         }}
       >
-        <PageContainer style={containerStyle}>
-          {renderComponent()}
-        </PageContainer>
-      </DashboardLayout>
-    </AppProvider>
+        <DashboardLayout
+          slotProps={{
+            drawer: {
+              sx: { flexShrink: 0 },
+              PaperProps: {
+                sx: {
+                  maxWidth: "280px",
+                  backgroundColor: "#212121",
+                  color: "#ffffff",
+                },
+              },
+            },
+          }}
+        >
+          <PageContainer style={containerStyle}>
+            {renderComponent()}
+          </PageContainer>
+        </DashboardLayout>
+      </AppProvider>
+    </div>
   );
 }

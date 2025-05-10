@@ -5,6 +5,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Attendance from '../../Attendance/MyAttendances/MyAttendances';
 
 export default function AccessibleTable() {
   return (
@@ -34,6 +35,7 @@ export default function AccessibleTable() {
               Attendance & Leave
             </TableCell>
           </TableRow>
+          <Attendance/>
         </TableHead>
       </Table>
     </TableContainer>

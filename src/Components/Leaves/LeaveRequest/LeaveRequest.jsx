@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 
@@ -30,8 +31,8 @@ export default function TotalLeaves() {
 
   const [formData, setFormData] = useState({
     employeeId: "501",
-    empFirstName: "",
-    empLastName: "",
+    empFirstName: "John",
+    empLastName: "Doe",
     leaveType: "",
     startDate: "",
     endDate: "",
@@ -91,7 +92,21 @@ export default function TotalLeaves() {
   };
 
   const handleFormChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+
+      if (updated.startDate && updated.endDate) {
+        const start = new Date(updated.startDate);
+        const end = new Date(updated.endDate);
+        const diff = Math.ceil((end - start) / (1000 * 3600 * 24)) + 1;
+        updated.requestedDays = diff > 0 ? diff : "";
+      } else {
+        updated.requestedDays = "";
+      }
+
+      return updated;
+    });
   };
 
   const handleFormSubmit = async () => {
@@ -228,6 +243,7 @@ export default function TotalLeaves() {
             value={formData.employeeId}
             onChange={handleFormChange}
             fullWidth
+            disabled
           />
           <TextField
             name="empFirstName"
@@ -235,6 +251,7 @@ export default function TotalLeaves() {
             value={formData.empFirstName}
             onChange={handleFormChange}
             fullWidth
+            disabled
           />
           <TextField
             name="empLastName"
@@ -242,14 +259,19 @@ export default function TotalLeaves() {
             value={formData.empLastName}
             onChange={handleFormChange}
             fullWidth
+            disabled
           />
           <TextField
+            select
             name="leaveType"
             label="Leave Type"
             value={formData.leaveType}
             onChange={handleFormChange}
             fullWidth
-          />
+          >
+            <MenuItem value="Sick Leave">Sick Leave</MenuItem>
+            <MenuItem value="Casual Leave">Casual Leave</MenuItem>
+          </TextField>
           <TextField
             name="startDate"
             type="date"
@@ -280,31 +302,15 @@ export default function TotalLeaves() {
             label="Requested Days"
             type="number"
             value={formData.requestedDays}
-            onChange={handleFormChange}
             fullWidth
-          />
-          <TextField
-            name="requestedDate"
-            type="date"
-            label="Requested Date"
-            InputLabelProps={{ shrink: true }}
-            value={formData.requestedDate}
-            onChange={handleFormChange}
-            fullWidth
-          />
-          <TextField
-            name="actionDate"
-            type="date"
-            label="Action Date"
-            InputLabelProps={{ shrink: true }}
-            value={formData.actionDate}
-            onChange={handleFormChange}
-            fullWidth
+            disabled
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleFormSubmit}>Submit</Button>
+          <Button variant="contained" onClick={handleFormSubmit}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

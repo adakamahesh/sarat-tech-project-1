@@ -48,8 +48,8 @@ const Signup = () => {
     const userData = {
       username: userName,
       password: password,
-      employee: { employeeid: employeeId },
-      userpermission: { [role]: true },
+      employee: { employeeId: parseInt(employeeId) }, 
+      userpermission: role,
     };
 
     try {
@@ -66,8 +66,8 @@ const Signup = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        m:0,
-        p:0,
+        m: 0,
+        p: 0,
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",

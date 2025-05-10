@@ -13,6 +13,9 @@ import {
   InputLabel,
   FormControl,
   IconButton,
+  Dialog,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { Add, FilterList, MoreVert } from "@mui/icons-material";
 
@@ -108,7 +111,7 @@ const LeaveTypeList = () => {
     setNewLeave((prev) => {
       const updated = { ...prev, [name]: value };
       if (name === "name") {
-        updated.code = generateCodeFromName(value); // Generate code based on name
+        updated.code = generateCodeFromName(value);
       }
       return updated;
     });
@@ -137,9 +140,7 @@ const LeaveTypeList = () => {
       const id = leaveTypes[editIndex].leaveTypeId;
       fetch(`http://192.168.1.49:8084/leave_types/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
         .then((res) => res.json())
@@ -153,32 +154,23 @@ const LeaveTypeList = () => {
           setLeaveTypes(updatedList);
           setShowCreateCard(false);
           setEditIndex(null);
-          setNewLeave({
-            code: "",
-            name: "",
-            payment: "Paid",
-            days: "",
-          });
+          setNewLeave({ code: "", name: "", payment: "Paid", days: "" });
         })
         .catch((error) => console.error("Error updating leave type:", error));
     } else {
       fetch("http://192.168.1.49:8084/leave_types", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       })
         .then((res) => res.json())
         .then((data) => {
-          setLeaveTypes([...leaveTypes, { ...data, code: newLeave.code, color: randomColor() }]);
+          setLeaveTypes([
+            ...leaveTypes,
+            { ...data, code: newLeave.code, color: randomColor() },
+          ]);
           setShowCreateCard(false);
-          setNewLeave({
-            code: "",
-            name: "",
-            payment: "Paid",
-            days: "",
-          });
+          setNewLeave({ code: "", name: "", payment: "Paid", days: "" });
         })
         .catch((error) => console.error("Error creating leave type:", error));
     }
@@ -222,7 +214,6 @@ const LeaveTypeList = () => {
           onChange={handleSearchChange}
           sx={{ flex: 1, minWidth: 200 }}
         />
-
         <Button
           variant="outlined"
           startIcon={<FilterList />}
@@ -230,7 +221,6 @@ const LeaveTypeList = () => {
         >
           Filter
         </Button>
-
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -242,7 +232,6 @@ const LeaveTypeList = () => {
             Unpaid
           </MenuItem>
         </Menu>
-
         <Button
           variant="contained"
           color="error"
@@ -253,71 +242,55 @@ const LeaveTypeList = () => {
         </Button>
       </Box>
 
-      {showCreateCard && (
-        <Box mb={4} display="flex" justifyContent="center">
-          <Card sx={{ width: 400, p: 2 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                {editIndex !== null ? "Edit Leave Type" : "Create Leave Type"}
-              </Typography>
-              <TextField
-                label="Code"
-                name="code"
-                fullWidth
-                margin="dense"
-                value={newLeave.code} // Display auto-generated code here
-                disabled
-              />
-              <TextField
-                label="Leave Type"
-                name="name"
-                fullWidth
-                margin="dense"
-                value={newLeave.name}
-                onChange={handleInputChange}
-              />
-              <FormControl fullWidth margin="dense">
-                <InputLabel>Payment</InputLabel>
-                <Select
-                  label="Payment"
-                  name="payment"
-                  value={newLeave.payment}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="Paid">Paid</MenuItem>
-                  <MenuItem value="Unpaid">Unpaid</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                label="Days"
-                name="days"
-                fullWidth
-                margin="dense"
-                type="number"
-                value={newLeave.days}
-                onChange={handleInputChange}
-              />
-              <Box display="flex" gap={2} mt={2}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={handleCreateSubmit}
-                >
-                  Save
-                </Button>
-                <Button
-                  fullWidth
-                  variant="outlined"
-                  color="inherit"
-                  onClick={handleCancelCreate}
-                >
-                  Cancel
-                </Button>
-              </Box>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
+      <Dialog open={showCreateCard} onClose={handleCancelCreate} fullWidth maxWidth="sm">
+        <DialogTitle>
+          {editIndex !== null ? "Edit Leave Type" : "Create Leave Type"}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Leave Type"
+            name="name"
+            fullWidth
+            margin="dense"
+            value={newLeave.name}
+            onChange={handleInputChange}
+          />
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Payment</InputLabel>
+            <Select
+              label="Payment"
+              name="payment"
+              value={newLeave.payment}
+              onChange={handleInputChange}
+            >
+              <MenuItem value="Paid">Paid</MenuItem>
+              <MenuItem value="Unpaid">Unpaid</MenuItem>
+            </Select>
+          </FormControl>
+          <TextField
+            label="Days"
+            name="days"
+            fullWidth
+            margin="dense"
+            type="number"
+            value={newLeave.days}
+            onChange={handleInputChange}
+          />
+          <Box display="flex" gap={2} mt={2}>
+            <Button fullWidth variant="contained" onClick={handleCreateSubmit}>
+              Save
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="inherit"
+              onClick={handleCancelCreate}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
 
       <Grid container spacing={2}>
         {filteredLeaveTypes.length > 0 ? (
@@ -337,7 +310,7 @@ const LeaveTypeList = () => {
                         bgcolor={leave.color}
                         fontWeight="bold"
                       >
-                        {leave.code}
+                        {leave.leaveTypeName?.[0] || "-"}
                       </Box>
                       <Box>
                         <Typography fontWeight="bold">
