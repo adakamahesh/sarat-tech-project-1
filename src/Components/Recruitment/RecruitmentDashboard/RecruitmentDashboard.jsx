@@ -1,4 +1,5 @@
 import * as React from 'react';
+import axios from 'axios';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -10,32 +11,59 @@ import HailIcon from '@mui/icons-material/Hail';
 import HiringPipline from "./HiringPipline";
 import Bargraph from "./Bargraph";
 
-const cards = [
-  {
-    id: 1,
-    icon: <PersonIcon />,
-    title: 'Total Vacancies',
-    description: '50',
-    backgroundColor: "#4CAF50",
-  },
-  {
-    id: 2,
-    icon: <HailIcon />,
-    title: 'Ongoing Recruitments',
-    description: '20',
-    backgroundColor: "#2196F3",
-  },
-  {
-    id: 3,
-    icon: <WorkOutlineIcon />,
-    title: 'Hired Candidates',
-    description: '8',
-    backgroundColor: "orange",
-  },
-];
-
 export default function HRMDashboard() {
   const [selectedCard, setSelectedCard] = React.useState(null);
+  const [dashboardData, setDashboardData] = React.useState({
+    totalVacancies: 0,
+    totalApplied: 0,
+    hiredCandidates: 0
+  });
+
+  React.useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const [vacancyRes, appliedRes, hiredRes] = await Promise.all([
+        axios.get("http://192.168.1.49:8084/recruitment/job_postings/total-vacancy"),
+        axios.get("http://192.168.1.49:8084/recruitment/job_postings/not-hired-applicant-count"),   // or your actual applicant count endpoint
+        axios.get("http://192.168.1.49:8084/recruitment/job_postings/hired-applicant-count")
+      ]);
+
+      setDashboardData({
+        totalVacancies: vacancyRes.data,
+        totalApplied: appliedRes.data,
+        hiredCandidates: hiredRes.data
+      });
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+    }
+  };
+
+  const cards = [
+    {
+      id: 1,
+      icon: <PersonIcon />,
+      title: 'Total Vacancies',
+      description: dashboardData.totalVacancies,
+      backgroundColor: "#4CAF50",
+    },
+    {
+      id: 2,
+      icon: <HailIcon />,
+      title: 'Total Applied',
+      description: dashboardData.totalApplied,
+      backgroundColor: "#2196F3",
+    },
+    {
+      id: 3,
+      icon: <WorkOutlineIcon />,
+      title: 'Hired Candidates',
+      description: dashboardData.hiredCandidates,
+      backgroundColor: "orange",
+    },
+  ];
 
   return (
     <>

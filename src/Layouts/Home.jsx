@@ -53,6 +53,7 @@ import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import NewRegister from "../Components/LoginSignup/Signup";
 import { addMilliseconds } from "date-fns";
 import { ADMIN } from "../constants/user_permission";
+import Vacancies from "../Components/Recruitment/Vacancies/Vacancies";
 import bg from "../assets/images/login.jpg";
 
 // Styles
@@ -139,6 +140,8 @@ export default function DashboardLayoutBasic() {
           return <ResignationLater />;
         case "Contract":
           return <Contract />;
+        case "Vacancies":
+          return <Vacancies/>
         case "Payslips":
           return <Payslips />;
         case "LeaveRequest":
@@ -286,6 +289,11 @@ export default function DashboardLayoutBasic() {
             {
               segment: "RecruitmentDashboard",
               title: "Recruitment Dashboard",
+              icon: <HorizontalRuleIcon />,
+            },
+            {
+              segment: "Vacancies",
+              title: "Vacancies",
               icon: <HorizontalRuleIcon />,
             },
             // {

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {
   Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  TableSortLabel, Paper, TextField, Button, Card, CardContent, Typography, Dialog,
-  IconButton, TablePagination, Select, MenuItem
+  Typography, Button, Card, CardContent, Dialog, IconButton, TextField, Avatar
 } from '@mui/material';
-import { Avatar } from '@mui/material';
+import { Paper } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
@@ -13,12 +12,10 @@ const API_BASE_URL = 'http://192.168.1.49:8084/recruitment/applicant';
 
 function createData(applicant) {
   return {
-    id: applicant.applicantId,
+    applicantId: applicant.applicantId,  // Add applicantId here
     Employee: `${applicant.firstName} ${applicant.lastName}`,
     Email: applicant.email,
     Phone: applicant.mobileNumber,
-    SrNo: applicant.applicantId,
-    ApplicantId: applicant.applicantId,
     JobPosition: 'N/A',
     AlternateNumber: applicant.alternateNumber,
     DOB: applicant.dateOfBirth ? new Date(applicant.dateOfBirth).toLocaleDateString() : '',
@@ -33,12 +30,8 @@ function createData(applicant) {
 }
 
 export default function Applicant() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('Employee');
   const [search, setSearch] = React.useState('');
   const [rows, setRows] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [newApplicant, setNewApplicant] = React.useState({
@@ -47,7 +40,7 @@ export default function Applicant() {
     email: '',
     mobileNumber: '',
     alternateNumber: '',
-    dateOfBirth: null,
+    dateOfBirth: '',
     gender: '',
     address: '',
     emergencyContactName: '',
@@ -85,18 +78,7 @@ export default function Applicant() {
     }
   };
 
-  const handleRequestSort = (property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
-
   const handleSearch = (e) => setSearch(e.target.value);
-  const handleChangePage = (e, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
-    setPage(0);
-  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -127,7 +109,7 @@ export default function Applicant() {
         email: '',
         mobileNumber: '',
         alternateNumber: '',
-        dateOfBirth: null,
+        dateOfBirth: '',
         gender: '',
         address: '',
         emergencyContactName: '',
@@ -166,11 +148,11 @@ export default function Applicant() {
           <Button variant="contained" onClick={handleOpen}>Add Applicant</Button>
         </Box>
 
-        <TableContainer>
+        <TableContainer sx={{ height: '400px', overflowY: 'auto' }}>
           <Table>
             <TableHead>
               <TableRow>
-                {['SrNo', 'Applicant ID', 'Name', 'Email', 'Phone', 'Job Position', 'Alternate Number',
+                {['Name', 'Email', 'Phone', 'Job Position', 'Alternate Number',
                   'DOB', 'Gender', 'Status', 'Address', 'Emergency Contact Name', 'Emergency Contact Number',
                   'Marital Status', 'Qualification'].map((header) => (
                     <TableCell key={header}><b>{header}</b></TableCell>
@@ -180,10 +162,8 @@ export default function Applicant() {
             </TableHead>
 
             <TableBody>
-              {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>{row.SrNo}</TableCell>
-                  <TableCell>{row.ApplicantId}</TableCell>
+              {filteredRows.map((row) => (
+                <TableRow key={row.applicantId}>
                   <TableCell>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Avatar>{row.Employee[0]}</Avatar>{row.Employee}
@@ -206,7 +186,7 @@ export default function Applicant() {
                       <IconButton color="primary" onClick={() => handleOpenEditDialog(row)}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton color="error" onClick={() => deleteApplicant(row.ApplicantId)}>
+                      <IconButton color="error" onClick={() => deleteApplicant(row.applicantId)}>
                         <DeleteIcon />
                       </IconButton>
                     </Box>
@@ -216,16 +196,6 @@ export default function Applicant() {
             </TableBody>
           </Table>
         </TableContainer>
-
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
 
       {/* Add Applicant Dialog */}
@@ -235,42 +205,35 @@ export default function Applicant() {
             <Typography variant="h6">Add Applicant</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mt: 2 }}>
               {Object.keys(newApplicant).map((field) => {
-                if (['gender', 'qualification', 'maritalStatus'].includes(field)) {
-                  const options = field === 'gender'
-                    ? ['Male', 'Female', 'Other']
-                    : field === 'qualification'
-                      ? ['BTech', 'MTech', 'MBA', 'Others']
-                      : ['Married', 'Unmarried'];
-
+                if (field === 'dateOfBirth') {
                   return (
-                    <Select
+                    <TextField
                       key={field}
                       name={field}
-                      value={newApplicant[field]}
+                      label="Date of Birth"
+                      type="date"
+                      value={newApplicant[field] || ''}
                       onChange={handleInputChange}
-                      displayEmpty
-                      size="small"
-                    >
-                      <MenuItem value="" disabled>{field.replace(/([A-Z])/g, ' $1')}</MenuItem>
-                      {options.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
-                    </Select>
+                      InputLabelProps={{ shrink: true }}
+                    />
                   );
                 }
-
                 return (
                   <TextField
                     key={field}
                     name={field}
-                    label={field.replace(/([A-Z])/g, ' $1').toUpperCase()}
-                    variant="outlined"
-                    value={newApplicant[field]}
+                    label={field.charAt(0).toUpperCase() + field.slice(1)}
+                    value={newApplicant[field] || ''}
                     onChange={handleInputChange}
-                    size="small"
                   />
                 );
               })}
             </Box>
-            <Button sx={{ mt: 2 }} variant="contained" onClick={handleAddApplicant}>Add</Button>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button variant="contained" onClick={handleAddApplicant}>Add</Button>
+            </Box>
           </CardContent>
         </Card>
       </Dialog>
@@ -282,42 +245,35 @@ export default function Applicant() {
             <Typography variant="h6">Edit Applicant</Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mt: 2 }}>
               {editApplicant && Object.keys(editApplicant).map((field) => {
-                if (['gender', 'qualification', 'maritalStatus'].includes(field)) {
-                  const options = field === 'gender'
-                    ? ['Male', 'Female', 'Other']
-                    : field === 'qualification'
-                      ? ['BTech', 'MTech', 'MBA', 'Others']
-                      : ['Married', 'Unmarried'];
-
+                if (field === 'dateOfBirth') {
                   return (
-                    <Select
+                    <TextField
                       key={field}
                       name={field}
-                      value={editApplicant[field]}
+                      label="Date of Birth"
+                      type="date"
+                      value={editApplicant[field] || ''}
                       onChange={handleEditInputChange}
-                      displayEmpty
-                      size="small"
-                    >
-                      <MenuItem value="" disabled>{field.replace(/([A-Z])/g, ' $1')}</MenuItem>
-                      {options.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
-                    </Select>
+                      InputLabelProps={{ shrink: true }}
+                    />
                   );
                 }
-
                 return (
                   <TextField
                     key={field}
                     name={field}
-                    label={field.replace(/([A-Z])/g, ' $1').toUpperCase()}
-                    variant="outlined"
-                    value={editApplicant[field]}
+                    label={field.charAt(0).toUpperCase() + field.slice(1)}
+                    value={editApplicant[field] || ''}
                     onChange={handleEditInputChange}
-                    size="small"
                   />
                 );
               })}
             </Box>
-            <Button sx={{ mt: 2 }} variant="contained" onClick={handleEditApplicant}>Save</Button>
+
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+              <Button onClick={handleCloseEditDialog}>Cancel</Button>
+              <Button variant="contained" onClick={handleEditApplicant}>Save</Button>
+            </Box>
           </CardContent>
         </Card>
       </Dialog>

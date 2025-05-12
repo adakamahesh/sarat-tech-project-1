@@ -10,24 +10,50 @@ import {
 } from "recharts";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
-
-// Sample Data: Employee Joining Per Month
-const data = [
-  { month: "Jan", Joined: 2 },
-  { month: "Feb", Joined: 10 },
-  { month: "Mar", Joined: 5 },
-  { month: "Apr", Joined: 15 },
-  { month: "May", Joined: 25 },
-  { month: "Jun", Joined: 15 },
-  { month: "Jul", Joined: 22 },
-  { month: "Aug", Joined: 38 },
-  { month: "Sep", Joined: 35 },
-  { month: "Oct", Joined: 45 },
-  { month: "Nov", Joined: 10 },
-  { month: "Dec", Joined: 25 },
-];
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 export default function EmployeeJoiningGraph() {
+  const [data, setData] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
+
+  // Fetch data from backend when component mounts
+  React.useEffect(() => {
+    fetch("http://192.168.1.49:8084/recruitment/applicant/joining-count-per-month")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" mt={4}>
+        <Typography color="error">Failed to load data</Typography>
+      </Box>
+    );
+  }
+
   return (
     <Paper
       sx={{
@@ -45,10 +71,9 @@ export default function EmployeeJoiningGraph() {
           textAlign: { xs: "center", sm: "left" },
         }}
       >
-        Joining Per Month
+        Employee Joining Per Month
       </Typography>
 
-      {/* Bar Chart */}
       <ResponsiveContainer width="100%" height={360}>
         <BarChart
           data={data}
