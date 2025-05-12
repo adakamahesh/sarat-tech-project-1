@@ -1,180 +1,265 @@
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { TableVirtuoso } from "react-virtuoso";
-import Typography from "@mui/material/Typography";
+import React, { useEffect, useState } from "react";
+import {
+    Box,
+    Table,
+    TableBody,
+    Button,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableSortLabel,
+    Paper,
+    Typography,
+    Divider,
+} from "@mui/material";
 import axios from "axios";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 
-const API_URL = process.env.REACT_APP_BASE_URL;
+export default function TotalLeaves() {
+    const [order, setOrder] = useState("asc");
+    const [orderBy, setOrderBy] = useState("");
+    const [rows, setRows] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-const columns = [
-  { width: 50, label: "S.No.", dataKey: "serialNumber" },
-  { width: 100, label: "Employee ID", dataKey: "employeeId" },
-  { width: 100, label: "First Name", dataKey: "firstName" },
-  { width: 100, label: "Last Name", dataKey: "lastName" },
-];
+    const handleRequestSort = (property) => {
+        const isAsc = orderBy === property && order === "asc";
+        setOrder(isAsc ? "desc" : "asc");
+        setOrderBy(property);
+    };
 
-const VirtuosoTableComponents = {
-  Scroller: React.forwardRef((props, ref) => (
-    <TableContainer
-      component={Paper}
-      sx={{
-        maxWidth: "100%",
-        overflowX: "auto",
-        "@media (max-width: 600px)": {
-          marginX: "-8px",
-        },
-      }}
-      {...props}
-      ref={ref}
-    />
-  )),
-  Table: (props) => (
-    <Table
-      {...props}
-      sx={{
-        borderCollapse: "separate",
-        tableLayout: "fixed",
-        minWidth: "100%",
-        "@media (max-width: 600px)": {
-          fontSize: "0.75rem", // Smaller font size for mobile
-        },
-      }}
-    />
-  ),
-  TableHead: React.forwardRef((props, ref) => (
-    <TableHead {...props} ref={ref} />
-  )),
-  TableRow,
-  TableBody: React.forwardRef((props, ref) => (
-    <TableBody {...props} ref={ref} />
-  )),
+    useEffect(() => {
+        fetchLeaveRequests();
+    }, []);
+
+    const fetchLeaveRequests = async () => {
+    try {
+        setLoading(true);
+        setError(null);
+        const response = await axios.get("http://192.168.1.49:8084/leave-requests");
+        
+        // Filter the leave requests with "Pending" status
+        const leaveRequestData = response.data
+            .filter(leaveRequest => leaveRequest.status === "Pending") // Only pending requests
+            .map((leaveRequest, index) => {
+                let requestedDays = "N/A";
+                if (leaveRequest.startDate && leaveRequest.endDate) {
+                    const startDateObj = new Date(leaveRequest.startDate);
+                    const endDateObj = new Date(leaveRequest.endDate);
+                    const timeDiff = Math.abs(endDateObj.getTime() - startDateObj.getTime());
+                    requestedDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                }
+
+                const status = leaveRequest.status || "Pending";
+                const isDisabled = status === "Approved" || status === "Rejected";
+
+                return {
+                    id: index + 1,
+                    leaveRequestId: leaveRequest.leaveRequestId,
+                    EmployeeId: leaveRequest.employee || "N/A", 
+                    Employee: `${leaveRequest.empFirstName || "N/A"} ${leaveRequest.empLastName || "N/A"}` || "N/A", 
+                    LeaveType: leaveRequest.leaveTypeName || "N/A", 
+                    StartDate: leaveRequest.startDate ? new Date(leaveRequest.startDate).toLocaleDateString() : "N/A",
+                    EndDate: leaveRequest.endDate ? new Date(leaveRequest.endDate).toLocaleDateString() : "N/A",
+                    RequestedDays: requestedDays,
+                    Reason: leaveRequest.reason || "N/A",
+                    RequestedDate: leaveRequest.submissionDate ? new Date(leaveRequest.submissionDate).toLocaleDateString() : "N/A",
+                    ActionDate: leaveRequest.approvalDate ? new Date(leaveRequest.approvalDate).toLocaleDateString() : "-",
+                    Status: status,
+                    disableActions: isDisabled,
+                    startDateObj: leaveRequest.startDate ? new Date(leaveRequest.startDate) : null, 
+                    endDateObj: leaveRequest.endDate ? new Date(leaveRequest.endDate) : null, 
+                };
+            });
+
+        setRows(leaveRequestData);
+    } catch (error) {
+        console.error("Error fetching leave requests:", error);
+        setError(error);
+    } finally {
+        setLoading(false);
+    }
 };
 
-function fixedHeaderContent() {
-  return (
-    <TableRow>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          variant="head"
-          align="left"
-          sx={{
-            width: column.width,
-            backgroundColor: "#A7B0CA",
-            color: "#fff",
-            fontWeight: "bold",
-            fontSize: { xs: "14px", sm: "18px" },
-            padding: { xs: "6px", sm: "12px" },
-          }}
-        >
-          {column.label}
-        </TableCell>
-      ))}
-    </TableRow>
-  );
-}
+    const handleReject = async (row) => {
+        try {
+            setError(null);
+            setLoading(true);
+            const updatedLeaveRequest = {
+                ...row,
+                Status: "Rejected",
+                ActionDate: new Date().toISOString(),
+            };
 
-function rowContent(_index, row) {
-  return (
-    <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align="left"
-          sx={{
-            fontSize: { xs: "0.75rem", sm: "0.875rem" },
-            padding: { xs: "6px", sm: "12px" },
-            wordWrap: "break-word",
-          }}
-        >
-          {row[column.dataKey]}
-        </TableCell>
-      ))}
-    </React.Fragment>
-  );
-}
+            const response = await axios.put(`http://192.168.1.49:8084/leave-requests/${row.leaveRequestId}`, {
+                status: "Rejected",
+                approvalDate: updatedLeaveRequest.ActionDate,
+            });
 
-export default function ReactVirtualizedTable() {
-  const [employees, setEmployees] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+            if (response.status >= 200 && response.status < 300) {
+                const updatedRows = rows.map((r) =>
+                    r.leaveRequestId === row.leaveRequestId
+                        ? { ...updatedLeaveRequest, disableActions: true }
+                        : r
+                );
+                setRows(updatedRows);
+            } else {
+                setError(new Error("Failed to reject leave request"));
+            }
 
-  React.useEffect(() => {
-    axios
-      .get(`${API_URL}attendance/today/present/employees`)
-      .then((response) => {
-        const employeeData = response.data.map((employee, index) => ({
-          serialNumber: index + 1,
-          employee: `${employee.firstName} ${employee.lastName}`,
-          overtime: employee.overtime,
-          action: "",
-        }));
-        setEmployees(employeeData);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching overtime employee data:", error);
-        setError("Failed to load employees");
-        setLoading(false);
-      });
-  }, []);
+        } catch (error) {
+            console.error("Error rejecting leave request:", error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  return (
-    <Paper
-      sx={{
-        width: "100%",
-        padding: { xs: 1, sm: 2 },
-        boxSizing: "border-box",
-      }}
-    >
-      <Typography
-        sx={{
-          fontSize: { xs: "18px", sm: "25px" },
-          backgroundColor: "#F5F5F5",
-          fontWeight: "bold",
-          p: 1,
-          textAlign: "left",
-        }}
-      >
-        Leave Request
-      </Typography>
-      {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-            padding: 2,
-          }}
-        >
-          <CircularProgress />
+    const handleAccept = async (row) => {
+        try {
+            setError(null);
+            setLoading(true);
+             const updatedLeaveRequest = {
+                ...row,
+                Status: "Approved",
+                ActionDate: new Date().toISOString(),
+            };
+            const response = await axios.put(`http://192.168.1.49:8084/leave-requests/${row.leaveRequestId}`, {
+                status: "Approved",
+                approvalDate: updatedLeaveRequest.ActionDate,
+            });
+
+             if (response.status >= 200 && response.status < 300) {
+                  const updatedRows = rows.map((r) =>
+                    r.leaveRequestId === row.leaveRequestId
+                        ? { ...updatedLeaveRequest, disableActions: true }
+                        : r
+                );
+                setRows(updatedRows);
+             }
+             else{
+                setError(new Error("Failed to Approve Leave Request"))
+             }
+
+
+        } catch (error) {
+            console.error("Error accepting leave request:", error);
+            setError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <Box sx={{ width: "100%", overflowX: "auto" }}>
+            <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        gap: 4,
+                        mb: 2,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                    }}
+                >
+                    <Typography variant="h6">Leave Requests</Typography>
+                </Box>
+                <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+                {error && (
+                    <Typography color="error" sx={{ mb: 2 }}>
+                        {error.message}
+                    </Typography>
+                )}
+                <TableContainer sx={{ overflowX: "auto" }}>
+                    {loading ? (
+                        <Typography>Loading...</Typography>
+                    ) : (
+                        <Table sx={{ minWidth: 1500 }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Sr No</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Leave Request ID</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>EmployeeId</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                                        <TableSortLabel
+                                            active={orderBy === "Employee"}
+                                            direction={order}
+                                            onClick={() => handleRequestSort("Employee")}
+                                        >
+                                            Employee
+                                        </TableSortLabel>
+                                    </TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>LeaveType</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>StartDate</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>EndDate</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Requested Days</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Requested Date</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Reason</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Action Date</TableCell>
+                                    <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>Status</TableCell>
+                                    <TableCell
+                                        sx={{
+                                            fontWeight: "bold",
+                                            textAlign: "center",
+                                            position: "sticky",
+                                            right: 0,
+                                            background: "white",
+                                            zIndex: 2,
+                                        }}
+                                    >
+                                        Action
+                                    </TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map((row) => (
+                                    <TableRow key={row.leaveRequestId}>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.leaveRequestId}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.EmployeeId}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.Employee}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.LeaveType}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.StartDate}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.EndDate}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.RequestedDays}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.RequestedDate}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.Reason}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.ActionDate}</TableCell>
+                                        <TableCell sx={{ textAlign: "center" }}>{row.Status}</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                textAlign: "center",
+                                                position: "sticky",
+                                                right: 0,
+                                                background: "white",
+                                                zIndex: 1,
+                                                whiteSpace: "nowrap",
+                                            }}
+                                        >
+                                            <Button
+                                                variant="contained"
+                                                sx={{ bgcolor: "green", color: "white", mx: 1 }}
+                                                disabled={row.disableActions}
+                                                onClick={() => handleAccept(row)}
+                                            >
+                                                Approve
+                                            </Button>
+                                            <Button
+                                                variant="contained"
+                                                sx={{ bgcolor: "red", color: "white", mx: 1 }}
+                                                disabled={row.disableActions}
+                                                onClick={() => handleReject(row)}
+                                            >
+                                                Reject
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    )}
+                </TableContainer>
+            </Paper>
         </Box>
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
-      ) : (
-        <Box
-          sx={{
-            height: { xs: 400, sm: 450 }, // Mobile height adjustment
-            overflowY: "auto",
-          }}
-        >
-          <TableVirtuoso
-            data={employees}
-            components={VirtuosoTableComponents}
-            fixedHeaderContent={fixedHeaderContent}
-            itemContent={rowContent}
-          />
-        </Box>
-      )}
-    </Paper>
-  );
+    );
 }

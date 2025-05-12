@@ -39,6 +39,8 @@ const Login = () => {
       if (data.status) {
         localStorage.setItem("isAuthenticated", "true");
         localStorage.setItem("employeeId", data.employeeId);
+        localStorage.setItem("employeeName", data.employeeName);
+        localStorage.setItem("userPermission", data.userPermission);
         navigate("/home");
       } else {
         setError(data.message || "Login failed!");

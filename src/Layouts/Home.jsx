@@ -89,6 +89,7 @@ export default function DashboardLayoutBasic() {
 
   //  console.log(role)
   // if (employeeId == ADMIN) 
+  
   const renderComponent = () => {
    if(ADMIN.includes(parseInt(employeeId))) {
       switch (currentPage) {
@@ -287,11 +288,11 @@ export default function DashboardLayoutBasic() {
               title: "Recruitment Dashboard",
               icon: <HorizontalRuleIcon />,
             },
-            {
-              segment: "RecruitmentPipeline",
-              title: "Recruitment Pipeline",
-              icon: <HorizontalRuleIcon />,
-            },
+            // {
+            //   segment: "RecruitmentPipeline",
+            //   title: "Recruitment Pipeline",
+            //   icon: <HorizontalRuleIcon />,
+            // },
             {
               segment: "Applicant",
               title: "Applicant",
@@ -304,11 +305,11 @@ export default function DashboardLayoutBasic() {
           title: "On Boarding",
           icon: <LoginIcon />,
           children: [
-            {
-              segment: "OnBoardingView",
-              title: "On Boarding View",
-              icon: <HorizontalRuleIcon />,
-            },
+            // {
+            //   segment: "OnBoardingView",
+            //   title: "On Boarding View",
+            //   icon: <HorizontalRuleIcon />,
+            // },
             {
               segment: "CandidatesView",
               title: "Candidates View",

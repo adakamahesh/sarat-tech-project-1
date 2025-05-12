@@ -94,7 +94,7 @@ const AttendanceAnalytics = () => {
   };
 
   return (
-    <Box sx={{ p: 2, border: "1px solid #ddd", borderRadius: 2, width: 400 }}>
+    <Box sx={{ p: 2, border: "1px solid #ddd", borderRadius: 2 }}>
       <Typography variant="h6" fontWeight="bold">
         Attendance Analytic
       </Typography>

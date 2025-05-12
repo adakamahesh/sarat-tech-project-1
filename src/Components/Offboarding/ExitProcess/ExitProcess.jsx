@@ -1,281 +1,147 @@
-// Import React library
-import * as React from "react";
-
-// Import styled function from Material-UI for custom styling
-import { styled } from "@mui/material/styles";
-
-// Import necessary Material-UI components
+import React, { useState } from "react";
 import {
+  Box,
   TextField,
+  Typography,
+  Button,
+  Grid,
   MenuItem,
   Select,
   InputLabel,
   FormControl,
-  Typography,
-  Button,
-  Card,
-  CardContent,
 } from "@mui/material";
 
-// Import Material-UI Accordion components
-import MuiAccordion from "@mui/material/Accordion";
-import MuiAccordionSummary, {
-  accordionSummaryClasses,
-} from "@mui/material/AccordionSummary";
-import MuiAccordionDetails from "@mui/material/AccordionDetails";
-
-// Import icons for expanding/collapsing accordion
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-
-// Import mock data for recruitment pipeline
-import { ExitProcess } from "../../../mocks_data/offBoardingMockData/ExitProcessMockData";
-
-// Styled Accordion component
-const Accordion = styled(MuiAccordion)(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  "&:not(:last-child)": { borderBottom: 0 },
-  "&::before": { display: "none" },
-}));
-
-// Styled AccordionSummary component
-const AccordionSummary = styled((props) => {
-  const { expanded } = props;
-  return (
-    <MuiAccordionSummary
-      expandIcon={expanded ? <RemoveIcon /> : <AddIcon />}
-      {...props}
-    />
-  );
-})(({ theme }) => ({
-  backgroundColor: "rgba(0, 0, 0, .03)",
-  flexDirection: "row-reverse",
-  [`& .${accordionSummaryClasses.content}`]: { marginLeft: theme.spacing(1) },
-}));
-
-// Styled AccordionDetails component
-const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
-  padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
-}));
-
-// Main component function
-export default function CustomizedAccordions() {
-  // Define state variables
-  const [expanded, setExpanded] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState("");
-  const [filter, setFilter] = React.useState("");
-  const [accordionData, setAccordionData] = React.useState(ExitProcess);
-  const [newAccordionTitle, setNewAccordionTitle] = React.useState("");
-  const [showCreateCard, setShowCreateCard] = React.useState(false);
-  const [createForms, setCreateForms] = React.useState({});
-  const [subRecruitment, setSubRecruitment] = React.useState({
-    id: "",
-    title: "",
+const ResignationForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    mobile: "",
+    alternateMobile: "",
+    email: "",
+    department: "",
+    designation: "",
+    address: "",
+    joiningDate: "",
+    noticeStart: "",
+    noticeDuration: "",
+    projectStatus: "",
+    updateWbs: "",
+    completedProject: "",
+    completionDate: "",
+    resignationReason: "",
+    lastWorkingDay: "",
   });
 
-  // Handle accordion expansion
-  const handleChange = (panel) => (event, newExpanded) => {
-    setExpanded(newExpanded ? panel : false);
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  // Handle search input change
-  const handleSearch = (event) => {
-    setSearchQuery(event.target.value.toLowerCase());
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitted data:", formData);
   };
 
-  // Handle filter change
-  const handleFilterChange = (event) => {
-    setFilter(event.target.value);
+  const whiteTextFieldStyles = {
+    InputLabelProps: { style: { color: "white" } },
+    InputProps: { style: { color: "white" } },
+    sx: {
+      '& .MuiOutlinedInput-root': {
+        '& fieldset': { borderColor: 'white' },
+        '&:hover fieldset': { borderColor: '#ccc' },
+      },
+    },
   };
-
-  // Handle creating a new accordion
-  const handleCreateNewAccordion = () => {
-    if (newAccordionTitle.trim()) {
-      const newAccordion = {
-        id: `new-${accordionData.length + 1}`,
-        title: newAccordionTitle,
-        component: <Typography>New Accordion Content</Typography>,
-      };
-      setAccordionData([...accordionData, newAccordion]);
-      setNewAccordionTitle("");
-      setShowCreateCard(false);
-    }
-  };
-
-  const handleCreateSubRecruitment = () => {
-    console.log(createForms);
-    if (subRecruitment.value.trim()) {
-      const newAccordion = {
-        id: `panel-${filteredData.length + 1}`,
-        title: subRecruitment.value,
-      };
-      const updatedList = accordionData.map((item) => {
-        if (item.id === subRecruitment.id) {
-          item.subAccordionList.push(newAccordion);
-        }
-        return item;
-      });
-      setAccordionData(updatedList);
-      setSubRecruitment({});
-      setShowCreateCard(false);
-    }
-  };
-
-  // Toggle create form visibility
-  const toggleCreateForm = (id) => {
-    setCreateForms((prev) => ({ ...prev, [id]: !prev[id] }));
-    setSubRecruitment({ ...subRecruitment, id: id });
-  };
-
-  // Filter accordion data based on search and filter criteria
-  const filteredData = accordionData
-    .filter((item) => !filter || item.category === filter)
-    .filter((item) => item.title.toLowerCase().includes(searchQuery));
 
   return (
-    <div>
-      {/* Header with search and filter options */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 16,
-        }}
-      >
-        <Typography variant="h5" style={{ fontWeight: "bold" }}>
-          Offboarding 2024
-        </Typography>
-        <TextField
-          label="Search"
-          variant="outlined"
-          size="small"
-          onChange={handleSearch}
-          style={{ width: "30%" }}
-        />
-        <FormControl variant="outlined" size="small" style={{ width: "30%" }}>
-          <InputLabel>Filter By</InputLabel>
-          <Select
-            value={filter}
-            onChange={handleFilterChange}
-            label="Filter By"
-          >
-            <MenuItem value="">None</MenuItem>
-            <MenuItem value="Recruitment">Recruitment</MenuItem>
-            <MenuItem value="Developer">Developer</MenuItem>
-            <MenuItem value="Manager">Manager</MenuItem>
-          </Select>
-        </FormControl>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ width: "10%", height: "40px" }}
-          onClick={() => setShowCreateCard(true)}
-        >
-          Create
+    <Box
+      sx={{
+        maxWidth: 800,
+        mx: "auto",
+        p: 4,
+        border: "1px solid #ccc",
+        borderRadius: 2,
+        boxShadow: 2,
+        mt: 4,
+        backgroundColor: "transparent", // Changed here
+        color: "white",
+      }}
+    >
+      <Typography variant="h6" fontWeight="bold" mb={2} color="white">
+        Resignation Process Form
+      </Typography>
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="First Name" name="firstName" value={formData.firstName} onChange={handleChange} required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Last Name" name="lastName" value={formData.lastName} onChange={handleChange} required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Mobile No" name="mobile" value={formData.mobile} onChange={handleChange} type="tel" required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Alternate Mobile No" name="alternateMobile" value={formData.alternateMobile} onChange={handleChange} type="tel" {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth label="Email" name="email" value={formData.email} onChange={handleChange} type="email" required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Department Name" name="department" value={formData.department} onChange={handleChange} required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Designation" name="designation" value={formData.designation} onChange={handleChange} required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth label="Address" name="address" value={formData.address} onChange={handleChange} multiline rows={3} {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Joining Date" name="joiningDate" value={formData.joiningDate} onChange={handleChange} type="date" required InputLabelProps={{ shrink: true, style: { color: "white" } }} InputProps={{ style: { color: "white" } }} sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: '#ccc' } } }} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Notice Period Start" name="noticeStart" value={formData.noticeStart} onChange={handleChange} type="date" required InputLabelProps={{ shrink: true, style: { color: "white" } }} InputProps={{ style: { color: "white" } }} sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: '#ccc' } } }} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth label="Notice Period Duration (in days)" name="noticeDuration" value={formData.noticeDuration} onChange={handleChange} type="number" required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth label="Project Status" name="projectStatus" value={formData.projectStatus} onChange={handleChange} multiline rows={2} {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField fullWidth label="Update WBS" name="updateWbs" value={formData.updateWbs} onChange={handleChange} multiline rows={2} {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: '#ccc' } } }}>
+              <InputLabel sx={{ color: "white" }}>Have you completed your project?</InputLabel>
+              <Select name="completedProject" value={formData.completedProject} onChange={handleChange} sx={{ color: "white" }}>
+                <MenuItem value="Yes">Yes</MenuItem>
+                <MenuItem value="No">No</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          {formData.completedProject === "No" && (
+            <Grid item xs={12} sm={6}>
+              <TextField fullWidth label="Expected Completion Date" name="completionDate" value={formData.completionDate} onChange={handleChange} type="date" InputLabelProps={{ shrink: true, style: { color: "white" } }} InputProps={{ style: { color: "white" } }} sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: '#ccc' } } }} />
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <TextField fullWidth label="Reason for Resignation" name="resignationReason" value={formData.resignationReason} onChange={handleChange} multiline rows={3} required {...whiteTextFieldStyles} />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField fullWidth label="Last Working Day" name="lastWorkingDay" value={formData.lastWorkingDay} onChange={handleChange} type="date" required InputLabelProps={{ shrink: true, style: { color: "white" } }} InputProps={{ style: { color: "white" } }} sx={{ '& .MuiOutlinedInput-root': { '& fieldset': { borderColor: 'white' }, '&:hover fieldset': { borderColor: '#ccc' } } }} />
+          </Grid>
+        </Grid>
+
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+          Submit Resignation
         </Button>
-      </div>
-
-      {/* Create new accordion form */}
-      {showCreateCard && (
-        <Card sx={{ marginBottom: 2, padding: 2 }}>
-          <CardContent>
-            <Typography variant="h6">Create New Accordion</Typography>
-            <TextField
-              fullWidth
-              label="Accordion Title"
-              variant="outlined"
-              size="small"
-              value={newAccordionTitle}
-              onChange={(e) => setNewAccordionTitle(e.target.value)}
-              sx={{ marginBottom: 2 }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCreateNewAccordion}
-              sx={{ marginRight: 2 }}
-            >
-              Add Accordion
-            </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => setShowCreateCard(false)}
-            >
-              Cancel
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Render accordions */}
-      {filteredData.map(({ id, title, Component, subAccordionList }) => (
-        <Accordion
-          key={id}
-          expanded={expanded === id}
-          onChange={handleChange(id)}
-        >
-          <AccordionSummary
-            aria-controls={`${id}-content`}
-            id={`${id}-header`}
-            expanded={expanded === id}
-          >
-            <Typography component="span">{title}</Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            {expanded === id && (
-              <>
-                  {Component ? (
-                    <Component key={id} subAccordionList={subAccordionList} />
-                  ) : (
-                    "--"
-                  )}
-                  {/* {Component} */}
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    sx={{ marginTop: 2 }}
-                    onClick={() => toggleCreateForm(id)}
-                  >
-                    Create
-                  </Button>
-                  {createForms[id] && (
-                    <Card sx={{ marginTop: 2, padding: 2 }}>
-                      <CardContent>
-                        <Typography variant="h6">Add New Accordion</Typography>
-                        <TextField
-                          fullWidth
-                          label="Entry Title"
-                          variant="outlined"
-                          size="small"
-                          value={subRecruitment.value}
-                          onChange={(e) =>
-                            setSubRecruitment({
-                              ...subRecruitment,
-                              value: e.target.value,
-                            })
-                          }
-                          sx={{ marginBottom: 2 }}
-                        />
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          handleCreateSubRecruitment();
-                          toggleCreateForm(id);
-                        }}
-                      >
-                        Add Accordion
-                      </Button>
-                    </CardContent>
-                  </Card>
-                )}
-              </>
-            )}
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </div>
+      </form>
+    </Box>
   );
-}
+};
+
+export default ResignationForm;

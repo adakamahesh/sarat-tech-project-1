@@ -12,28 +12,28 @@ import {
   Paper,
   Typography,
   Divider,
-  Autocomplete,
   TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   MenuItem,
+  Select,
 } from "@mui/material";
+import { FormControl, InputLabel } from "@mui/material";
 import axios from "axios";
 
 export default function TotalLeaves() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("");
   const [rows, setRows] = useState([]);
-  const [search, setSearch] = useState("");
   const [open, setOpen] = useState(false);
-
   const [formData, setFormData] = useState({
-    employeeId: "501",
+    employeeId: localStorage.getItem("employeeId"),
     empFirstName: "John",
     empLastName: "Doe",
     leaveType: "",
+    leaveTypeId: 0,
     startDate: "",
     endDate: "",
     reason: "",
@@ -41,6 +41,9 @@ export default function TotalLeaves() {
     requestedDate: "",
     actionDate: "",
   });
+  const [leaveTypes, setLeaveTypes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -50,11 +53,23 @@ export default function TotalLeaves() {
 
   useEffect(() => {
     fetchLeaveRequests();
+    fetchLeaveTypes();
   }, []);
+
+  const employeeId = localStorage.getItem("employeeId");
 
   const fetchLeaveRequests = async () => {
     try {
-      const response = await axios.get("http://192.168.1.49:8084/leave-requests");
+      setLoading(true);
+      setError(null);
+      const response = await axios.get(
+        `http://192.168.1.49:8084/leave-requests/employee/${employeeId}`
+      );
+
+      if (!response.data) {
+        setRows([]);
+        return;
+      }
       const leaveRequestData = response.data.map((leaveRequest, index) => {
         let requestedDays = "N/A";
         if (leaveRequest.startDate && leaveRequest.endDate) {
@@ -65,9 +80,9 @@ export default function TotalLeaves() {
         }
         return {
           id: index + 1,
-          EmployeeId: leaveRequest?.employee || "N/A",
-          Employee: `${leaveRequest.empFirstName} ${leaveRequest.empLastName}` || "N/A",
-          LeaveType: leaveRequest?.leaveTypeName || "N/A",
+          Employee:
+            leaveRequest.empFirstName + " " + leaveRequest.empLastName || "N/A",
+          LeaveType: leaveRequest.leaveTypeName || "N/A",
           StartDate: leaveRequest.startDate
             ? new Date(leaveRequest.startDate).toLocaleDateString()
             : "N/A",
@@ -88,6 +103,20 @@ export default function TotalLeaves() {
       setRows(leaveRequestData);
     } catch (error) {
       console.error("Error fetching leave requests:", error);
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchLeaveTypes = async () => {
+    try {
+      setError(null);
+      const response = await axios.get("http://192.168.1.49:8084/leave_types");
+      setLeaveTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching leave types:", error);
+      setError(error);
     }
   };
 
@@ -95,6 +124,14 @@ export default function TotalLeaves() {
     const { name, value } = e.target;
     setFormData((prev) => {
       const updated = { ...prev, [name]: value };
+
+      if (name === "leaveType") {
+        const selectedLeaveType = leaveTypes.find(
+          (lt) => lt.leaveTypeName === value
+        );
+        updated.leaveTypeId = selectedLeaveType?.leaveTypeId || 0;
+        updated.leaveType = value;
+      }
 
       if (updated.startDate && updated.endDate) {
         const start = new Date(updated.startDate);
@@ -111,30 +148,38 @@ export default function TotalLeaves() {
 
   const handleFormSubmit = async () => {
     try {
-      await axios.post("http://192.168.1.49:8084/leave-requests", {
-        employee: formData.employeeId,
-        empFirstName: formData.empFirstName,
-        empLastName: formData.empLastName,
-        leaveTypeName: formData.leaveType,
-        startDate: formData.startDate,
-        endDate: formData.endDate,
-        reason: formData.reason,
-        submissionDate: formData.requestedDate || new Date().toISOString(),
-        approvalDate: formData.actionDate || null,
-        status: "Pending",
-        requestedDays: formData.requestedDays,
-      });
-      setOpen(false);
-      fetchLeaveRequests();
+      setError(null);
+      if (!formData.leaveTypeId) {
+        setError(new Error("Please select a leave type."));
+        return;
+      }
+      const response = await axios.post(
+        "http://192.168.1.49:8084/leave-requests",
+        {
+          employee: formData.employeeId,
+          leaveType: formData.leaveTypeId,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          reason: formData.reason,
+          submissionDate: formData.requestedDate || new Date().toISOString(),
+          approvalDate: formData.actionDate || null,
+          status: "Pending",
+          requestedDays: formData.requestedDays,
+        }
+      );
+      if (response.status >= 200 && response.status < 300) {
+        setOpen(false);
+        fetchLeaveRequests();
+      } else {
+        setError(new Error("Failed to create leave request."));
+      }
     } catch (error) {
       console.error("Error creating leave request:", error);
+      setError(error);
     }
   };
 
-  const uniqueEmployees = [...new Set(rows.map((row) => row.Employee))];
-  const filteredRows = rows.filter((row) =>
-    row.Employee.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredRows = rows;
 
   return (
     <Box sx={{ width: "100%", overflowX: "auto" }}>
@@ -150,128 +195,127 @@ export default function TotalLeaves() {
           }}
         >
           <Typography variant="h6">Leave Requests</Typography>
-          <Autocomplete
-            options={uniqueEmployees}
-            value={search}
-            onInputChange={(e, value) => setSearch(value)}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search Employee"
-                variant="outlined"
-                size="small"
-              />
-            )}
-            sx={{ minWidth: 250 }}
-            clearOnEscape
-            freeSolo
-          />
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Typography>EmployeeId: 501</Typography>
-            <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
-              New Request
-            </Button>
-          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpen(true)}
+          >
+            New Request
+          </Button>
         </Box>
 
         <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
-
+        {error && (
+          <Typography color="error" sx={{ mb: 2 }}>
+            {error.message}
+          </Typography>
+        )}
         <TableContainer sx={{ overflowX: "auto" }}>
-          <Table sx={{ minWidth: 1500 }}>
-            <TableHead>
-              <TableRow>
-                {[
-                  "Sr No",
-                  "EmployeeId",
-                  "Employee",
-                  "LeaveType",
-                  "StartDate",
-                  "EndDate",
-                  "Requested Days",
-                  "Requested Date",
-                  "Reason",
-                  "Action Date",
-                  "Status",
-                ].map((headCell) => (
-                  <TableCell
-                    key={headCell}
-                    sx={{ fontWeight: "bold", textAlign: "center" }}
-                  >
-                    {headCell === "Employee" ? (
-                      <TableSortLabel
-                        active={orderBy === "Employee"}
-                        direction={order}
-                        onClick={() => handleRequestSort("Employee")}
-                      >
-                        {headCell}
-                      </TableSortLabel>
-                    ) : (
-                      headCell
-                    )}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.EmployeeId}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.Employee}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.LeaveType}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.StartDate}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.EndDate}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.RequestedDays}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.RequestedDate}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.Reason}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.ActionDate}</TableCell>
-                  <TableCell sx={{ textAlign: "center" }}>{row.Status}</TableCell>
+          {loading ? (
+            <Typography>Loading...</Typography>
+          ) : (
+            <Table sx={{ minWidth: 1500 }}>
+              <TableHead>
+                <TableRow>
+                  {[
+                    "Sr No",
+                    "Employee",
+                    "LeaveType",
+                    "StartDate",
+                    "EndDate",
+                    "Requested Days",
+                    "Requested Date",
+                    "Reason",
+                    "Action Date",
+                    "Status",
+                  ].map((headCell) => (
+                    <TableCell
+                      key={headCell}
+                      sx={{ fontWeight: "bold", textAlign: "center" }}
+                    >
+                      {headCell === "Employee" ? (
+                        <TableSortLabel
+                          active={orderBy === "Employee"}
+                          direction={order}
+                          onClick={() => handleRequestSort("Employee")}
+                        >
+                          {headCell}
+                        </TableSortLabel>
+                      ) : (
+                        headCell
+                      )}
+                    </TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {filteredRows.map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.Employee}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.LeaveType}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.StartDate}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.EndDate}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.RequestedDays}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.RequestedDate}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.Reason}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.ActionDate}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {row.Status}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </TableContainer>
       </Paper>
 
       {/* Dialog for Create Leave Request */}
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
         <DialogTitle>Create Leave Request</DialogTitle>
-        <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}>
+        <DialogContent
+          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+        >
           <TextField
             name="employeeId"
             label="Employee ID"
             value={formData.employeeId}
-            onChange={handleFormChange}
             fullWidth
             disabled
           />
-          <TextField
-            name="empFirstName"
-            label="First Name"
-            value={formData.empFirstName}
-            onChange={handleFormChange}
-            fullWidth
-            disabled
-          />
-          <TextField
-            name="empLastName"
-            label="Last Name"
-            value={formData.empLastName}
-            onChange={handleFormChange}
-            fullWidth
-            disabled
-          />
-          <TextField
-            select
-            name="leaveType"
-            label="Leave Type"
-            value={formData.leaveType}
-            onChange={handleFormChange}
-            fullWidth
-          >
-            <MenuItem value="Sick Leave">Sick Leave</MenuItem>
-            <MenuItem value="Casual Leave">Casual Leave</MenuItem>
-          </TextField>
+          <FormControl fullWidth error={!!(error && !formData.leaveType)}>
+            <InputLabel id="leave-type-label">Leave Type</InputLabel>
+            <Select
+              labelId="leave-type-label"
+              name="leaveType"
+              value={formData.leaveType}
+              onChange={handleFormChange}
+              label="Leave Type"
+            >
+              {leaveTypes.map((type) => (
+                <MenuItem key={type.leaveTypeId} value={type.leaveTypeName}>
+                  {type.leaveTypeName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             name="startDate"
             type="date"
@@ -308,7 +352,11 @@ export default function TotalLeaves() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleFormSubmit}>
+          <Button
+            variant="contained"
+            onClick={handleFormSubmit}
+            disabled={!formData.leaveType}
+          >
             Submit
           </Button>
         </DialogActions>

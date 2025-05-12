@@ -1,182 +1,285 @@
-import * as React from 'react';
-import {Box,Table,TableBody,TableCell,TableContainer,TableHead,TablePagination,TableRow,
-  Paper,TextField,MenuItem,Button,Card,CardContent,Typography,Dialog,IconButton
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditNoteIcon from "@mui/icons-material/EditNote";
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  Menu,
+  MenuItem,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { Add, FilterList, MoreVert } from "@mui/icons-material";
 
-function createData(id,Allowance, SpecificEmployee, ExcludedEmployees, IsTaxable ,IsConditionBased, Condition, IsFixed, Amount, BasedOn, Rate) {
-    return { id,Allowance, SpecificEmployee, ExcludedEmployees, IsTaxable ,IsConditionBased, Condition, IsFixed,Amount, BasedOn, Rate };
-  }
-  
-  // Define table columns dynamically
-const columns = [
-    { id: 'Allowance', label: 'Allowance', sticky: true },
-    { id: 'SpecificEmployee', label: 'Specific Employee' },
-    { id: 'ExcludedEmployees', label: 'Excluded Employees' },
-    { id: 'IsTaxable', label: 'Is Taxable' },
-    { id: 'IsConditionBased', label: 'Is Condition Based' },
-    { id: 'Condition', label: 'Condition' },
-    { id: 'IsFixed', label: 'IsFixed' },
-    { id: 'Amount', label: 'Amount' },
-    { id: 'BasedOn', label: 'BasedOn' },
-    { id: 'Rate', label: 'Rate' },
-    { id: 'Action', label: 'Action', sticky: true }, // Sticky column for better visibility
+const initialAllowanceTypes = [
+  { name: "Earned", payment: "1000", color: "#b2dfdb" },
+  { name: "Maternity", payment: "2000", color: "#ffe0b2" },
+  { name: "Sick", payment: "1500", color: "#81d4fa" },
+];
+
+const randomColor = () => {
+  const colors = [
+    "#b2dfdb",
+    "#ffe0b2",
+    "#81d4fa",
+    "#bcaaa4",
+    "#90a4ae",
+    "#e1bee7",
+    "#f8bbd0",
+    "#dcedc8",
   ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
 
-  const initialRows = [
-    createData(1,'iioo', '', 'Aiden Murphy(PEP25)', 'No', 'No','','No',"","OverTime",""),
-    createData(2,'Basic pay', '', '', 'Yes', 'No','','No',"","Basic Pay","50.0"),
-    createData(3,'', '', '', 'Yes', 'No','','No',"","OverTime",""),
-    createData(4,'', '', '', 'No', 'No','','No',"","Basic Pay","50.0"),
-    createData(5,'Basic pay', '', '', 'Yes', 'No','','No',"","OverTime",""),
-    createData(6,'iioo', '', '', 'No', 'No','','No',"","Basic Pay","50.0"),
-  ];
-  
-export default function HolidayTable() {
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('');
-  const [search, setSearch] = React.useState('');
-  const [filter, setFilter] = React.useState('');
-  const [rows, setRows] = React.useState(initialRows);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [editId, setEditId] = React.useState(null);
-  const [editData, setEditData] = React.useState({});
-  const [open, setOpen] = React.useState(false);
-  const [newSpecificEmployee, setNewSpecificEmployee] = React.useState({
-    Allowance:'',SpecificEmployee: '', ExcludedEmployees: '',IsTaxable:'',IsConditionBased:'',Condition:'', IsFixed:'',Amount:'',BasedOn:'',Rate:''
-  });
+const AllowanceTypesPage = () => {
+  const [allowanceTypes, setAllowanceTypes] = useState(initialAllowanceTypes);
+  const [search, setSearch] = useState("");
+  const [filterValue, setFilterValue] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuAnchorEl, setMenuAnchorEl] = useState({});
+  const [editIndex, setEditIndex] = useState(null);
+  const [newAllowance, setNewAllowance] = useState({ name: "", payment: "" });
+  const [openDialog, setOpenDialog] = useState(false);
 
-  const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
+  const handleFilterClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
 
-  const handleSave = () => {
-    setRows(rows.map((row) => (row.id === editId ? editData : row)));
-    setEditId(null);
+  const handleFilterSelect = (value) => {
+    setFilterValue(value);
+    setAnchorEl(null);
   };
 
-  const handleSearch = (event) => setSearch(event.target.value);
-  const handleFilter = (event) => setFilter(event.target.value);
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const handleCreateClick = () => {
+    setOpenDialog(true);
+    setEditIndex(null);
+    setNewAllowance({ name: "", payment: "" });
   };
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewAllowance((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const handleAddSpecificEmployee = () => {
-    if (newSpecificEmployee.SpecificEmployee&& newSpecificEmployee.ExcludedEmployees) {
-      setRows([...rows, createData(rows.length + 1, newSpecificEmployee.SpecificEmployee, newSpecificEmployee.ExcludedEmployees, newSpecificEmployee.IsTaxable,newSpecificEmployee.IsConditionBased,newSpecificEmployee.Condition, newSpecificEmployee.IsFixed,newSpecificEmployee.Amount,newSpecificEmployee.BasedOn,newSpecificEmployee.Rate, rows.length + 500)]);
-      setNewSpecificEmployee({ SpecificEmployee: '', ExcludedEmployees: '', IsTaxable: '',IsConditionBased:'',Condition:'',IsFixed:'',Amount:'',BasedOn:'',Rate:''});
-      handleClose();
+  const handleSubmit = () => {
+    const updatedAllowance = { ...newAllowance, color: randomColor() };
+    if (editIndex !== null) {
+      const updatedList = [...allowanceTypes];
+      updatedList[editIndex] = { ...updatedList[editIndex], ...updatedAllowance };
+      setAllowanceTypes(updatedList);
+    } else {
+      setAllowanceTypes((prev) => [...prev, updatedAllowance]);
     }
+    setOpenDialog(false);
+    setNewAllowance({ name: "", payment: "" });
+    setEditIndex(null);
   };
 
-  const handleInputChange = (event) => setNewSpecificEmployee({ ...newSpecificEmployee, [event.target.name]: event.target.value });
+  const handleMenuOpen = (index, event) => {
+    setMenuAnchorEl({ [index]: event.currentTarget });
+  };
 
-  const filteredRows = rows.filter((row) =>
-    row.SpecificEmployee.toLowerCase().includes(search.toLowerCase()) &&
-    (filter ? row.ExcludedEmployees === filter : true)
+  const handleMenuClose = (index) => {
+    setMenuAnchorEl({ [index]: null });
+  };
+
+  const handleEdit = (index) => {
+    setEditIndex(index);
+    setNewAllowance({
+      name: allowanceTypes[index].name,
+      payment: allowanceTypes[index].payment,
+    });
+    setOpenDialog(true);
+    handleMenuClose(index);
+  };
+
+  const handleDelete = (index) => {
+    const updated = allowanceTypes.filter((_, i) => i !== index);
+    setAllowanceTypes(updated);
+    handleMenuClose(index);
+  };
+
+  const filtered = allowanceTypes.filter(
+    (allowances) =>
+      allowances.name.toLowerCase().includes(search.toLowerCase()) &&
+      (filterValue === "" || allowances.payment === filterValue)
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap:10, mb: 2 }}>
-          <Typography variant="h6">Allowances</Typography>
-          <TextField label="Search SpecificEmployee" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField select label="Filter by Start Date" variant="outlined" size="small" value={filter} onChange={handleFilter}>
-            <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map((row) => row.ExcludedEmployees))].map((job) => (
-              <MenuItem key={job} value={job}>{job}</MenuItem>
-            ))}
-          </TextField>
-          <Button variant="contained" onClick={handleOpen}>Create</Button>
-        </Box>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                {columns.map((column) => (
-                    <TableCell
-                    key={column.id} // Unique key for each column
-                    sx={{
-                        fontWeight: 'bold', // Bold text for column headers
-                        textAlign: 'center', // Center-align text
-                        position: column.sticky ? 'sticky' : 'static', // Make "Conformation" column sticky
-                        right: column.sticky ? 0 : 'auto', // Stick to the right if marked as sticky
-                        background: column.sticky ? 'white' : 'inherit', // Ensure sticky column has a background
-                        zIndex: column.sticky ? 2 : 'auto', // Adjust stacking order for sticky column
-                    }}
-                    >
-                        {column.label} {/* Display column label */}
-                    </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Allowance}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.SpecificEmployee}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.ExcludedEmployees}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.IsTaxable}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.IsConditionBased}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Condition}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.IsFixed}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Amount}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.BasedOn}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.Rate}</TableCell>
-                  <TableCell sx={{  textAlign: 'center',position: 'sticky', right: 0,background: 'white',zIndex: 1, whiteSpace: 'nowrap'  }}>
-                    {editId === row.id ? (
-                      <Button variant="contained" color="success" size="small" onClick={handleSave}>Save</Button>
-                    ) : (
-                      <>
-                        <IconButton color="primary" onClick={() => { setEditId(row.id); setEditData(row); }}>
-                          <EditNoteIcon />
-                        </IconButton>
-                        <IconButton color="error" onClick={() => handleDelete(row.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
+    <Box p={3} sx={{ backgroundColor: "transparent", color: "white" }}>
+      <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "white" }}>
+          Allowances
+        </Typography>
+        <TextField
+          variant="outlined"
+          label="Search"
+          size="small"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{
+            flex: 1,
+            minWidth: 200,
+            input: { color: "white" },
+            label: { color: "white" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": { borderColor: "white" },
+              "&:hover fieldset": { borderColor: "white" },
+            },
+          }}
         />
-      </Paper>
-      <Dialog open={open} onClose={handleClose}  maxWidth="sm" fullWidth>
-        <Card sx={{ p: 2, minWidth: 300 }}>
-          <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
-            <Typography variant="h6">Add SpecificEmployee</Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              <TextField name="Allowance" label="Allowance" variant="outlined" size="small" value={newSpecificEmployee.Allowance} onChange={handleInputChange} />
-              <TextField name="SpecificEmployee" label="SpecificEmployee" variant="outlined" size="small" value={newSpecificEmployee.SpecificEmployee} onChange={handleInputChange} />
-              <TextField name="ExcludedEmployees" label="Excluded Employees" variant="outlined" size="small" value={newSpecificEmployee.ExcludedEmployees} onChange={handleInputChange} />
-              <TextField name="IsTaxable" label="Is Taxable" variant="outlined" size="small" value={newSpecificEmployee.IsTaxable} onChange={handleInputChange} />
-              <TextField name="IsConditionBased" label="Is Condition Based" variant="outlined" size="small" value={newSpecificEmployee.IsConditionBased} onChange={handleInputChange} />
-              <TextField name="RequestedDays" label="RequestedDays" variant="outlined" size="small" value={newSpecificEmployee.RequestedDays} onChange={handleInputChange} />
-              <TextField name="Status" label="Status" variant="outlined" size="small" value={newSpecificEmployee.Status} onChange={handleInputChange} />
-              <Button variant="contained" onClick={handleAddSpecificEmployee}>Add Allowances</Button>
-            </Box>
-          </CardContent>
-        </Card>
+        <Button
+          variant="outlined"
+          startIcon={<FilterList />}
+          onClick={handleFilterClick}
+          sx={{ color: "white", borderColor: "white" }}
+        >
+          Filter
+        </Button>
+        <Menu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={() => setAnchorEl(null)}
+          PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+        >
+          <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
+          <MenuItem onClick={() => handleFilterSelect("1000")}>1000</MenuItem>
+          <MenuItem onClick={() => handleFilterSelect("2000")}>2000</MenuItem>
+        </Menu>
+        <Button
+          variant="contained"
+          color="error"
+          startIcon={<Add />}
+          onClick={handleCreateClick}
+        >
+          Create
+        </Button>
+      </Box>
+
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(8px)",
+            color: "white",
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: "white" }}>
+          {editIndex !== null ? "Edit Allowance Type" : "Create Allowance Type"}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            name="name"
+            fullWidth
+            margin="dense"
+            value={newAllowance.name}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: {
+                color: "white",
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
+            }}
+          />
+          <TextField
+            label="Amount"
+            name="payment"
+            type="number"
+            fullWidth
+            margin="dense"
+            value={newAllowance.payment}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: {
+                color: "white",
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)} sx={{ color: "white" }}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
+
+      <Grid container spacing={2}>
+        {filtered.length > 0 ? (
+          filtered.map((allowances, index) => (
+            <Grid item xs={12} sm={6} md={4} key={index}>
+              <Card
+                variant="outlined"
+                sx={{
+                  backgroundColor: "transparent",
+                  boxShadow: "none",
+                  border: "1px solid white", // PURE WHITE BORDER
+                }}
+              >
+                <CardContent>
+                  <Box display="flex" justifyContent="space-between">
+                    <Box display="flex" alignItems="center" gap={2}>
+                      <Box
+                        width={40}
+                        height={40}
+                        borderRadius="50%"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        bgcolor={allowances.color}
+                        fontWeight="bold"
+                      />
+                      <Box>
+                        <Typography fontWeight="bold" sx={{ color: "white" }}>
+                          {allowances.name}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
+                          Amount: {allowances.payment}
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box>
+                      <IconButton onClick={(e) => handleMenuOpen(index, e)} sx={{ color: "white" }}>
+                        <MoreVert />
+                      </IconButton>
+                      <Menu
+                        anchorEl={menuAnchorEl[index]}
+                        open={Boolean(menuAnchorEl[index])}
+                        onClose={() => handleMenuClose(index)}
+                        PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+                      >
+                        <MenuItem onClick={() => handleEdit(index)}>Edit</MenuItem>
+                        <MenuItem onClick={() => handleDelete(index)}>Delete</MenuItem>
+                      </Menu>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))
+        ) : (
+          <Typography ml={1} sx={{ color: "white" }}>
+            No results found.
+          </Typography>
+        )}
+      </Grid>
     </Box>
   );
-}
+};
+
+export default AllowanceTypesPage;

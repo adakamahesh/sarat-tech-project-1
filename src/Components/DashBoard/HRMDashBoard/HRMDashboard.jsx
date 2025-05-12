@@ -162,30 +162,30 @@ export default function HRMDashboard() {
           <Divider />
 
           {/* OnLeave + OverTime */}
-          <Box sx={{
+          {/* <Box sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             mt: 2,
             gap: 2
-          }}>
+          }}> */}
             <Box sx={{
-              width: { xs: "100%", md: '50%' },
+              width: { xs: "100%", md: '100%' },
               display: 'flex',
               alignItems: 'stretch',
               border: '1px solid rgb(237,237,237)'
             }}>
               <OnLeave />
             </Box>
-            <Box sx={{
+            {/* <Box sx={{
               width: { xs: "100%", md: '50%' },
               display: 'flex',
               alignItems: 'stretch',
               border: '1px solid rgb(237,237,237)'
             }}>
               <OverTime />
-            </Box>
+            </Box> */}
           </Box>
-        </Box>
+        {/* </Box> */}
 
       {/* Bottom Section: Meeting & Calendar */}
       <Box sx={{

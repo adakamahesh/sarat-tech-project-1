@@ -1,56 +1,88 @@
 import * as React from 'react';
 import {
-  Box, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow,
-  TableSortLabel, Paper, TextField, MenuItem, Button, Card, CardContent, Typography, Dialog, IconButton
+  Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  TableSortLabel, Paper, TextField, Button, Card, CardContent, Typography, Dialog,
+  IconButton, TablePagination, Select, MenuItem
 } from '@mui/material';
 import { Avatar } from '@mui/material';
-import DescriptionIcon from '@mui/icons-material/Description';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import axios from 'axios';
 
-function createData(id, Employee, Email, Phone, ApplicantId, SLNO, JobPosition) {
-  return { id, Employee, Email, Phone, ApplicantId, SLNO, JobPosition };
+const API_BASE_URL = 'http://192.168.1.49:8084/recruitment/applicant';
+
+function createData(applicant) {
+  return {
+    id: applicant.applicantId,
+    Employee: `${applicant.firstName} ${applicant.lastName}`,
+    Email: applicant.email,
+    Phone: applicant.mobileNumber,
+    SrNo: applicant.applicantId,
+    ApplicantId: applicant.applicantId,
+    JobPosition: 'N/A',
+    AlternateNumber: applicant.alternateNumber,
+    DOB: applicant.dateOfBirth ? new Date(applicant.dateOfBirth).toLocaleDateString() : '',
+    Gender: applicant.gender,
+    Status: applicant.status,
+    Address: applicant.address,
+    EmergencyContactName: applicant.emergencyContactName,
+    EmergencyContactNumber: applicant.emergencyContactNumber,
+    MaritalStatus: applicant.maritalStatus,
+    Qualification: applicant.qualification,
+  };
 }
-
-const initialRows = [
-  createData(1, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 501, 'SL001', "FrontEnd Developer"),
-  createData(2, 'Vasu', 'vasu@gmail.com', 9700784065, 502, 'SL002', "Backend Developer"),
-  createData(3, 'Praveen', 'praveen@gmail.com', 9700784065, 503, 'SL003', "UI/UX Designer"),
-  createData(4, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 504, 'SL004', "FrontEnd Developer"),
-  createData(5, 'Vasu', 'vasu@gmail.com', 9700784065, 505, 'SL005', "Backend Developer"),
-  createData(6, 'Praveen', 'praveen@gmail.com', 9700784065, 506, 'SL006', "UI/UX Designer"),
-  createData(7, 'Mahesh', 'adakamahesh@gmail.com', 9700784065, 507, 'SL007', "FrontEnd Developer"),
-  createData(8, 'Vasu', 'vasu@gmail.com', 9700784065, 508, 'SL008', "Backend Developer"),
-  createData(9, 'Praveen', 'praveen@gmail.com', 9700784065, 509, 'SL009', "UI/UX Designer"),
-];
 
 export default function Applicant() {
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('DateOfJoining');
+  const [orderBy, setOrderBy] = React.useState('Employee');
   const [search, setSearch] = React.useState('');
-  const [filter, setFilter] = React.useState('');
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
-  const [editId, setEditId] = React.useState(null);
-  const [editData, setEditData] = React.useState({});
-  const [newEmployee, setNewEmployee] = React.useState({
-    Employee: '', Email: '', Phone: '', SLNO: '', ApplicantId: '', JobPosition: '', Department: '', shift: '', WorkEmail: '', DateOfJoining: ''
+  const [openEditDialog, setOpenEditDialog] = React.useState(false);
+  const [newApplicant, setNewApplicant] = React.useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    mobileNumber: '',
+    alternateNumber: '',
+    dateOfBirth: null,
+    gender: '',
+    address: '',
+    emergencyContactName: '',
+    emergencyContactNumber: '',
+    maritalStatus: '',
+    qualification: '',
   });
+  const [editApplicant, setEditApplicant] = React.useState(null);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(null);
 
-  const handleEdit = (row) => {
-    setEditId(row.id);
-    setEditData(row);
+  React.useEffect(() => {
+    fetchApplicants();
+  }, []);
+
+  const fetchApplicants = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(API_BASE_URL);
+      setRows(response.data.map(applicant => createData(applicant)));
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleEditChange = (event) => {
-    setEditData({ ...editData, [event.target.name]: event.target.value });
-  };
-
-  const handleSave = () => {
-    setRows(rows.map((row) => (row.id === editId ? editData : row)));
-    setEditId(null);
+  const deleteApplicant = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/${id}`);
+      fetchApplicants();
+    } catch (error) {
+      console.error("Failed to delete applicant:", error);
+    }
   };
 
   const handleRequestSort = (property) => {
@@ -59,155 +91,132 @@ export default function Applicant() {
     setOrderBy(property);
   };
 
-  const handleSearch = (event) => setSearch(event.target.value);
-  const handleFilter = (event) => setFilter(event.target.value);
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleSearch = (e) => setSearch(e.target.value);
+  const handleChangePage = (e, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenEditDialog = (applicant) => {
+    setEditApplicant(applicant);
+    setOpenEditDialog(true);
+  };
+  const handleCloseEditDialog = () => setOpenEditDialog(false);
 
-  const handleAddEmployee = () => {
-    if (newEmployee.Employee && newEmployee.Email) {
-      const newId = rows.length + 1;
-      const newApplicantId = 500 + newId;
-      const newRow = createData(
-        newId,
-        newEmployee.Employee,
-        newEmployee.Email,
-        newEmployee.Phone,
-        newApplicantId,
-        newEmployee.SLNO,
-        newEmployee.JobPosition
-      );
-      setRows([...rows, newRow]);
-      setNewEmployee({
-        Employee: '', Email: '', Phone: '', SLNO: '', ApplicantId: '', JobPosition: '', Department: '', shift: '', WorkEmail: '', DateOfJoining: ''
-      });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewApplicant(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditApplicant(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddApplicant = async () => {
+    try {
+      await axios.post(API_BASE_URL, newApplicant);
+      fetchApplicants();
       handleClose();
+      setNewApplicant({
+        firstName: '',
+        lastName: '',
+        email: '',
+        mobileNumber: '',
+        alternateNumber: '',
+        dateOfBirth: null,
+        gender: '',
+        address: '',
+        emergencyContactName: '',
+        emergencyContactNumber: '',
+        maritalStatus: '',
+        qualification: '',
+      });
+    } catch (error) {
+      setError("Failed to add applicant.");
     }
   };
 
-  const handleInputChange = (event) => setNewEmployee({ ...newEmployee, [event.target.name]: event.target.value });
-
-  const handleResumeClick = (employee) => {
-    alert(`Viewing resume for ${employee}`);
-  };
-
-  const handleDelete = (id) => {
-    setRows(rows.filter((row) => row.id !== id));
+  const handleEditApplicant = async () => {
+    try {
+      await axios.put(`${API_BASE_URL}/${editApplicant.applicantId}`, editApplicant);
+      fetchApplicants();
+      handleCloseEditDialog();
+    } catch (error) {
+      setError("Failed to edit applicant.");
+    }
   };
 
   const filteredRows = rows.filter((row) =>
-    row.Employee.toLowerCase().includes(search.toLowerCase()) &&
-    (filter ? row.JobPosition === filter : true)
+    row.Employee.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) return <Typography>Loading applicants...</Typography>;
+  if (error) return <Typography color="error">Error: {error}</Typography>;
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2, p: 2 }}>
-        <Box sx={{ display: 'flex', gap: 2, mb: 2, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <Typography variant="h6">Applicant</Typography>
-          <TextField label="Search Employee" variant="outlined" size="small" value={search} onChange={handleSearch} />
-          <TextField sx={{width:'30%'}} select label="Filter by Job Position" variant="outlined" size="small" value={filter} onChange={handleFilter}>
-            <MenuItem value="">All</MenuItem>
-            {[...new Set(rows.map((row) => row.JobPosition))].map((job) => (
-              <MenuItem key={job} value={job}>{job}</MenuItem>
-            ))}
-          </TextField>
-          <Button variant="contained" onClick={handleOpen}>Create</Button>
+          <TextField label="Search" variant="outlined" size="small" value={search} onChange={handleSearch} />
+          <Button variant="contained" onClick={handleOpen}>Add Applicant</Button>
         </Box>
+
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>SLNO</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Applicant Id</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                  <TableSortLabel active={orderBy === 'Employee'} direction={order} onClick={() => handleRequestSort('Employee')}>
-                    Applicant
-                  </TableSortLabel>
-                </TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Mobile</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Job Position</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Resume</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', textAlign: 'center' }}>Actions</TableCell>
+                {['SrNo', 'Applicant ID', 'Name', 'Email', 'Phone', 'Job Position', 'Alternate Number',
+                  'DOB', 'Gender', 'Status', 'Address', 'Emergency Contact Name', 'Emergency Contact Number',
+                  'Marital Status', 'Qualification'].map((header) => (
+                    <TableCell key={header}><b>{header}</b></TableCell>
+                  ))}
+                <TableCell sx={{ position: 'sticky', right: 0, backgroundColor: 'white', zIndex: 1 }}><b>Action</b></TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                 <TableRow key={row.id}>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.SLNO}</TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>{row.ApplicantId}</TableCell>
-                  <TableCell sx={{
-                    textAlign: 'left',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    justifyContent: 'flex-start',
-                    minWidth: 150
-                  }}>
-                    <Avatar sx={{ bgcolor: 'gray' }}>{row.Employee[0]}</Avatar>
-                    <Box sx={{ flexGrow: 1 }}>
-                      {editId === row.id ? (
-                        <TextField name="Employee" value={editData.Employee} onChange={handleEditChange} size="small" variant="outlined" fullWidth />
-                      ) : (
-                        <Typography variant="body1">{row.Employee}</Typography>
-                      )}
+                  <TableCell>{row.SrNo}</TableCell>
+                  <TableCell>{row.ApplicantId}</TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Avatar>{row.Employee[0]}</Avatar>{row.Employee}
                     </Box>
                   </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>
-                    {editId === row.id ? (
-                      <TextField name="Email" value={editData.Email} onChange={handleEditChange} size="small" />
-                    ) : (
-                      row.Email
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>
-                    {editId === row.id ? (
-                      <TextField name="Phone" value={editData.Phone} onChange={handleEditChange} size="small" />
-                    ) : (
-                      row.Phone
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>
-                    {editId === row.id ? (
-                      <TextField name="JobPosition" value={editData.JobPosition} onChange={handleEditChange} size="small" />
-                    ) : (
-                      row.JobPosition
-                    )}
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center', display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <IconButton onClick={() => handleResumeClick(row.Employee)}>
-                      <DescriptionIcon color="gray" />
-                    </IconButton>
-                    <Typography variant="body2" sx={{ cursor: 'pointer' }}>
-                      View
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ textAlign: 'center' }}>
-                    {editId === row.id ? (
-                      <Button variant="contained" color="success" size="small" onClick={handleSave}>Save</Button>
-                    ) : (
-                      <>
-                        <IconButton color="primary" onClick={() => handleEdit(row)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton color="error" onClick={() => handleDelete(row.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
+                  <TableCell>{row.Email}</TableCell>
+                  <TableCell>{row.Phone}</TableCell>
+                  <TableCell>{row.JobPosition}</TableCell>
+                  <TableCell>{row.AlternateNumber}</TableCell>
+                  <TableCell>{row.DOB}</TableCell>
+                  <TableCell>{row.Gender}</TableCell>
+                  <TableCell>{row.Status}</TableCell>
+                  <TableCell>{row.Address}</TableCell>
+                  <TableCell>{row.EmergencyContactName}</TableCell>
+                  <TableCell>{row.EmergencyContactNumber}</TableCell>
+                  <TableCell>{row.MaritalStatus}</TableCell>
+                  <TableCell>{row.Qualification}</TableCell>
+                  <TableCell sx={{ position: 'sticky', right: 0, backgroundColor: 'white', zIndex: 1 }}>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton color="primary" onClick={() => handleOpenEditDialog(row)}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton color="error" onClick={() => deleteApplicant(row.ApplicantId)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </Box>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
@@ -219,23 +228,96 @@ export default function Applicant() {
         />
       </Paper>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <Card sx={{ p: 2, minWidth: 300 }}>
-          <CardContent sx={{ maxHeight: '70vh', overflowY: 'auto' }}>
+      {/* Add Applicant Dialog */}
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <Card sx={{ p: 2 }}>
+          <CardContent>
             <Typography variant="h6">Add Applicant</Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
-              <TextField name="Employee" label="Employee Name" variant="outlined" size="small" value={newEmployee.Employee} onChange={handleInputChange} />
-              <TextField name="Email" label="Email" variant="outlined" size="small" value={newEmployee.Email} onChange={handleInputChange} />
-              <TextField name="Phone" label="Phone" variant="outlined" size="small" value={newEmployee.Phone} onChange={handleInputChange} />
-              <TextField name="SLNO" label="SLNO" variant="outlined" size="small" value={newEmployee.SLNO} onChange={handleInputChange} />
-              <TextField name="ApplicantId" label="Applicant ID" variant="outlined" size="small" value={newEmployee.ApplicantId} onChange={handleInputChange} />
-              <TextField name="JobPosition" label="Job Position" variant="outlined" size="small" value={newEmployee.JobPosition} onChange={handleInputChange} />
-              <TextField name="Department" label="Department" variant="outlined" size="small" value={newEmployee.Department} onChange={handleInputChange} />
-              <TextField name="shift" label="Shift" variant="outlined" size="small" value={newEmployee.shift} onChange={handleInputChange} />
-              <TextField name="WorkEmail" label="Work Email" variant="outlined" size="small" value={newEmployee.WorkEmail} onChange={handleInputChange} />
-              <TextField name="DateOfJoining" label="Date of Joining" variant="outlined" size="small" type="date" InputLabelProps={{ shrink: true }} value={newEmployee.DateOfJoining} onChange={handleInputChange} />
-              <Button variant="contained" onClick={handleAddEmployee}>Add Employee</Button>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mt: 2 }}>
+              {Object.keys(newApplicant).map((field) => {
+                if (['gender', 'qualification', 'maritalStatus'].includes(field)) {
+                  const options = field === 'gender'
+                    ? ['Male', 'Female', 'Other']
+                    : field === 'qualification'
+                      ? ['BTech', 'MTech', 'MBA', 'Others']
+                      : ['Married', 'Unmarried'];
+
+                  return (
+                    <Select
+                      key={field}
+                      name={field}
+                      value={newApplicant[field]}
+                      onChange={handleInputChange}
+                      displayEmpty
+                      size="small"
+                    >
+                      <MenuItem value="" disabled>{field.replace(/([A-Z])/g, ' $1')}</MenuItem>
+                      {options.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                    </Select>
+                  );
+                }
+
+                return (
+                  <TextField
+                    key={field}
+                    name={field}
+                    label={field.replace(/([A-Z])/g, ' $1').toUpperCase()}
+                    variant="outlined"
+                    value={newApplicant[field]}
+                    onChange={handleInputChange}
+                    size="small"
+                  />
+                );
+              })}
             </Box>
+            <Button sx={{ mt: 2 }} variant="contained" onClick={handleAddApplicant}>Add</Button>
+          </CardContent>
+        </Card>
+      </Dialog>
+
+      {/* Edit Applicant Dialog */}
+      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
+        <Card sx={{ p: 2 }}>
+          <CardContent>
+            <Typography variant="h6">Edit Applicant</Typography>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 2, mt: 2 }}>
+              {editApplicant && Object.keys(editApplicant).map((field) => {
+                if (['gender', 'qualification', 'maritalStatus'].includes(field)) {
+                  const options = field === 'gender'
+                    ? ['Male', 'Female', 'Other']
+                    : field === 'qualification'
+                      ? ['BTech', 'MTech', 'MBA', 'Others']
+                      : ['Married', 'Unmarried'];
+
+                  return (
+                    <Select
+                      key={field}
+                      name={field}
+                      value={editApplicant[field]}
+                      onChange={handleEditInputChange}
+                      displayEmpty
+                      size="small"
+                    >
+                      <MenuItem value="" disabled>{field.replace(/([A-Z])/g, ' $1')}</MenuItem>
+                      {options.map(opt => <MenuItem key={opt} value={opt}>{opt}</MenuItem>)}
+                    </Select>
+                  );
+                }
+
+                return (
+                  <TextField
+                    key={field}
+                    name={field}
+                    label={field.replace(/([A-Z])/g, ' $1').toUpperCase()}
+                    variant="outlined"
+                    value={editApplicant[field]}
+                    onChange={handleEditInputChange}
+                    size="small"
+                  />
+                );
+              })}
+            </Box>
+            <Button sx={{ mt: 2 }} variant="contained" onClick={handleEditApplicant}>Save</Button>
           </CardContent>
         </Card>
       </Dialog>

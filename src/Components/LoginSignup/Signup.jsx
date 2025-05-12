@@ -12,7 +12,6 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import bg from "../../assets/images/login.jpg"; // background image
 
 const Signup = () => {
   const [email, setEmail] = useState("");
@@ -63,19 +62,6 @@ const Signup = () => {
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        m: 0,
-        p: 0,
-        backgroundImage: `url(${bg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -150,7 +136,6 @@ const Signup = () => {
           </Button>
         </Box>
       </Container>
-    </Box>
   );
 };
 

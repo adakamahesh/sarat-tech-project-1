@@ -147,15 +147,12 @@ export default function HRMDashboard() {
 
       <Box
         sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "row",
-          gap: 2,
           mt: 4,
+          width: '100%',
         }}
       >
         <AttendanceBarGraph />
-        <OvertimeToApprove sx={{ height: "200px" }} />
+        {/* <OvertimeToApprove sx={{ height: "200px" }} /> */}
       </Box>
     </>
   );
