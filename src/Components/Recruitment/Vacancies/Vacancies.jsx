@@ -1,70 +1,68 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TextField,
-  Button,
-  Card,
-  CardContent,
-  Typography,
-  Dialog,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
+  Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, TextField, Button, Card, CardContent, Typography, Dialog,
+  MenuItem, Select, InputLabel, FormControl
 } from "@mui/material";
 
 export default function VacanciesTable() {
-  const [rows, setRows] = React.useState([
-    {
-      jobId: 1,
-      jobTitle: "Software Engineer",
-      jobDescription: "Develop and maintain software.",
-      jobPosition: "Developer",
-      postingDate: "2025-05-01",
-      closingDate: "2025-05-31",
-      salaryRange: "60000-80000",
-      status: "Open",
-      jobVacancies: 2,
-      employmentType: "Full-time",
-    },
-  ]);
-
-  const [search, setSearch] = React.useState("");
-  const [open, setOpen] = React.useState(false);
-  const [newJob, setNewJob] = React.useState({
+  const [rows, setRows] = useState([]);
+  const [search, setSearch] = useState("");
+  const [open, setOpen] = useState(false);
+  const [newJob, setNewJob] = useState({
     jobTitle: "",
     jobDescription: "",
-    jobPosition: "",
-    postingDate: "",
     closingDate: "",
     salaryRange: "",
-    status: "",
-    jobVacancies: "",
+    status: "Open",
+    jobVacancy: "",
     employmentType: "Full-time",
+    jobLocation: "",
   });
 
-  const handleSave = () => {
-    const newId = rows.length ? Math.max(...rows.map((r) => r.jobId)) + 1 : 1;
-    setRows([...rows, { ...newJob, jobId: newId }]);
-    setNewJob({
-      jobTitle: "",
-      jobDescription: "",
-      jobPosition: "",
-      postingDate: "",
-      closingDate: "",
-      salaryRange: "",
-      status: "",
-      jobVacancies: "",
-      employmentType: "Full-time",
-    });
-    setOpen(false);
+  const BASE_URL = "http://192.168.1.49:8084/recruitment/job_postings";
+
+  const fetchJobs = async () => {
+    try {
+      const response = await axios.get(BASE_URL);
+      setRows(response.data);
+    } catch (error) {
+      console.error("Failed to fetch jobs", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      await axios.post(`${BASE_URL}/save`, newJob);
+      fetchJobs();
+      setNewJob({
+        jobTitle: "",
+        jobDescription: "",
+        closingDate: "",
+        salaryRange: "",
+        status: "Open",
+        jobVacancy: "",
+        employmentType: "Full-time",
+        jobLocation: "",
+      });
+      setOpen(false);
+    } catch (error) {
+      console.error("Failed to add job", error);
+    }
+  };
+
+  const handleDelete = async (jobId) => {
+    try {
+      await axios.delete(`${BASE_URL}/${jobId}`);
+      fetchJobs();
+    } catch (error) {
+      console.error("Failed to delete job", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -77,16 +75,8 @@ export default function VacanciesTable() {
   );
 
   const headers = [
-    "Job ID",
-    "Job Title",
-    "Job Description",
-    "Job Position",
-    "Posting Date",
-    "Closing Date",
-    "Salary Range",
-    "Status",
-    "Vacancies",
-    "Employment Type",
+    "Job ID", "Job Title", "Job Description", "Closing Date",
+    "Salary Range", "Status", "Vacancies", "Employment Type", "Job Location", "Action",
   ];
 
   return (
@@ -105,97 +95,74 @@ export default function VacanciesTable() {
           </Button>
         </Box>
 
-        <Box sx={{ overflowX: "auto" }}>
-          <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
-            <Table stickyHeader sx={{ minWidth: 1200 }}>
-              <TableHead>
-                <TableRow>
-                  {headers.map((head) => (
-                    <TableCell
-                      key={head}
-                      align="center"
-                      sx={{
-                        fontWeight: "bold",
-                        backgroundColor: "#93A0B4",
-                        color: "#fff",
-                      }}
-                    >
-                      {head}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredRows.map((row) => (
-                  <TableRow key={row.jobId}>
-                    <TableCell align="center">{row.jobId}</TableCell>
-                    <TableCell align="center">{row.jobTitle}</TableCell>
-                    <TableCell align="center">{row.jobDescription}</TableCell>
-                    <TableCell align="center">{row.jobPosition}</TableCell>
-                    <TableCell align="center">{row.postingDate}</TableCell>
-                    <TableCell align="center">{row.closingDate}</TableCell>
-                    <TableCell align="center">{row.salaryRange}</TableCell>
-                    <TableCell align="center">{row.status}</TableCell>
-                    <TableCell align="center">{row.jobVacancies}</TableCell>
-                    <TableCell align="center">{row.employmentType}</TableCell>
-                  </TableRow>
+        <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+          <Table stickyHeader>
+            <TableHead>
+              <TableRow>
+                {headers.map((head) => (
+                  <TableCell key={head} align="center"
+                    sx={{ fontWeight: "bold", backgroundColor: "#93A0B4", color: "#fff" }}
+                  >
+                    {head}
+                  </TableCell>
                 ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredRows.map((row) => (
+                <TableRow key={row.jobId}>
+                  <TableCell align="center">{row.jobId}</TableCell>
+                  <TableCell align="center">{row.jobTitle}</TableCell>
+                  <TableCell align="center">{row.jobDescription}</TableCell>
+                  <TableCell align="center">{row.closingDate}</TableCell>
+                  <TableCell align="center">{row.salaryRange}</TableCell>
+                  <TableCell align="center">{row.status}</TableCell>
+                  <TableCell align="center">{row.jobVacancy}</TableCell>
+                  <TableCell align="center">{row.employmentType}</TableCell>
+                  <TableCell align="center">{row.jobLocation}</TableCell>
+                  <TableCell align="center">
+                    <Button variant="outlined" color="error" size="small"
+                      onClick={() => handleDelete(row.jobId)}
+                    >
+                      Delete
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Paper>
 
-      {/* Add Job Dialog */}
       <Dialog open={open} onClose={() => setOpen(false)}>
         <Card sx={{ p: 3, minWidth: 500 }}>
           <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Add Job
-            </Typography>
-
-            {/* Two Inputs Per Row */}
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-              {Object.entries(newJob).map(([key, value]) => {
-                if (key === "employmentType") return null;
-                return (
-                  <Box
-                    key={key}
-                    sx={{
-                      flex: "1 1 calc(50% - 8px)",
-                      minWidth: "200px",
-                    }}
-                  >
-                    <TextField
-                      fullWidth
-                      name={key}
-                      label={key
-                        .replace(/([A-Z])/g, " $1")
-                        .replace(/^./, (str) => str.toUpperCase())}
-                      type={
-                        key.includes("Date")
-                          ? "date"
-                          : key === "jobVacancies"
-                          ? "number"
-                          : "text"
-                      }
-                      value={value}
-                      onChange={handleChange}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Box>
-                );
-              })}
+            <Typography variant="h6" gutterBottom>Add Job</Typography>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
+              {["jobTitle", "jobDescription", "closingDate", "salaryRange", "jobVacancy", "jobLocation"].map((field) => (
+                <TextField
+                  key={field}
+                  name={field}
+                  label={field.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
+                  type={field.includes("Date") ? "date" : (field === "jobVacancy" ? "number" : "text")}
+                  value={newJob[field]}
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  fullWidth
+                />
+              ))}
             </Box>
 
-            <Box sx={{ mt: 2 }}>
+            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2, mt: 2 }}>
               <FormControl fullWidth size="small">
-                <InputLabel id="employment-type-label">
-                  Employment Type
-                </InputLabel>
+                <InputLabel>Employment Type</InputLabel>
                 <Select
-                  labelId="employment-type-label"
-                  id="employment-type"
                   name="employmentType"
                   value={newJob.employmentType}
                   onChange={handleChange}
@@ -204,6 +171,19 @@ export default function VacanciesTable() {
                   <MenuItem value="Full-time">Full-time</MenuItem>
                   <MenuItem value="Part-time">Part-time</MenuItem>
                   <MenuItem value="Contract">Contract</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth size="small">
+                <InputLabel>Status</InputLabel>
+                <Select
+                  name="status"
+                  value={newJob.status}
+                  onChange={handleChange}
+                  label="Status"
+                >
+                  <MenuItem value="Open">Open</MenuItem>
+                  <MenuItem value="Closed">Closed</MenuItem>
                 </Select>
               </FormControl>
             </Box>

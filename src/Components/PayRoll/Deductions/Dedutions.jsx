@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,12 +16,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Add, FilterList, MoreVert } from "@mui/icons-material";
-
-const initialAllowanceTypes = [
-  { name: "Earned", payment: "1000", color: "#b2dfdb" },
-  { name: "Maternity", payment: "2000", color: "#ffe0b2" },
-  { name: "Sick", payment: "1500", color: "#81d4fa" },
-];
+import axios from "axios";
 
 const randomColor = () => {
   const colors = [
@@ -37,48 +32,81 @@ const randomColor = () => {
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
-const DedutionTypesPage = () => {
-  const [dedutionTypes, setDedutionTypes] = useState(initialAllowanceTypes);
+const DeductionTypesPage = () => {
+  const [deductions, setDeductions] = useState([]);
   const [search, setSearch] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = useState({});
-  const [editIndex, setEditIndex] = useState(null);
-  const [newDedution, setNewDedution] = useState({ name: "", payment: "" });
+  const [editDeduction, setEditDeduction] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [formData, setFormData] = useState({ deduction: "", amount: "" });
 
-  const handleFilterClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  // Fetch all deductions
+  const fetchDeductions = async () => {
+    try {
+      const res = await axios.get("http://192.168.1.49:8084/deduction");
+      const dataWithColors = res.data.map((item) => ({
+        ...item,
+        color: randomColor(),
+      }));
+      setDeductions(dataWithColors);
+    } catch (error) {
+      console.error("Failed to fetch deductions", error);
+    }
   };
+
+  useEffect(() => {
+    fetchDeductions();
+  }, []);
+
+  const handleFilterClick = (event) => setAnchorEl(event.currentTarget);
 
   const handleFilterSelect = (value) => {
     setFilterValue(value);
     setAnchorEl(null);
   };
 
-  const handleCreateClick = () => {
+  const handleOpenDialog = (deduction = null) => {
+    setEditDeduction(deduction);
+    setFormData(
+      deduction ? { deduction: deduction.deduction, amount: deduction.amount } : { deduction: "", amount: "" }
+    );
     setOpenDialog(true);
-    setEditIndex(null);
-    setNewDedution({ name: "", payment: "" });
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setFormData({ deduction: "", amount: "" });
+    setEditDeduction(null);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNewDedution((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    const updatedDedution = { ...newDedution, color: randomColor() };
-    if (editIndex !== null) {
-      const updatedList = [...dedutionTypes];
-      updatedList[editIndex] = { ...updatedList[editIndex], ...updatedDedution };
-      setDedutionTypes(updatedList);
-    } else {
-      setDedutionTypes((prev) => [...prev, updatedDedution]);
+  const handleSave = async () => {
+    try {
+      if (editDeduction) {
+        await axios.put(`http://192.168.1.49:8084/deduction/${editDeduction.deductionId}`, formData);
+      } else {
+        await axios.post("http://192.168.1.49:8084/deduction", formData);
+      }
+      fetchDeductions();
+      handleCloseDialog();
+    } catch (error) {
+      console.error("Failed to save deduction", error);
     }
-    setOpenDialog(false);
-    setNewDedution({ name: "", payment: "" });
-    setEditIndex(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://192.168.1.49:8084/deduction/${id}`);
+      fetchDeductions();
+    } catch (error) {
+      console.error("Failed to delete deduction", error);
+    }
   };
 
   const handleMenuOpen = (index, event) => {
@@ -89,33 +117,17 @@ const DedutionTypesPage = () => {
     setMenuAnchorEl({ [index]: null });
   };
 
-  const handleEdit = (index) => {
-    setEditIndex(index);
-    setNewDedution({
-      name: dedutionTypes[index].name,
-      payment: dedutionTypes[index].payment,
-    });
-    setOpenDialog(true);
-    handleMenuClose(index);
-  };
-
-  const handleDelete = (index) => {
-    const updated = dedutionTypes.filter((_, i) => i !== index);
-    setDedutionTypes(updated);
-    handleMenuClose(index);
-  };
-
-  const filtered = dedutionTypes.filter(
-    (dedution) =>
-      dedution.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterValue === "" || dedution.payment === filterValue)
+  const filteredDeductions = deductions.filter(
+    (item) =>
+      item.deduction.toLowerCase().includes(search.toLowerCase()) &&
+      (filterValue === "" || String(item.amount) === filterValue)
   );
 
   return (
     <Box p={3} sx={{ backgroundColor: "transparent", color: "white" }}>
       <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
         <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "white" }}>
-          Dedutions
+          Deductions
         </Typography>
         <TextField
           variant="outlined"
@@ -149,86 +161,32 @@ const DedutionTypesPage = () => {
           PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
         >
           <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
-          <MenuItem onClick={() => handleFilterSelect("1000")}>1000</MenuItem>
-          <MenuItem onClick={() => handleFilterSelect("2000")}>2000</MenuItem>
+          {[...new Set(deductions.map((d) => d.amount))].map((amt) => (
+            <MenuItem key={amt} onClick={() => handleFilterSelect(String(amt))}>
+              {amt}
+            </MenuItem>
+          ))}
         </Menu>
         <Button
           variant="contained"
           color="error"
           startIcon={<Add />}
-          onClick={handleCreateClick}
+          onClick={() => handleOpenDialog()}
         >
           Create
         </Button>
       </Box>
 
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        PaperProps={{
-          sx: {
-            backgroundColor: "rgba(255,255,255,0.05)",
-            backdropFilter: "blur(8px)",
-            color: "white",
-          },
-        }}
-      >
-        <DialogTitle sx={{ color: "white" }}>
-          {editIndex !== null ? "Edit Dedution Type" : "Create Dedution Type"}
-        </DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Name"
-            name="name"
-            fullWidth
-            margin="dense"
-            value={newDedution.name}
-            onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              style: {
-                color: "white",
-                backgroundColor: "rgba(255,255,255,0.1)",
-              },
-            }}
-          />
-          <TextField
-            label="Amount"
-            name="payment"
-            type="number"
-            fullWidth
-            margin="dense"
-            value={newDedution.payment}
-            onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "white" } }}
-            InputProps={{
-              style: {
-                color: "white",
-                backgroundColor: "rgba(255,255,255,0.1)",
-              },
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} sx={{ color: "white" }}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleSubmit}>
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-
       <Grid container spacing={2}>
-        {filtered.length > 0 ? (
-          filtered.map((dedution, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+        {filteredDeductions.length > 0 ? (
+          filteredDeductions.map((deduct, index) => (
+            <Grid item xs={12} sm={6} md={4} key={deduct.deductionId}>
               <Card
                 variant="outlined"
                 sx={{
                   backgroundColor: "transparent",
                   boxShadow: "none",
-                  border: "1px solid white", // PURE WHITE BORDER
+                  border: "1px solid white",
                 }}
               >
                 <CardContent>
@@ -241,30 +199,38 @@ const DedutionTypesPage = () => {
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
-                        bgcolor={dedution.color}
-                        fontWeight="bold"
-                      />
+                        bgcolor={deduct.color}
+                      >
+                        {deduct.deduction?.[0] || "-"}
+                      </Box>
                       <Box>
                         <Typography fontWeight="bold" sx={{ color: "white" }}>
-                          {dedution.name}
+                          {deduct.deduction}
                         </Typography>
                         <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
-                          Amount: {dedution.payment}
+                          Amount: {deduct.amount}
                         </Typography>
                       </Box>
                     </Box>
                     <Box>
-                      <IconButton onClick={(e) => handleMenuOpen(index, e)} sx={{ color: "white" }}>
+                      <IconButton
+                        onClick={(e) => handleMenuOpen(index, e)}
+                        sx={{ color: "white" }}
+                      >
                         <MoreVert />
                       </IconButton>
                       <Menu
                         anchorEl={menuAnchorEl[index]}
                         open={Boolean(menuAnchorEl[index])}
                         onClose={() => handleMenuClose(index)}
-                        PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+                        PaperProps={{
+                          sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" },
+                        }}
                       >
-                        <MenuItem onClick={() => handleEdit(index)}>Edit</MenuItem>
-                        <MenuItem onClick={() => handleDelete(index)}>Delete</MenuItem>
+                        <MenuItem onClick={() => handleOpenDialog(deduct)}>Edit</MenuItem>
+                        <MenuItem onClick={() => handleDelete(deduct.deductionId)}>
+                          Delete
+                        </MenuItem>
                       </Menu>
                     </Box>
                   </Box>
@@ -278,8 +244,60 @@ const DedutionTypesPage = () => {
           </Typography>
         )}
       </Grid>
+
+      {/* Dialog */}
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(8px)",
+            color: "white",
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: "white" }}>
+          {editDeduction ? "Edit Deduction" : "Create Deduction"}
+        </DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Name"
+            name="deduction"
+            fullWidth
+            margin="dense"
+            value={formData.deduction}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white", backgroundColor: "rgba(255,255,255,0.1)" },
+            }}
+          />
+          <TextField
+            label="Amount"
+            name="amount"
+            type="number"
+            fullWidth
+            margin="dense"
+            value={formData.amount}
+            onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white", backgroundColor: "rgba(255,255,255,0.1)" },
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} sx={{ color: "white" }}>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
 
-export default DedutionTypesPage;
+export default DeductionTypesPage;

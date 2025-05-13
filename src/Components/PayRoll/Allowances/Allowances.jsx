@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,12 +16,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Add, FilterList, MoreVert } from "@mui/icons-material";
-
-const initialAllowanceTypes = [
-  { name: "Earned", payment: "1000", color: "#b2dfdb" },
-  { name: "Maternity", payment: "2000", color: "#ffe0b2" },
-  { name: "Sick", payment: "1500", color: "#81d4fa" },
-];
+import axios from "axios";
 
 const randomColor = () => {
   const colors = [
@@ -38,7 +33,7 @@ const randomColor = () => {
 };
 
 const AllowanceTypesPage = () => {
-  const [allowanceTypes, setAllowanceTypes] = useState(initialAllowanceTypes);
+  const [allowanceTypes, setAllowanceTypes] = useState([]);
   const [search, setSearch] = useState("");
   const [filterValue, setFilterValue] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -46,6 +41,28 @@ const AllowanceTypesPage = () => {
   const [editIndex, setEditIndex] = useState(null);
   const [newAllowance, setNewAllowance] = useState({ name: "", payment: "" });
   const [openDialog, setOpenDialog] = useState(false);
+
+  const backendUrl = "http://192.168.1.49:8084/allowance";
+
+  // Fetch allowances from backend
+  useEffect(() => {
+    fetchAllowances();
+  }, []);
+
+  const fetchAllowances = async () => {
+    try {
+      const response = await axios.get(backendUrl);
+      const allowancesWithColor = response.data.map((item) => ({
+        id: item.allowanceId,
+        name: item.allowance,
+        payment: item.amount,
+        color: randomColor(),
+      }));
+      setAllowanceTypes(allowancesWithColor);
+    } catch (error) {
+      console.error("Error fetching allowances:", error);
+    }
+  };
 
   const handleFilterClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -67,18 +84,27 @@ const AllowanceTypesPage = () => {
     setNewAllowance((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    const updatedAllowance = { ...newAllowance, color: randomColor() };
-    if (editIndex !== null) {
-      const updatedList = [...allowanceTypes];
-      updatedList[editIndex] = { ...updatedList[editIndex], ...updatedAllowance };
-      setAllowanceTypes(updatedList);
-    } else {
-      setAllowanceTypes((prev) => [...prev, updatedAllowance]);
+  const handleSubmit = async () => {
+    try {
+      const allowanceData = {
+        allowance: newAllowance.name,
+        amount: parseFloat(newAllowance.payment),
+      };
+
+      if (editIndex !== null) {
+        const id = allowanceTypes[editIndex].id;
+        await axios.put(`${backendUrl}/${id}`, allowanceData);
+      } else {
+        await axios.post(backendUrl, allowanceData);
+      }
+
+      fetchAllowances();
+      setOpenDialog(false);
+      setNewAllowance({ name: "", payment: "" });
+      setEditIndex(null);
+    } catch (error) {
+      console.error("Error saving allowance:", error);
     }
-    setOpenDialog(false);
-    setNewAllowance({ name: "", payment: "" });
-    setEditIndex(null);
   };
 
   const handleMenuOpen = (index, event) => {
@@ -99,22 +125,27 @@ const AllowanceTypesPage = () => {
     handleMenuClose(index);
   };
 
-  const handleDelete = (index) => {
-    const updated = allowanceTypes.filter((_, i) => i !== index);
-    setAllowanceTypes(updated);
+  const handleDelete = async (index) => {
+    try {
+      const id = allowanceTypes[index].id;
+      await axios.delete(`${backendUrl}/${id}`);
+      fetchAllowances();
+    } catch (error) {
+      console.error("Error deleting allowance:", error);
+    }
     handleMenuClose(index);
   };
 
   const filtered = allowanceTypes.filter(
     (allowances) =>
       allowances.name.toLowerCase().includes(search.toLowerCase()) &&
-      (filterValue === "" || allowances.payment === filterValue)
+      (filterValue === "" || allowances.payment.toString() === filterValue)
   );
 
   return (
-    <Box p={3} sx={{ backgroundColor: "transparent", color: "white" }}>
+    <Box p={3} sx={{ backgroundColor: "transparent", color: "black" }}>
       <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "white" }}>
+        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "black" }}>
           Allowances
         </Typography>
         <TextField
@@ -126,8 +157,8 @@ const AllowanceTypesPage = () => {
           sx={{
             flex: 1,
             minWidth: 200,
-            input: { color: "white" },
-            label: { color: "white" },
+            input: { color: "black" },
+            label: { color: "black" },
             "& .MuiOutlinedInput-root": {
               "& fieldset": { borderColor: "white" },
               "&:hover fieldset": { borderColor: "white" },
@@ -138,7 +169,7 @@ const AllowanceTypesPage = () => {
           variant="outlined"
           startIcon={<FilterList />}
           onClick={handleFilterClick}
-          sx={{ color: "white", borderColor: "white" }}
+          sx={{ color: "black", borderColor: "white" }}
         >
           Filter
         </Button>
@@ -146,7 +177,7 @@ const AllowanceTypesPage = () => {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+          PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "black" } }}
         >
           <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
           <MenuItem onClick={() => handleFilterSelect("1000")}>1000</MenuItem>
@@ -169,11 +200,11 @@ const AllowanceTypesPage = () => {
           sx: {
             backgroundColor: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(8px)",
-            color: "white",
+            color: "black",
           },
         }}
       >
-        <DialogTitle sx={{ color: "white" }}>
+        <DialogTitle sx={{ color: "black" }}>
           {editIndex !== null ? "Edit Allowance Type" : "Create Allowance Type"}
         </DialogTitle>
         <DialogContent>
@@ -184,10 +215,10 @@ const AllowanceTypesPage = () => {
             margin="dense"
             value={newAllowance.name}
             onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "white" } }}
+            InputLabelProps={{ style: { color: "black" } }}
             InputProps={{
               style: {
-                color: "white",
+                color: "black",
                 backgroundColor: "rgba(255,255,255,0.1)",
               },
             }}
@@ -200,17 +231,17 @@ const AllowanceTypesPage = () => {
             margin="dense"
             value={newAllowance.payment}
             onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "white" } }}
+            InputLabelProps={{ style: { color: "black" } }}
             InputProps={{
               style: {
-                color: "white",
+                color: "black",
                 backgroundColor: "rgba(255,255,255,0.1)",
               },
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} sx={{ color: "white" }}>
+          <Button onClick={() => setOpenDialog(false)} sx={{ color: "black" }}>
             Cancel
           </Button>
           <Button variant="contained" onClick={handleSubmit}>
@@ -228,7 +259,7 @@ const AllowanceTypesPage = () => {
                 sx={{
                   backgroundColor: "transparent",
                   boxShadow: "none",
-                  border: "1px solid white", // PURE WHITE BORDER
+                  border: "1px solid white",
                 }}
               >
                 <CardContent>
@@ -243,25 +274,27 @@ const AllowanceTypesPage = () => {
                         justifyContent="center"
                         bgcolor={allowances.color}
                         fontWeight="bold"
-                      />
+                      >
+                      {allowances.name?.[0] || "-"}
+                      </Box>
                       <Box>
-                        <Typography fontWeight="bold" sx={{ color: "white" }}>
+                        <Typography fontWeight="bold" sx={{ color: "black" }}>
                           {allowances.name}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
+                        <Typography variant="body2" sx={{ color: "black" }}>
                           Amount: {allowances.payment}
                         </Typography>
                       </Box>
                     </Box>
                     <Box>
-                      <IconButton onClick={(e) => handleMenuOpen(index, e)} sx={{ color: "white" }}>
+                      <IconButton onClick={(e) => handleMenuOpen(index, e)} sx={{ color: "black" }}>
                         <MoreVert />
                       </IconButton>
                       <Menu
                         anchorEl={menuAnchorEl[index]}
                         open={Boolean(menuAnchorEl[index])}
                         onClose={() => handleMenuClose(index)}
-                        PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+                        PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "black" } }}
                       >
                         <MenuItem onClick={() => handleEdit(index)}>Edit</MenuItem>
                         <MenuItem onClick={() => handleDelete(index)}>Delete</MenuItem>
@@ -273,7 +306,7 @@ const AllowanceTypesPage = () => {
             </Grid>
           ))
         ) : (
-          <Typography ml={1} sx={{ color: "white" }}>
+          <Typography ml={1} sx={{ color: "black" }}>
             No results found.
           </Typography>
         )}
