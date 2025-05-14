@@ -85,6 +85,14 @@ const App = () => {
         }
       />
       <Route
+        path="/PayRoll/Payslips/PayslipProfile"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/Employee/Employees"
         element={
           <ProtectedRoute>

@@ -48,6 +48,7 @@ import PayRollDashBoard from "../Components/PayRoll/PayRollDashBoard/PayRollDash
 import WorkRecord from "../Components/Attendance/WorkRecord/WorkRecord";
 import Attendances from "../Components/Attendance/Attendances/Attendances";
 import LeaveType from "../Components/Leaves/LeaveType/LeaveType";
+import PayslipProfile from "../Components/PayRoll/Payslip/PayslipProfile";
 import ShiftRequests from "../Components/Employee/Shiftreq/Shiftreq";
 import Dashboard from "../Components/Leaves/Dashboard/Dashboard";
 import NewRegister from "../Components/LoginSignup/Signup";
@@ -108,6 +109,8 @@ export default function DashboardLayoutBasic() {
           return <EmployeeProfile />;
         case "ProfileUser":
           return <EmployeeProfile />;
+        case "PayslipProfile":
+          return <PayslipProfile/>
         case "RecruitmentDashboard":
           return <RecruitmentDashboard />;
         case "AttendanceDashboard":
@@ -502,13 +505,18 @@ export default function DashboardLayoutBasic() {
         icon: <HowToRegIcon />,
         children: [
           {
+            segment: "AttendanceDashboard",
+            title: "Attendance Dashboard",
+            icon: <HorizontalRuleIcon />,
+          },
+          {
             segment: "WorkRecord",
             title: "Work Record",
             icon: <HorizontalRuleIcon />,
           },
           {
-            segment: "AttendanceActivity",
-            title: "Attendance Activity",
+            segment: "MyAttendances",
+            title: "My Attendances",
             icon: <HorizontalRuleIcon />,
           },
         ],
@@ -523,9 +531,33 @@ export default function DashboardLayoutBasic() {
             title: "Leave Request",
             icon: <HorizontalRuleIcon />,
           },
+        ],
+      },
+      {
+        segment: "PayRoll",
+        title: "PayRoll",
+        icon: <FolderCopyIcon />,
+        children: [
           {
-            segment: "LeaveType",
-            title: "Leave Type",
+            segment: "Payslips",
+            title: "Payslips",
+            icon: <HorizontalRuleIcon />,
+          },
+        ],
+      },
+      {
+        segment: "OffBoarding",
+        title: "Off Boarding",
+        icon: <LogoutIcon sx={{ color: "white" }} />,
+        children: [
+          {
+            segment: "ExitProcess",
+            title: "Exit Process",
+            icon: <HorizontalRuleIcon />,
+          },
+          {
+            segment: "ResignationLater",
+            title: "Resignation Later",
             icon: <HorizontalRuleIcon />,
           },
         ],
@@ -543,11 +575,6 @@ export default function DashboardLayoutBasic() {
           {
             segment: "Holidays",
             title: "Holidays",
-            icon: <HorizontalRuleIcon />,
-          },
-          {
-            segment: "CompanyLeaves",
-            title: "Company Leaves",
             icon: <HorizontalRuleIcon />,
           },
         ],

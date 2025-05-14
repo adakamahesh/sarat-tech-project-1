@@ -74,7 +74,7 @@ const Signup = () => {
           }}
         >
           <Typography variant="h5" gutterBottom>
-            Signup
+            New Registation
           </Typography>
           <TextField
             fullWidth
