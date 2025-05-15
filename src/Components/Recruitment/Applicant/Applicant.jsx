@@ -8,206 +8,225 @@ import {
   TableHead,
   TableRow,
   Typography,
-  Button,
-  Card,
-  CardContent,
-  Dialog,
+  Paper,
+  Avatar,
   IconButton,
   TextField,
-  Avatar,
-  Paper,
   MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
 
-const API_BASE_URL = "http://192.168.1.49:8084/recruitment/applicant";
+const initialApplicants = [
+  {
+    applicantId: 1,
+    Employee: "John Doe",
+    Email: "john@example.com",
+    Phone: "1234567890",
+    JobPosition: "Software Engineer",
+    AlternateNumber: "0987654321",
+    DOB: "1990-01-01",
+    Gender: "Male",
+    Status: "Applied",
+    Address: "123 Street, City",
+    EmergencyContactName: "Jane Doe",
+    EmergencyContactNumber: "1112223333",
+    MaritalStatus: "Single",
+    Qualification: "Bachelor",
+  },
+  {
+    applicantId: 2,
+    Employee: "Alice Smith",
+    Email: "alice@example.com",
+    Phone: "2233445566",
+    JobPosition: "Designer",
+    AlternateNumber: "6677889900",
+    DOB: "1992-05-15",
+    Gender: "Female",
+    Status: "Interviewed",
+    Address: "456 Avenue, Town",
+    EmergencyContactName: "Bob Smith",
+    EmergencyContactNumber: "4445556666",
+    MaritalStatus: "Married",
+    Qualification: "Master",
+  },
+];
 
-function createData(applicant) {
-  return {
-    applicantId: applicant.applicantId,
-    Employee: `${applicant.firstName} ${applicant.lastName}`,
-    Email: applicant.email,
-    Phone: applicant.mobileNumber,
-    JobPosition: applicant.jobPosition || "N/A",
-    AlternateNumber: applicant.alternateNumber,
-    DOB: applicant.dateOfBirth
-      ? new Date(applicant.dateOfBirth).toLocaleDateString()
-      : "",
-    Gender: applicant.gender,
-    Status: applicant.status,
-    Address: applicant.address,
-    EmergencyContactName: applicant.emergencyContactName,
-    EmergencyContactNumber: applicant.emergencyContactNumber,
-    MaritalStatus: applicant.maritalStatus,
-    Qualification: applicant.qualification,
-  };
-}
-
-export default function Applicant() {
-  const [search, setSearch] = React.useState("");
-  const [rows, setRows] = React.useState([]);
-  const [open, setOpen] = React.useState(false);
-  const [openEditDialog, setOpenEditDialog] = React.useState(false);
-  const [newApplicant, setNewApplicant] = React.useState({
-    applicantId: "",
-    firstName: "",
-    lastName: "",
-    email: "",
-    mobileNumber: "",
-    alternateNumber: "",
-    dateOfBirth: "",
-    gender: "",
-    jobPosition: "",
-    address: "",
-    emergencyContactName: "",
-    emergencyContactNumber: "",
-    maritalStatus: "",
-    qualification: "",
-  });
+export default function ApplicantTable() {
+  const [applicants, setApplicants] = React.useState(initialApplicants);
+  const [searchText, setSearchText] = React.useState("");
+  const [jobFilter, setJobFilter] = React.useState("");
+  const [editOpen, setEditOpen] = React.useState(false);
   const [editApplicant, setEditApplicant] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+  const [inlineEditId, setInlineEditId] = React.useState(null);
+  const [inlineEditField, setInlineEditField] = React.useState(null);
+  const [addOpen, setAddOpen] = React.useState(false);
+
+  const jobPositions = Array.from(new Set(applicants.map((a) => a.JobPosition)));
 
   const genderOptions = ["Male", "Female", "Other"];
-  const jobPositions = ["Software Engineer", "Product Manager", "Designer", "HR", "Marketing"];
+  const statusOptions = ["Applied", "Interviewed", "Hired", "Rejected"];
   const maritalStatusOptions = ["Single", "Married", "Divorced", "Widowed"];
   const qualificationOptions = ["High School", "Bachelor", "Master", "PhD"];
 
-  React.useEffect(() => {
-    fetchApplicants();
-  }, []);
+  const filteredApplicants = applicants.filter((applicant) => {
+    const matchesName = applicant.Employee.toLowerCase().includes(searchText.toLowerCase());
+    const matchesJob = jobFilter === "" || applicant.JobPosition === jobFilter;
+    return matchesName && matchesJob;
+  });
 
-  const fetchApplicants = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(API_BASE_URL);
-      setRows(response.data.map((applicant) => createData(applicant)));
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+  const handleEditOpen = (applicant) => {
+    setEditApplicant(applicant);
+    setEditOpen(true);
   };
 
-  const deleteApplicant = async (id) => {
-    try {
-      await axios.delete(`${API_BASE_URL}/${id}`);
-      fetchApplicants();
-    } catch (error) {
-      console.error("Failed to delete applicant:", error);
-    }
+  const handleEditClose = () => {
+    setEditOpen(false);
+    setEditApplicant(null);
   };
 
-  const handleSearch = (e) => setSearch(e.target.value);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleOpenEditDialog = (applicant) => {
-    setEditApplicant({ ...applicant }); // shallow copy
-    setOpenEditDialog(true);
-  };
-  const handleCloseEditDialog = () => setOpenEditDialog(false);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewApplicant((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleEditInputChange = (e) => {
+  const handleEditChange = (e) => {
     const { name, value } = e.target;
     setEditApplicant((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAddApplicant = async () => {
-    try {
-      await axios.post(API_BASE_URL, newApplicant);
-      fetchApplicants();
-      handleClose();
-      setNewApplicant({
-        applicantId: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-        mobileNumber: "",
-        alternateNumber: "",
-        dateOfBirth: "",
-        gender: "",
-        jobPosition: "",
-        address: "",
-        emergencyContactName: "",
-        emergencyContactNumber: "",
-        maritalStatus: "",
-        qualification: "",
-      });
-    } catch (error) {
-      setError("Failed to add applicant.");
-    }
+  const handleEditSave = () => {
+    setApplicants((prev) =>
+      prev.map((app) => (app.applicantId === editApplicant.applicantId ? editApplicant : app))
+    );
+    handleEditClose();
   };
 
-  const handleEditApplicant = async () => {
-    try {
-      await axios.put(`${API_BASE_URL}/${editApplicant.applicantId}`, editApplicant);
-      fetchApplicants();
-      handleCloseEditDialog();
-    } catch (error) {
-      setError("Failed to edit applicant.");
-    }
+  const handleDelete = (applicantId) => {
+    setApplicants((prev) => prev.filter((a) => a.applicantId !== applicantId));
   };
 
-  const filteredRows = rows.filter((row) =>
-    row.Employee.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleInlineChange = (id, field, value) => {
+    setApplicants((prev) =>
+      prev.map((app) => (app.applicantId === id ? { ...app, [field]: value } : app))
+    );
+  };
 
-  const renderSelectField = (name, label, value, onChange, options) => (
-    <FormControl fullWidth key={name}>
-      <InputLabel>{label}</InputLabel>
-      <Select
-        name={name}
-        value={value}
-        label={label}
-        onChange={onChange}
-        fullWidth
-      >
-        {options.map((opt) => (
-          <MenuItem key={opt} value={opt}>
-            {opt}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-  );
+  const startInlineEdit = (id, field) => {
+    setInlineEditId(id);
+    setInlineEditField(field);
+  };
 
-  if (loading) return <Typography>Loading applicants...</Typography>;
-  if (error) return <Typography color="error">Error: {error}</Typography>;
+  const stopInlineEdit = () => {
+    setInlineEditId(null);
+    setInlineEditField(null);
+  };
+
+  // --- Add Applicant Dialog Logic ---
+  const [newApplicant, setNewApplicant] = React.useState({
+    Employee: "",
+    Email: "",
+    Phone: "",
+    JobPosition: "",
+    AlternateNumber: "",
+    DOB: "",
+    Gender: "",
+    Status: "",
+    Address: "",
+    EmergencyContactName: "",
+    EmergencyContactNumber: "",
+    MaritalStatus: "",
+    Qualification: "",
+  });
+
+  const handleAddChange = (e) => {
+    const { name, value } = e.target;
+    setNewApplicant((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddOpen = () => {
+    setNewApplicant({
+      Employee: "",
+      Email: "",
+      Phone: "",
+      JobPosition: "",
+      AlternateNumber: "",
+      DOB: "",
+      Gender: "",
+      Status: "",
+      Address: "",
+      EmergencyContactName: "",
+      EmergencyContactNumber: "",
+      MaritalStatus: "",
+      Qualification: "",
+    });
+    setAddOpen(true);
+  };
+
+  const handleAddClose = () => {
+    setAddOpen(false);
+  };
+
+  const handleAddSave = () => {
+    const newId = applicants.length > 0 ? Math.max(...applicants.map((a) => a.applicantId)) + 1 : 1;
+    setApplicants((prev) => [...prev, { applicantId: newId, ...newApplicant }]);
+    setAddOpen(false);
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
-        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
-          <Typography variant="h6">Applicant</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: 2,
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Typography variant="h6" gutterBottom sx={{ whiteSpace: "nowrap" }}>
+            Applicants
+          </Typography>
+
           <TextField
-            label="Search"
+            label="Search by Applicant Name"
             variant="outlined"
             size="small"
-            value={search}
-            onChange={handleSearch}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
           />
-          <Button variant="contained" onClick={handleOpen}>
+
+          <TextField
+            select
+            label="Filter by Job Position"
+            variant="outlined"
+            size="small"
+            value={jobFilter}
+            onChange={(e) => setJobFilter(e.target.value)}
+            sx={{ minWidth: 180 }}
+          >
+            <MenuItem value="">All</MenuItem>
+            {jobPositions.map((position) => (
+              <MenuItem key={position} value={position}>
+                {position}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          <Button variant="contained" onClick={handleAddOpen}>
             Add Applicant
           </Button>
         </Box>
 
-        <TableContainer sx={{ height: "400px", overflowY: "auto" }}>
-          <Table>
+        <TableContainer sx={{ maxHeight: 400 }}>
+          <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {[
-                  "Name",
+                  "Applicant ID",
+                  "Applicant",
                   "Email",
                   "Phone",
                   "Job Position",
@@ -229,8 +248,9 @@ export default function Applicant() {
                   sx={{
                     position: "sticky",
                     right: 0,
-                    backgroundColor: "white",
-                    zIndex: 1,
+                    backgroundColor: "#fff",
+                    zIndex: 2,
+                    top: 0,
                   }}
                 >
                   <b>Action</b>
@@ -238,16 +258,58 @@ export default function Applicant() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.map((row) => (
+              {filteredApplicants.map((row) => (
                 <TableRow key={row.applicantId}>
+                  <TableCell>{row.applicantId}</TableCell>
                   <TableCell>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                       <Avatar>{row.Employee[0]}</Avatar>
                       {row.Employee}
                     </Box>
                   </TableCell>
-                  <TableCell>{row.Email}</TableCell>
-                  <TableCell>{row.Phone}</TableCell>
+
+                  {/* Inline editable Email */}
+                  <TableCell>
+                    {inlineEditId === row.applicantId && inlineEditField === "Email" ? (
+                      <TextField
+                        value={row.Email}
+                        onChange={(e) => handleInlineChange(row.applicantId, "Email", e.target.value)}
+                        size="small"
+                        onBlur={stopInlineEdit}
+                        autoFocus
+                      />
+                    ) : (
+                      <Box
+                        onClick={() => startInlineEdit(row.applicantId, "Email")}
+                        sx={{ cursor: "pointer" }}
+                        title="Click to edit"
+                      >
+                        {row.Email}
+                      </Box>
+                    )}
+                  </TableCell>
+
+                  {/* Inline editable Phone */}
+                  <TableCell>
+                    {inlineEditId === row.applicantId && inlineEditField === "Phone" ? (
+                      <TextField
+                        value={row.Phone}
+                        onChange={(e) => handleInlineChange(row.applicantId, "Phone", e.target.value)}
+                        size="small"
+                        onBlur={stopInlineEdit}
+                        autoFocus
+                      />
+                    ) : (
+                      <Box
+                        onClick={() => startInlineEdit(row.applicantId, "Phone")}
+                        sx={{ cursor: "pointer" }}
+                        title="Click to edit"
+                      >
+                        {row.Phone}
+                      </Box>
+                    )}
+                  </TableCell>
+
                   <TableCell>{row.JobPosition}</TableCell>
                   <TableCell>{row.AlternateNumber}</TableCell>
                   <TableCell>{row.DOB}</TableCell>
@@ -258,161 +320,320 @@ export default function Applicant() {
                   <TableCell>{row.EmergencyContactNumber}</TableCell>
                   <TableCell>{row.MaritalStatus}</TableCell>
                   <TableCell>{row.Qualification}</TableCell>
+
                   <TableCell
                     sx={{
                       position: "sticky",
                       right: 0,
-                      backgroundColor: "white",
+                      backgroundColor: "#fff",
                       zIndex: 1,
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton color="primary" onClick={() => handleOpenEditDialog(row)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton color="error" onClick={() => deleteApplicant(row.applicantId)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </Box>
+                    <IconButton color="primary" onClick={() => handleEditOpen(row)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton color="error" onClick={() => handleDelete(row.applicantId)}>
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
+
+              {filteredApplicants.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={15} align="center">
+                    No applicants found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
       </Paper>
 
-      {/* Add Dialog */}
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <Card sx={{ p: 2 }}>
-          <CardContent>
-            <Typography variant="h6">Add Applicant</Typography>
-            <TextField
-              label="Applicant ID"
-              value={newApplicant.applicantId || "Auto-generated"}
-              disabled
-              fullWidth
-              sx={{ my: 2 }}
-            />
-
+      {/* Edit Applicant Dialog */}
+      <Dialog open={editOpen} onClose={handleEditClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Edit Applicant</DialogTitle>
+        <DialogContent dividers>
+          {editApplicant && (
             <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 2,
-              }}
+              component="form"
+              sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+              noValidate
+              autoComplete="off"
             >
-              {Object.keys(newApplicant).map((field) => {
-                if (field === "applicantId") return null;
-                if (field === "dateOfBirth") {
-                  return (
-                    <TextField
-                      key={field}
-                      name={field}
-                      label="Date of Birth"
-                      type="date"
-                      value={newApplicant[field]}
-                      onChange={handleInputChange}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  );
-                }
-                if (field === "gender")
-                  return renderSelectField(field, "Gender", newApplicant.gender, handleInputChange, genderOptions);
-                if (field === "jobPosition")
-                  return renderSelectField(field, "Job Position", newApplicant.jobPosition, handleInputChange, jobPositions);
-                if (field === "maritalStatus")
-                  return renderSelectField(field, "Marital Status", newApplicant.maritalStatus, handleInputChange, maritalStatusOptions);
-                if (field === "qualification")
-                  return renderSelectField(field, "Qualification", newApplicant.qualification, handleInputChange, qualificationOptions);
-                return (
-                  <TextField
-                    key={field}
-                    name={field}
-                    label={field.charAt(0).toUpperCase() + field.slice(1)}
-                    value={newApplicant[field]}
-                    onChange={handleInputChange}
-                  />
-                );
-              })}
+              <TextField
+                label="Applicant"
+                name="Employee"
+                value={editApplicant.Employee}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Email"
+                name="Email"
+                value={editApplicant.Email}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Phone"
+                name="Phone"
+                value={editApplicant.Phone}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Job Position"
+                name="JobPosition"
+                value={editApplicant.JobPosition}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Alternate Number"
+                name="AlternateNumber"
+                value={editApplicant.AlternateNumber}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="DOB"
+                name="DOB"
+                type="date"
+                value={editApplicant.DOB}
+                onChange={handleEditChange}
+                fullWidth
+                InputLabelProps={{ shrink: true }}
+              />
+              <TextField
+                select
+                label="Gender"
+                name="Gender"
+                value={editApplicant.Gender}
+                onChange={handleEditChange}
+                fullWidth
+              >
+                {genderOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Status"
+                name="Status"
+                value={editApplicant.Status}
+                onChange={handleEditChange}
+                fullWidth
+              >
+                {statusOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                label="Address"
+                name="Address"
+                value={editApplicant.Address}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Emergency Contact Name"
+                name="EmergencyContactName"
+                value={editApplicant.EmergencyContactName}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                label="Emergency Contact Number"
+                name="EmergencyContactNumber"
+                value={editApplicant.EmergencyContactNumber}
+                onChange={handleEditChange}
+                fullWidth
+              />
+              <TextField
+                select
+                label="Marital Status"
+                name="MaritalStatus"
+                value={editApplicant.MaritalStatus}
+                onChange={handleEditChange}
+                fullWidth
+              >
+                {maritalStatusOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                select
+                label="Qualification"
+                name="Qualification"
+                value={editApplicant.Qualification}
+                onChange={handleEditChange}
+                fullWidth
+              >
+                {qualificationOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button variant="contained" onClick={handleAddApplicant}>
-                Add
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleEditClose}>Cancel</Button>
+          <Button variant="contained" onClick={handleEditSave}>
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
 
-      {/* Edit Dialog */}
-      <Dialog open={openEditDialog} onClose={handleCloseEditDialog} maxWidth="md" fullWidth>
-        <Card sx={{ p: 2 }}>
-          <CardContent>
-            <Typography variant="h6">Edit Applicant</Typography>
-            {editApplicant?.applicantId && (
-              <TextField
-                label="Applicant ID"
-                value={editApplicant.applicantId}
-                disabled
-                fullWidth
-                sx={{ my: 2 }}
-              />
-            )}
-
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: 2,
-              }}
+      {/* Add Applicant Dialog */}
+      <Dialog open={addOpen} onClose={handleAddClose} maxWidth="sm" fullWidth>
+        <DialogTitle>Add New Applicant</DialogTitle>
+        <DialogContent dividers>
+          <Box
+            component="form"
+            sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+            noValidate
+            autoComplete="off"
+          >
+            <TextField
+              label="Applicant"
+              name="Employee"
+              value={newApplicant.Employee}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Email"
+              name="Email"
+              value={newApplicant.Email}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Phone"
+              name="Phone"
+              value={newApplicant.Phone}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Job Position"
+              name="JobPosition"
+              value={newApplicant.JobPosition}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Alternate Number"
+              name="AlternateNumber"
+              value={newApplicant.AlternateNumber}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="DOB"
+              name="DOB"
+              type="date"
+              value={newApplicant.DOB}
+              onChange={handleAddChange}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+            />
+            <TextField
+              select
+              label="Gender"
+              name="Gender"
+              value={newApplicant.Gender}
+              onChange={handleAddChange}
+              fullWidth
             >
-              {editApplicant &&
-                Object.keys(editApplicant).map((field) => {
-                  if (field === "applicantId") return null;
-                  if (field === "dateOfBirth") {
-                    return (
-                      <TextField
-                        key={field}
-                        name={field}
-                        label="Date of Birth"
-                        type="date"
-                        value={editApplicant[field]}
-                        onChange={handleEditInputChange}
-                        InputLabelProps={{ shrink: true }}
-                      />
-                    );
-                  }
-                  if (field === "gender")
-                    return renderSelectField(field, "Gender", editApplicant.gender, handleEditInputChange, genderOptions);
-                  if (field === "jobPosition")
-                    return renderSelectField(field, "Job Position", editApplicant.jobPosition, handleEditInputChange, jobPositions);
-                  if (field === "maritalStatus")
-                    return renderSelectField(field, "Marital Status", editApplicant.maritalStatus, handleEditInputChange, maritalStatusOptions);
-                  if (field === "qualification")
-                    return renderSelectField(field, "Qualification", editApplicant.qualification, handleEditInputChange, qualificationOptions);
-                  return (
-                    <TextField
-                      key={field}
-                      name={field}
-                      label={field.charAt(0).toUpperCase() + field.slice(1)}
-                      value={editApplicant[field]}
-                      onChange={handleEditInputChange}
-                    />
-                  );
-                })}
-            </Box>
-
-            <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
-              <Button onClick={handleCloseEditDialog}>Cancel</Button>
-              <Button variant="contained" onClick={handleEditApplicant}>
-                Save
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+              {genderOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              label="Status"
+              name="Status"
+              value={newApplicant.Status}
+              onChange={handleAddChange}
+              fullWidth
+            >
+              {statusOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              label="Address"
+              name="Address"
+              value={newApplicant.Address}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Emergency Contact Name"
+              name="EmergencyContactName"
+              value={newApplicant.EmergencyContactName}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              label="Emergency Contact Number"
+              name="EmergencyContactNumber"
+              value={newApplicant.EmergencyContactNumber}
+              onChange={handleAddChange}
+              fullWidth
+            />
+            <TextField
+              select
+              label="Marital Status"
+              name="MaritalStatus"
+              value={newApplicant.MaritalStatus}
+              onChange={handleAddChange}
+              fullWidth
+            >
+              {maritalStatusOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              select
+              label="Qualification"
+              name="Qualification"
+              value={newApplicant.Qualification}
+              onChange={handleAddChange}
+              fullWidth
+            >
+              {qualificationOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleAddClose}>Cancel</Button>
+          <Button variant="contained" onClick={handleAddSave}>
+            Add
+          </Button>
+        </DialogActions>
       </Dialog>
     </Box>
   );
