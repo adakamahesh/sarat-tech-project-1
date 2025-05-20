@@ -93,6 +93,45 @@ export default function CompanyLeavesTable() {
       (filter ? row.BasedOnWeekDay === filter : true)
   );
 
+  const whiteTextFieldStyles = {
+    "& .MuiInputBase-input": {
+      color: "white", // input text
+    },
+    "& .MuiInputLabel-root": {
+      color: "white", // label
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+      },
+    },
+  };
+
+  const whiteSelectStyles = {
+    "& .MuiInputLabel-root": {
+      color: "white",
+      width:'100%',
+    },
+    "& .MuiSelect-select": {
+      color: "white",
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
+    },
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "white",
+    },
+  };
+  
   return (
     <Box
       sx={{
@@ -146,54 +185,15 @@ export default function CompanyLeavesTable() {
             size="small"
             value={search}
             onChange={handleSearch}
-            sx={{
-              minWidth: 200,
-              "& .MuiInputBase-input": {
-                color: "white", // text color
-              },
-              "& .MuiInputLabel-root": {
-                color: "white", // label color
-              },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white", // border color
-                },
-                "&:hover fieldset": {
-                  borderColor: "white", // hover border
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white", // focused border
-                },
-              },
-            }}
+            sx={whiteTextFieldStyles}
           />
           <TextField
             select
             label="Filter by WeekDay"
             variant="outlined"
-            size="small"
             value={filter}
             onChange={handleFilter}
-            sx={{
-              minWidth: 200,
-              "& .MuiInputBase-input": {
-                color: "white", // text color
-              },
-              "& .MuiInputLabel-root": {
-                color: "white", // label color
-              },
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  borderColor: "white", // border color
-                },
-                "&:hover fieldset": {
-                  borderColor: "white", // hover border
-                },
-                "&.Mui-focused fieldset": {
-                  borderColor: "white", // focused border
-                },
-              },
-            }}
+            sx={{ width: '20%', ...whiteSelectStyles }}
           >
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.BasedOnWeekDay))].map((day) => (
@@ -370,25 +370,7 @@ export default function CompanyLeavesTable() {
                 size="small"
                 value={newBasedOnWeek.BasedOnWeek}
                 onChange={handleInputChange}
-                sx={{
-                  "& .MuiInputBase-input": {
-                    color: "white", // input text color
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "white", // label color
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white", // border color
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white", // hover border color
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white", // focused border color
-                    },
-                  },
-                }}
+                sx={whiteTextFieldStyles}
               />
               <TextField
                 name="BasedOnWeekDay"
@@ -397,25 +379,7 @@ export default function CompanyLeavesTable() {
                 size="small"
                 value={newBasedOnWeek.BasedOnWeekDay}
                 onChange={handleInputChange}
-                sx={{
-                  "& .MuiInputBase-input": {
-                    color: "white", // input text color
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "white", // label color
-                  },
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "white", // border color
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "white", // hover border color
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "white", // focused border color
-                    },
-                  },
-                }}
+                sx={whiteTextFieldStyles}
               />
               <Button
                 variant="contained"
