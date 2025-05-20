@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import bgImage from "../../assets/images/login.jpg"; // Adjust path if needed
 
 const AIChatBox = () => {
   const [messages, setMessages] = useState([]);
@@ -54,19 +53,23 @@ const AIChatBox = () => {
     minHeight: isSmall ? "100vh" : "500px",
     padding: isSmall || isMedium ? "1rem" : "1.5rem",
     borderRadius: isSmall ? "0" : "0.75rem",
-    backgroundColor: "rgba(0, 0, 0, 0.3)", // more transparent
+    textAlign: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
     backdropFilter: "blur(12px)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+    borderRadius: 2,
+    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
     color: "#fff",
   };
 
   const chatBoxStyle = {
     height: isSmall ? "320px" : isMedium ? "350px" : "400px",
     overflowY: "auto",
-    backgroundColor: "rgba(255,255,255,0.08)", // more transparent
-    borderRadius: "0.5rem",
+    textAlign: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    backdropFilter: "blur(12px)",
+    borderRadius: 2,
+    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
     padding: "1rem",
-    backdropFilter: "blur(6px)",
     color: "#fff",
   };
 
@@ -79,8 +82,8 @@ const AIChatBox = () => {
   };
 
   const inputStyle = {
-    backgroundColor: "rgba(255,255,255,0.05)",
-    color: "#fff",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    color: "white",
     border: "1px solid rgba(255,255,255,0.3)",
   };
 
@@ -96,15 +99,7 @@ const AIChatBox = () => {
   });
 
   return (
-    <div
-      className="d-flex justify-content-center align-items-center vh-100"
-      style={{
-        backgroundImage: `url(${bgImage})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-    >
+    <div className="d-flex justify-content-center align-items-center vh-100">
       <div style={containerStyle}>
         <div className="text-center mb-3" style={headingStyle}>
           Help Desk Chat Bot
@@ -128,7 +123,10 @@ const AIChatBox = () => {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && sendMessage()}
           />
-          <button className="btn btn-primary ms-2" onClick={sendMessage}>
+          <button
+            className="btn btn-primary ms-2"
+            onClick={sendMessage}
+          >
             Send
           </button>
         </div>
