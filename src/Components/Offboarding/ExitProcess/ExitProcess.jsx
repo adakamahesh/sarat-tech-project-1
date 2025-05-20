@@ -110,7 +110,10 @@ const ResignationForm = () => {
             }));
           })
           .catch((error) => {
-            console.error("Error fetching employee data after resignation:", error);
+            console.error(
+              "Error fetching employee data after resignation:",
+              error
+            );
           });
 
         // Refresh the page after submission
@@ -139,12 +142,10 @@ const ResignationForm = () => {
         maxWidth: 800,
         mx: "auto",
         p: 4,
-        border: "1px solid #ccc",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
         borderRadius: 2,
-        boxShadow: 2,
-        mt: 4,
-        backgroundColor: "transparent",
-        color: "white",
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
       }}
     >
       <Typography variant="h6" fontWeight="bold" mb={2} color="white">
@@ -259,7 +260,7 @@ const ResignationForm = () => {
               onChange={handleChange}
               multiline
               rows={3}
-              disabled 
+              disabled
               {...whiteTextFieldStyles}
             />
           </Grid>
@@ -338,7 +339,7 @@ const ResignationForm = () => {
                 },
               }}
             >
-              <InputLabel sx={{ color: "white" }} >
+              <InputLabel sx={{ color: "white" }}>
                 Have you completed your project?
               </InputLabel>
               <Select
@@ -412,7 +413,14 @@ const ResignationForm = () => {
             color="primary"
             type="submit"
             fullWidth
-            sx={{ backgroundColor: "#1976d2", "&:hover": { backgroundColor: "#1565c0" } }}
+            sx={{
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              "&:hover": { backgroundColor: "#1565c0" },
+            }}
           >
             Submit Resignation
           </Button>
