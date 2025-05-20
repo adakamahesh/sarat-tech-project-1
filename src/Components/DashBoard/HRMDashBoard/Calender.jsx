@@ -29,7 +29,7 @@ const CalendarPage = () => {
         styles={{
           '.fc-header-toolbar': {
             backgroundColor: '#93A0B4',
-            color: '#fff',
+            color: 'white',
             padding: '10px',
             borderRadius: '8px',
             marginBottom: '20px',
@@ -38,13 +38,13 @@ const CalendarPage = () => {
             gap: '10px',
           },
           '.fc-toolbar-title': {
-            color: '#fff',
+            color: 'white',
             fontWeight: 'bold',
             fontSize: '18px',
           },
           '.fc-button': {
             backgroundColor: '#93A0B4',
-            color: '#fff',
+            color: 'white',
             border: 'none',
           },
           '.fc-button:hover': {
@@ -57,8 +57,13 @@ const CalendarPage = () => {
         sx={{
           display: 'flex',
           flexDirection: 'column',
+          p:2,
           gap: 2,
-          p: 2,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           '@media (max-width: 600px)': {
             p: 1,
             gap: 1,
@@ -71,6 +76,7 @@ const CalendarPage = () => {
             fontWeight: 'bold',
             display: 'flex',
             justifyContent: 'center',
+            color:'white',
             alignItems: 'center',
             fontSize: { xs: '18px', sm: '24px' },
           }}
@@ -82,9 +88,12 @@ const CalendarPage = () => {
         <Box
           sx={{
             flexGrow: 1,
-            backgroundColor: '#F5F5F5',
-            borderRadius: 2,
             p: 2,
+            textAlign: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
             '@media (max-width: 600px)': {
               p: 1,
             },

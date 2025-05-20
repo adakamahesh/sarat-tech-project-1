@@ -19,7 +19,9 @@ export default function EmployeeDashboard() {
   return (
     <>
       {/* Top Grid */}
-
+      <Typography variant="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
+        Employee Dashboard
+      </Typography>
       <Box
         sx={{
           width: { xs: "100%" },

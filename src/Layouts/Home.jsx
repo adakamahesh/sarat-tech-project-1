@@ -55,7 +55,7 @@ import NewRegister from "../Components/LoginSignup/Signup";
 import { addMilliseconds } from "date-fns";
 import { ADMIN } from "../constants/user_permission";
 import Vacancies from "../Components/Recruitment/Vacancies/Vacancies";
-import bg from "../assets/images/login.jpg";
+import bg from "../assets/images/hr.jpg";
 
 // Styles
 const isMobile = window.innerWidth <= 768;

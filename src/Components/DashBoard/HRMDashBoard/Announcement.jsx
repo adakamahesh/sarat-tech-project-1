@@ -7,16 +7,17 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
   Box,
   Button,
   TextField,
-  Card,
-  CardContent,
   useTheme,
   useMediaQuery,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
@@ -56,14 +57,7 @@ export default function StickyHeadTable() {
       });
   };
 
-  const handleChangePage = (event, newPage) => setPage(newPage);
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
-  const handleNewAnnouncementClick = () => setShowForm(!showForm);
+  const handleNewAnnouncementClick = () => setShowForm(true);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -91,7 +85,18 @@ export default function StickyHeadTable() {
 
   return (
     <>
-      <Paper sx={{ width: "100%", overflow: "hidden", mb: 3 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          overflow: "hidden",
+          mb: 3,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <Box
           display="flex"
           flexDirection={isMobile ? "column" : "row"}
@@ -99,38 +104,31 @@ export default function StickyHeadTable() {
           alignItems={isMobile ? "flex-start" : "center"}
           p={2}
           gap={isMobile ? 1 : 0}
-          sx={{
-            padding: "16px 24px",
-            backgroundColor: "#f5f5f5",
-          }}
         >
           <Typography
             variant="h5"
-            sx={{
-              fontSize: { xs: "18px", sm: "25px" },
-              fontWeight: "bold",
-            }}
+            sx={{ fontSize: { xs: "18px", sm: "25px" }, fontWeight: "bold", color: "white" }}
           >
             Announcements
           </Typography>
           <Button
             variant="contained"
-            color="primary"
             sx={{
               fontSize: { xs: "12px", sm: "14px" },
               padding: { xs: "6px 12px", sm: "8px 16px" },
               mt: isMobile ? 1 : 0,
+              backgroundColor:"rgba(255, 255, 255, 0.15)",
             }}
             onClick={handleNewAnnouncementClick}
             size="small"
           >
-            {showForm ? "Close Form" : "New Announcement"}
+            New Announcement
           </Button>
         </Box>
 
         <TableContainer
           sx={{
-            height: 500, // Fixed height
+            height: 400,
             overflowY: "auto",
             overflowX: "auto",
             [theme.breakpoints.down("sm")]: {
@@ -140,12 +138,7 @@ export default function StickyHeadTable() {
         >
           <Table stickyHeader>
             <TableHead>
-              <TableRow
-                sx={{
-                  borderTop: "1px solid #ccc",
-                  borderBottom: "1px solid #ccc",
-                }}
-              >
+              <TableRow sx={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -155,7 +148,7 @@ export default function StickyHeadTable() {
                       fontSize: { xs: "12px", sm: "16px" },
                       fontWeight: "bold",
                       color: "#fff",
-                      backgroundColor: "#93A0B4",
+                      backgroundColor:"rgba(255, 255, 255, 0.15)",
                       padding: { xs: "6px", sm: "10px" },
                       whiteSpace: "nowrap",
                     }}
@@ -166,117 +159,62 @@ export default function StickyHeadTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => (
-                  <TableRow hover key={index}>
-                    {columns.map((column) => {
-                      const value = row[column.id];
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          sx={{
-                            fontSize: { xs: "12px", sm: "14px" },
-                            padding: { xs: "6px", sm: "10px" },
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          {column.id === "date"
-                            ? new Date(value).toDateString()
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                ))}
+              {rows.map((row, index) => (
+                <TableRow hover key={index}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell
+                        key={column.id}
+                        align={column.align}
+                        sx={{ fontSize: { xs: "12px", sm: "14px" }, padding: { xs: "6px", sm: "10px" },color:'white' }}
+                      >
+                        {column.id === "date" ? new Date(value).toDateString() : value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
 
-      {showForm && (
-        <Card
-          sx={{
-            maxWidth: 600,
-            mx: "auto",
-            p: { xs: 2, sm: 3 },
-            mb: 4,
-            boxShadow: 4,
-            borderRadius: 2,
-            [theme.breakpoints.down("sm")]: {
-              mx: 1,
-            },
-          }}
-        >
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              Create New Announcement
-            </Typography>
-            <form onSubmit={handleFormSubmit}>
-              <TextField
-                fullWidth
-                label="Title"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Date"
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                InputLabelProps={{ shrink: true }}
-                required
-                sx={{ mb: 2 }}
-              />
-              <TextField
-                fullWidth
-                label="Description"
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                multiline
-                rows={3}
-                required
-                sx={{ mb: 2 }}
-              />
-              <Box
-                display="flex"
-                flexDirection={isMobile ? "column" : "row"}
-                gap={2}
-                mt={2}
-              >
-                <Button type="submit" variant="contained" fullWidth>
-                  Submit Announcement
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={handleCloseForm}
-                  fullWidth
-                >
-                  Close
-                </Button>
-              </Box>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+      {/* Popup Dialog for Form */}
+      <Dialog open={showForm} onClose={handleCloseForm} maxWidth="sm" fullWidth >
+        <DialogTitle>Create New Announcement</DialogTitle>
+        <DialogContent>
+          <TextField fullWidth label="Title" name="title" value={formData.title} onChange={handleInputChange} required />
+          <TextField
+            fullWidth
+            label="Date"
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleInputChange}
+            InputLabelProps={{ shrink: true }}
+            required
+            sx={{ mt: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            multiline
+            rows={3}
+            required
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForm}>Cancel</Button>
+          <Button onClick={handleFormSubmit} variant="contained">
+            Submit Announcement
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

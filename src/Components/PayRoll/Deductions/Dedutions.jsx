@@ -70,7 +70,9 @@ const DeductionTypesPage = () => {
   const handleOpenDialog = (deduction = null) => {
     setEditDeduction(deduction);
     setFormData(
-      deduction ? { deduction: deduction.deduction, amount: deduction.amount } : { deduction: "", amount: "" }
+      deduction
+        ? { deduction: deduction.deduction, amount: deduction.amount }
+        : { deduction: "", amount: "" }
     );
     setOpenDialog(true);
   };
@@ -89,7 +91,10 @@ const DeductionTypesPage = () => {
   const handleSave = async () => {
     try {
       if (editDeduction) {
-        await axios.put(`http://192.168.1.49:8084/deduction/${editDeduction.deductionId}`, formData);
+        await axios.put(
+          `http://192.168.1.49:8084/deduction/${editDeduction.deductionId}`,
+          formData
+        );
       } else {
         await axios.post("http://192.168.1.49:8084/deduction", formData);
       }
@@ -124,9 +129,23 @@ const DeductionTypesPage = () => {
   );
 
   return (
-    <Box p={3} sx={{ backgroundColor: "transparent", color: "white" }}>
+    <Box
+      p={3}
+      sx={{
+        textAlign: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+      }}
+    >
       <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "white" }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ color: "white" }}
+        >
           Deductions
         </Typography>
         <TextField
@@ -158,7 +177,9 @@ const DeductionTypesPage = () => {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" } }}
+          PaperProps={{
+            sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" },
+          }}
         >
           <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
           {[...new Set(deductions.map((d) => d.amount))].map((amt) => (
@@ -184,9 +205,11 @@ const DeductionTypesPage = () => {
               <Card
                 variant="outlined"
                 sx={{
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-                  border: "1px solid white",
+                  textAlign: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 2,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
                 }}
               >
                 <CardContent>
@@ -207,7 +230,10 @@ const DeductionTypesPage = () => {
                         <Typography fontWeight="bold" sx={{ color: "white" }}>
                           {deduct.deduction}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "rgba(255,255,255,0.7)" }}
+                        >
                           Amount: {deduct.amount}
                         </Typography>
                       </Box>
@@ -224,11 +250,18 @@ const DeductionTypesPage = () => {
                         open={Boolean(menuAnchorEl[index])}
                         onClose={() => handleMenuClose(index)}
                         PaperProps={{
-                          sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "white" },
+                          sx: {
+                            backgroundColor: "rgba(0,0,0,0.8)",
+                            color: "white",
+                          },
                         }}
                       >
-                        <MenuItem onClick={() => handleOpenDialog(deduct)}>Edit</MenuItem>
-                        <MenuItem onClick={() => handleDelete(deduct.deductionId)}>
+                        <MenuItem onClick={() => handleOpenDialog(deduct)}>
+                          Edit
+                        </MenuItem>
+                        <MenuItem
+                          onClick={() => handleDelete(deduct.deductionId)}
+                        >
                           Delete
                         </MenuItem>
                       </Menu>
@@ -270,7 +303,10 @@ const DeductionTypesPage = () => {
             onChange={handleInputChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
-              style: { color: "white", backgroundColor: "rgba(255,255,255,0.1)" },
+              style: {
+                color: "white",
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
             }}
           />
           <TextField
@@ -283,7 +319,10 @@ const DeductionTypesPage = () => {
             onChange={handleInputChange}
             InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
-              style: { color: "white", backgroundColor: "rgba(255,255,255,0.1)" },
+              style: {
+                color: "white",
+                backgroundColor: "rgba(255,255,255,0.1)",
+              },
             }}
           />
         </DialogContent>

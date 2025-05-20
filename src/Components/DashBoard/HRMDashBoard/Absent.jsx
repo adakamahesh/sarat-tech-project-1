@@ -1,24 +1,24 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { TableVirtuoso } from 'react-virtuoso';
-import Typography from '@mui/material/Typography';
-import axios from 'axios';
-import Box from '@mui/material/Box';
-import CircularProgress from '@mui/material/CircularProgress';
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import { TableVirtuoso } from "react-virtuoso";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 const columns = [
-  { width: 50, label: 'S.No.', dataKey: 'serialNumber' },
-  { width: 100, label: 'Employee ID', dataKey: 'employeeId' },
-  { width: 100, label: 'First Name', dataKey: 'firstName' },
-  { width: 100, label: 'Last Name', dataKey: 'lastName' },
+  { width: 50, label: "S.No.", dataKey: "serialNumber" },
+  { width: 100, label: "Employee ID", dataKey: "employeeId" },
+  { width: 100, label: "First Name", dataKey: "firstName" },
+  { width: 100, label: "Last Name", dataKey: "lastName" },
 ];
 
 const VirtuosoTableComponents = {
@@ -29,7 +29,7 @@ const VirtuosoTableComponents = {
       ref={ref}
       sx={{
         maxHeight: { xs: 300, sm: 450 },
-        overflowX: 'auto',
+        overflowX: "auto",
       }}
     />
   )),
@@ -37,8 +37,8 @@ const VirtuosoTableComponents = {
     <Table
       {...props}
       sx={{
-        borderCollapse: 'separate',
-        tableLayout: 'fixed',
+        borderCollapse: "separate",
+        tableLayout: "fixed",
         minWidth: { xs: 500, sm: 600 }, // min width for scroll
       }}
     />
@@ -61,11 +61,10 @@ function fixedHeaderContent() {
           align="left"
           sx={{
             width: column.width,
-            backgroundColor: '#A7B0CA',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: { xs: '12px', sm: '14px' },
-            padding: { xs: '6px', sm: '12px' },
+            color: "#fff",
+            fontWeight: "bold",
+            fontSize: { xs: "12px", sm: "14px" },
+            padding: { xs: "6px", sm: "12px" },
           }}
         >
           {column.label}
@@ -83,10 +82,10 @@ function rowContent(_index, row) {
           key={column.dataKey}
           align="left"
           sx={{
-            fontSize: { xs: '11px', sm: '13px' },
-            padding: { xs: '6px', sm: '12px' },
-            whiteSpace: 'nowrap',
-            wordBreak: 'break-word',
+            fontSize: { xs: "11px", sm: "13px" },
+            padding: { xs: "6px", sm: "12px" },
+            whiteSpace: "nowrap",
+            wordBreak: "break-word",
           }}
         >
           {row[column.dataKey]}
@@ -115,8 +114,8 @@ export default function ReactVirtualizedTable() {
         setLoading(false);
       })
       .catch((error) => {
-        console.error('Error fetching absent employee data:', error);
-        setError('Failed to load employees');
+        console.error("Error fetching absent employee data:", error);
+        setError("Failed to load employees");
         setLoading(false);
       });
   }, []);
@@ -124,19 +123,24 @@ export default function ReactVirtualizedTable() {
   return (
     <Paper
       sx={{
-        height: { xs: 'auto', sm: 450 },
-        width: '100%',
+        height: { xs: "auto", sm: 450 },
+        width: "100%",
         padding: { xs: 1, sm: 2 },
-        overflowX: 'auto',
-        boxSizing: 'border-box',
+        overflowX: "auto",
+        boxSizing: "border-box",
+        textAlign: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
       }}
     >
       <Typography
         align="left"
         sx={{
-          fontSize: { xs: '16px', sm: '24px' },
-          backgroundColor: '#F5F5F5',
-          fontWeight: 'bold',
+          fontSize: { xs: "16px", sm: "24px" },
+          fontWeight: "bold",
+          color: "white",
           padding: 1,
           mb: 1,
         }}
@@ -147,10 +151,10 @@ export default function ReactVirtualizedTable() {
       {loading ? (
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: 300,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: 200,
           }}
         >
           <CircularProgress />
@@ -158,7 +162,16 @@ export default function ReactVirtualizedTable() {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <Box sx={{ height: { xs: 300, sm: 450 } }}>
+        <Box
+          sx={{
+            height: { xs: 300, sm: 350 },
+            textAlign: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+          }}
+        >
           <TableVirtuoso
             data={employees}
             components={VirtuosoTableComponents}

@@ -1,29 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import {
-  Table, TableBody, TableCell, TableContainer, TableHead,
-  TableRow, Paper, Button, Box, TextField, Dialog,
-  DialogTitle, DialogContent, DialogActions
-} from '@mui/material';
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Box,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
 export default function AccessibleTable() {
+  const theme = useTheme();
   const [meetingData, setMeetingData] = useState([]);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
-    meetingTitle: '',
-    meetingDate: '',
-    meetingTime: '',
+    meetingTitle: "",
+    meetingDate: "",
+    meetingTime: "",
   });
 
   useEffect(() => {
-    axios.get(`${API_URL}meeting-schedule`)
-      .then(response => {
+    axios
+      .get(`${API_URL}meeting-schedule`)
+      .then((response) => {
         setMeetingData(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching meeting data:', error);
+      .catch((error) => {
+        console.error("Error fetching meeting data:", error);
       });
   }, []);
 
@@ -33,12 +47,12 @@ export default function AccessibleTable() {
 
   const handleClose = () => {
     setOpen(false);
-    setFormData({ meetingTitle: '', meetingDate: '', meetingTime: '' });
+    setFormData({ meetingTitle: "", meetingDate: "", meetingTime: "" });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -46,85 +60,121 @@ export default function AccessibleTable() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${API_URL}meeting-schedule`, formData)
+    axios
+      .post(`${API_URL}meeting-schedule`, formData)
       .then((response) => {
         setMeetingData([response.data, ...meetingData]);
         handleClose();
       })
-      .catch(error => {
-        console.error('Error creating meeting:', error);
+      .catch((error) => {
+        console.error("Error creating meeting:", error);
       });
   };
 
   return (
     <>
-      {/* Table with scroll and height */}
-      <Box sx={{ overflowX: 'auto', mb: 3 }}>
-        <TableContainer
-          component={Paper}
-          sx={{ maxHeight: 600, overflow: 'auto' }}
+      {/* Table with fixed height and no horizontal scrollbar */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          height: 600,
+          overflowY: "auto",
+          overflowX: "auto",
+          [theme.breakpoints.down("sm")]: {
+            maxWidth: "100%",
+          },
+        }}
+      >
+        <Table
+          stickyHeader
+          aria-label="meeting schedule table"
+          sx={{
+            textAlign: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+          }}
         >
-          <Table stickyHeader aria-label="meeting schedule table">
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={5} sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <span style={{ fontSize: '25px', fontWeight: 'bold' }}>
-                      Meeting Schedule
-                    </span>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleOpen}
-                      size="small"
-                      sx={{ "@media (max-width: 600px)": { fontSize: '12px' } }}
-                    >
-                      New Meeting
-                    </Button>
-                  </Box>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                colSpan={5}
+                sx={{ padding: "16px 24px", backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <span style={{ fontSize: "25px", fontWeight: "bold" }}>
+                    Meeting Schedule
+                  </span>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleOpen}
+                    size="small"
+                    sx={{ "@media (max-width: 600px)": { fontSize: "12px" } }}
+                  >
+                    New Meeting
+                  </Button>
+                </Box>
+              </TableCell>
+            </TableRow>
+            <TableRow
+              sx={{
+                borderTop: "1px solid #ccc",
+                borderBottom: "1px solid #ccc",
+              }}
+            >
+              <TableCell
+                sx={{
+                  fontSize: { xs: "16px", sm: "20px" },
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#93A0B4",
+                }}
+              >
+                Meeting Title
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  fontSize: { xs: "14px", sm: "20px" },
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#93A0B4",
+                }}
+              >
+                Meeting Date
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  fontSize: { xs: "14px", sm: "20px" },
+                  fontWeight: "bold",
+                  color: "#fff",
+                  backgroundColor: "#93A0B4",
+                }}
+              >
+                Meeting Time
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {meetingData.map((row) => (
+              <TableRow hover key={row.meetingId}>
+                <TableCell component="th" scope="row">
+                  {row.meetingTitle}
                 </TableCell>
+                <TableCell align="center">{row.meetingDate}</TableCell>
+                <TableCell align="center">{row.meetingTime}</TableCell>
               </TableRow>
-              <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
-                <TableCell sx={{
-                  fontSize: { xs: '16px', sm: '20px' },
-                  fontWeight: 'bold',
-                  color: "#fff",
-                  backgroundColor: '#93A0B4'
-                }}>
-                  Meeting Title
-                </TableCell>
-                <TableCell align="center" sx={{
-                  fontSize: { xs: '14px', sm: '20px' },
-                  fontWeight: 'bold',
-                  color: "#fff",
-                  backgroundColor: '#93A0B4'
-                }}>
-                  Meeting Date
-                </TableCell>
-                <TableCell align="center" sx={{
-                  fontSize: { xs: '14px', sm: '20px' },
-                  fontWeight: 'bold',
-                  color: "#fff",
-                  backgroundColor: '#93A0B4'
-                }}>
-                  Meeting Time
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {meetingData.map((row) => (
-                <TableRow key={row.meetingId}>
-                  <TableCell component="th" scope="row">
-                    {row.meetingTitle}
-                  </TableCell>
-                  <TableCell align="center">{row.meetingDate}</TableCell>
-                  <TableCell align="center">{row.meetingTime}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       {/* Dialog for new meeting */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>

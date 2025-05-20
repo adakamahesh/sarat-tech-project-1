@@ -37,8 +37,6 @@ export default function CompanyLeavesTable() {
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState("");
   const [rows, setRows] = React.useState(initialRows);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
   const [open, setOpen] = React.useState(false);
@@ -64,11 +62,6 @@ export default function CompanyLeavesTable() {
 
   const handleSearch = (event) => setSearch(event.target.value);
   const handleFilter = (event) => setFilter(event.target.value);
-  const handleChangePage = (event, newPage) => setPage(newPage);
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -101,8 +94,31 @@ export default function CompanyLeavesTable() {
   );
 
   return (
-    <Box sx={{ width: "100%", p: 2 }}>
-      <Paper elevation={4} sx={{ width: "100%", mb: 2, p: 2, borderRadius: 3 }}>
+    <Box
+      sx={{
+        width: "100%",
+        p: 2,
+        textAlign: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+      }}
+    >
+      <Paper
+        elevation={4}
+        sx={{
+          width: "100%",
+          mb: 2,
+          p: 2,
+          borderRadius: 3,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <Box
           sx={(theme) => ({
             display: "flex",
@@ -119,7 +135,7 @@ export default function CompanyLeavesTable() {
         >
           <Typography
             variant="h6"
-            sx={{ fontWeight: "bold", color: "#1a237e", letterSpacing: 0.5 }}
+            sx={{ fontWeight: "bold", color: "white", letterSpacing: 0.5 }}
           >
             Company Leaves
           </Typography>
@@ -130,7 +146,26 @@ export default function CompanyLeavesTable() {
             size="small"
             value={search}
             onChange={handleSearch}
-            sx={{ minWidth: 200 }}
+            sx={{
+              minWidth: 200,
+              "& .MuiInputBase-input": {
+                color: "white", // text color
+              },
+              "& .MuiInputLabel-root": {
+                color: "white", // label color
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // border color
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+            }}
           />
           <TextField
             select
@@ -139,7 +174,26 @@ export default function CompanyLeavesTable() {
             size="small"
             value={filter}
             onChange={handleFilter}
-            sx={{ minWidth: 200 }}
+            sx={{
+              minWidth: 200,
+              "& .MuiInputBase-input": {
+                color: "white", // text color
+              },
+              "& .MuiInputLabel-root": {
+                color: "white", // label color
+              },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // border color
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+            }}
           >
             <MenuItem value="">All</MenuItem>
             {[...new Set(rows.map((row) => row.BasedOnWeekDay))].map((day) => (
@@ -148,7 +202,17 @@ export default function CompanyLeavesTable() {
               </MenuItem>
             ))}
           </TextField>
-          <Button variant="contained" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            onClick={handleOpen}
+            sx={{
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             Create
           </Button>
         </Box>
@@ -156,7 +220,15 @@ export default function CompanyLeavesTable() {
         <TableContainer>
           <Table>
             <TableHead>
-              <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
+              <TableRow
+                sx={{
+                  textAlign: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 2,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                }}
+              >
                 <TableCell
                   sx={{
                     fontWeight: "bold",
@@ -164,12 +236,14 @@ export default function CompanyLeavesTable() {
                     fontSize: "1rem",
                     textTransform: "uppercase",
                     py: 2,
+                    color: "white",
                   }}
                 >
                   <TableSortLabel
                     active={orderBy === "BasedOnWeek"}
                     direction={order}
                     onClick={() => handleRequestSort("BasedOnWeek")}
+                    sx={{ color: "white" }}
                   >
                     Based On Week
                   </TableSortLabel>
@@ -181,6 +255,7 @@ export default function CompanyLeavesTable() {
                     fontSize: "1rem",
                     textTransform: "uppercase",
                     py: 2,
+                    color: "white",
                   }}
                 >
                   Based On WeekDay
@@ -192,6 +267,7 @@ export default function CompanyLeavesTable() {
                     fontSize: "1rem",
                     textTransform: "uppercase",
                     py: 2,
+                    color: "white",
                   }}
                 >
                   Action
@@ -199,72 +275,94 @@ export default function CompanyLeavesTable() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow key={row.id}>
-                    <TableCell sx={{ textAlign: "center" }}>
-                      {row.BasedOnWeek}
-                    </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
-                      {row.BasedOnWeekDay}
-                    </TableCell>
-                    <TableCell
-                      sx={{ textAlign: "center", whiteSpace: "nowrap" }}
-                    >
-                      {editId === row.id ? (
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          onClick={handleSave}
+              {filteredRows.map((row) => (
+                <TableRow key={row.id}>
+                  <TableCell sx={{ textAlign: "center", color: "white" }}>
+                    {row.BasedOnWeek}
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center", color: "white" }}>
+                    {row.BasedOnWeekDay}
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center", whiteSpace: "nowrap" }}>
+                    {editId === row.id ? (
+                      <Button
+                        variant="contained"
+                        size="small"
+                        sx={{
+                          textAlign: "center",
+                          backgroundColor: "rgba(255, 255, 255, 0.15)",
+                          backdropFilter: "blur(12px)",
+                          borderRadius: 2,
+                          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                          color: "white",
+                        }}
+                        onClick={handleSave}
+                      >
+                        Save
+                      </Button>
+                    ) : (
+                      <>
+                        <IconButton
+                          sx={{ color: "white" }}
+                          onClick={() => {
+                            setEditId(row.id);
+                            setEditData(row);
+                          }}
                         >
-                          Save
-                        </Button>
-                      ) : (
-                        <>
-                          <IconButton
-                            color="primary"
-                            onClick={() => {
-                              setEditId(row.id);
-                              setEditData(row);
-                            }}
-                          >
-                            <EditNoteIcon />
-                          </IconButton>
-                          <IconButton
-                            color="error"
-                            onClick={() => handleDelete(row.id)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          <EditNoteIcon />
+                        </IconButton>
+                        <IconButton
+                          sx={{ color: "white" }}
+                          color="white"
+                          onClick={() => handleDelete(row.id)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
       </Paper>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <Card sx={{ p: 3, m: 2, borderRadius: 3, boxShadow: 6 }}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.1)", // semi-transparent white
+            backdropFilter: "blur(10px)", // blur effect
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            borderRadius: 3,
+            p: 2,
+          },
+        }}
+      >
+        <Card
+          sx={{
+            p: 3,
+            m: 2,
+            borderRadius: 3,
+            boxShadow: 6,
+            backgroundColor: "transparent",
+          }}
+        >
           <CardContent sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
               Add Company Leaves
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+              }}
+            >
               <TextField
                 name="BasedOnWeek"
                 label="Based On Week"
@@ -272,6 +370,25 @@ export default function CompanyLeavesTable() {
                 size="small"
                 value={newBasedOnWeek.BasedOnWeek}
                 onChange={handleInputChange}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    color: "white", // input text color
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "white", // label color
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white", // border color
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white", // hover border color
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white", // focused border color
+                    },
+                  },
+                }}
               />
               <TextField
                 name="BasedOnWeekDay"
@@ -280,8 +397,37 @@ export default function CompanyLeavesTable() {
                 size="small"
                 value={newBasedOnWeek.BasedOnWeekDay}
                 onChange={handleInputChange}
+                sx={{
+                  "& .MuiInputBase-input": {
+                    color: "white", // input text color
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "white", // label color
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: "white", // border color
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white", // hover border color
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white", // focused border color
+                    },
+                  },
+                }}
               />
-              <Button variant="contained" onClick={handleAddBasedOnWeek}>
+              <Button
+                variant="contained"
+                onClick={handleAddBasedOnWeek}
+                sx={{
+                  textAlign: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 2,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                }}
+              >
                 Add Based On Week
               </Button>
             </Box>

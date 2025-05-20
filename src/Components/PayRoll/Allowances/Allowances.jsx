@@ -143,9 +143,23 @@ const AllowanceTypesPage = () => {
   );
 
   return (
-    <Box p={3} sx={{ backgroundColor: "transparent", color: "black" }}>
+    <Box
+      p={3}
+      sx={{
+        textAlign: "center",
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+      }}
+    >
       <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ color: "black" }}>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ color: "white" }}
+        >
           Allowances
         </Typography>
         <TextField
@@ -157,8 +171,8 @@ const AllowanceTypesPage = () => {
           sx={{
             flex: 1,
             minWidth: 200,
-            input: { color: "black" },
-            label: { color: "black" },
+            input: { color: "white" },
+            label: { color: "white" },
             "& .MuiOutlinedInput-root": {
               "& fieldset": { borderColor: "white" },
               "&:hover fieldset": { borderColor: "white" },
@@ -169,7 +183,7 @@ const AllowanceTypesPage = () => {
           variant="outlined"
           startIcon={<FilterList />}
           onClick={handleFilterClick}
-          sx={{ color: "black", borderColor: "white" }}
+          sx={{ color: "white", borderColor: "white" }}
         >
           Filter
         </Button>
@@ -177,7 +191,9 @@ const AllowanceTypesPage = () => {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
-          PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "black" } }}
+          PaperProps={{
+            sx: { backgroundColor: "rgba(0,0,0.8,0.8)", color: "white" },
+          }}
         >
           <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
           <MenuItem onClick={() => handleFilterSelect("1000")}>1000</MenuItem>
@@ -200,11 +216,11 @@ const AllowanceTypesPage = () => {
           sx: {
             backgroundColor: "rgba(255,255,255,0.05)",
             backdropFilter: "blur(8px)",
-            color: "black",
+            color: "white",
           },
         }}
       >
-        <DialogTitle sx={{ color: "black" }}>
+        <DialogTitle sx={{ color: "white" }}>
           {editIndex !== null ? "Edit Allowance Type" : "Create Allowance Type"}
         </DialogTitle>
         <DialogContent>
@@ -215,10 +231,10 @@ const AllowanceTypesPage = () => {
             margin="dense"
             value={newAllowance.name}
             onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "black" } }}
+            InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
               style: {
-                color: "black",
+                color: "white",
                 backgroundColor: "rgba(255,255,255,0.1)",
               },
             }}
@@ -231,17 +247,17 @@ const AllowanceTypesPage = () => {
             margin="dense"
             value={newAllowance.payment}
             onChange={handleInputChange}
-            InputLabelProps={{ style: { color: "black" } }}
+            InputLabelProps={{ style: { color: "white" } }}
             InputProps={{
               style: {
-                color: "black",
+                color: "white",
                 backgroundColor: "rgba(255,255,255,0.1)",
               },
             }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} sx={{ color: "black" }}>
+          <Button onClick={() => setOpenDialog(false)} sx={{ color: "white" }}>
             Cancel
           </Button>
           <Button variant="contained" onClick={handleSubmit}>
@@ -257,9 +273,11 @@ const AllowanceTypesPage = () => {
               <Card
                 variant="outlined"
                 sx={{
-                  backgroundColor: "transparent",
-                  boxShadow: "none",
-                  border: "1px solid white",
+                  textAlign: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 2,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
                 }}
               >
                 <CardContent>
@@ -275,29 +293,41 @@ const AllowanceTypesPage = () => {
                         bgcolor={allowances.color}
                         fontWeight="bold"
                       >
-                      {allowances.name?.[0] || "-"}
+                        {allowances.name?.[0] || "-"}
                       </Box>
                       <Box>
-                        <Typography fontWeight="bold" sx={{ color: "black" }}>
+                        <Typography fontWeight="bold" sx={{ color: "white" }}>
                           {allowances.name}
                         </Typography>
-                        <Typography variant="body2" sx={{ color: "black" }}>
+                        <Typography variant="body2" sx={{ color: "white" }}>
                           Amount: {allowances.payment}
                         </Typography>
                       </Box>
                     </Box>
                     <Box>
-                      <IconButton onClick={(e) => handleMenuOpen(index, e)} sx={{ color: "black" }}>
+                      <IconButton
+                        onClick={(e) => handleMenuOpen(index, e)}
+                        sx={{ color: "white" }}
+                      >
                         <MoreVert />
                       </IconButton>
                       <Menu
                         anchorEl={menuAnchorEl[index]}
                         open={Boolean(menuAnchorEl[index])}
                         onClose={() => handleMenuClose(index)}
-                        PaperProps={{ sx: { backgroundColor: "rgba(0,0,0,0.8)", color: "black" } }}
+                        PaperProps={{
+                          sx: {
+                            backgroundColor: "rgba(0,0,0,0.8)",
+                            color: "white",
+                          },
+                        }}
                       >
-                        <MenuItem onClick={() => handleEdit(index)}>Edit</MenuItem>
-                        <MenuItem onClick={() => handleDelete(index)}>Delete</MenuItem>
+                        <MenuItem onClick={() => handleEdit(index)}>
+                          Edit
+                        </MenuItem>
+                        <MenuItem onClick={() => handleDelete(index)}>
+                          Delete
+                        </MenuItem>
                       </Menu>
                     </Box>
                   </Box>
@@ -306,7 +336,7 @@ const AllowanceTypesPage = () => {
             </Grid>
           ))
         ) : (
-          <Typography ml={1} sx={{ color: "black" }}>
+          <Typography ml={1} sx={{ color: "white" }}>
             No results found.
           </Typography>
         )}
