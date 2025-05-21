@@ -49,14 +49,14 @@ export default function ResignationTable() {
         EmployeeId: item.employeeId,
         Employee: item.firstName + " " + item.lastName || "N/A", // since backend doesn't have employee name
         JoinDate: item.dateOfJoining
-          ? new Date(item.dateOfJoining).toLocaleDateString('en-GB')
+          ? new Date(item.dateOfJoining).toLocaleDateString("en-GB")
           : "N/A",
         Description: item.reason,
         NoticeStart: item.noticePeriodStart
-          ? new Date(item.noticePeriodStart).toLocaleDateString('en-GB')
+          ? new Date(item.noticePeriodStart).toLocaleDateString("en-GB")
           : "N/A",
         LastWorkingDay: item.lastWorkDay
-          ? new Date(item.lastWorkDay).toLocaleDateString('en-GB')
+          ? new Date(item.lastWorkDay).toLocaleDateString("en-GB")
           : "N/A",
         ProjectStatus: item.projectStatus,
         Status: item.status,
@@ -109,15 +109,19 @@ export default function ResignationTable() {
     setNewEmployee({ ...newEmployee, [event.target.name]: event.target.value });
 
   const handleStatusChange = async (id, status) => {
-  try {
-    await axios.put(`http://192.168.1.49:8084/resignation/${id}/status`, null, {
-      params: { status },
-    });
-    fetchResignations(); // refresh updated data
-  } catch (error) {
-    console.error("Failed to update status", error);
-  }
-};
+    try {
+      await axios.put(
+        `http://192.168.1.49:8084/resignation/${id}/status`,
+        null,
+        {
+          params: { status },
+        }
+      );
+      fetchResignations(); // refresh updated data
+    } catch (error) {
+      console.error("Failed to update status", error);
+    }
+  };
 
   const filteredRows = rows.filter((row) =>
     row.Employee.toLowerCase().includes(search.toLowerCase())
@@ -125,8 +129,19 @@ export default function ResignationTable() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
-        <Box sx={{ display: "flex", gap: 3, mb: 2 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+          p: 2,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 3, mb: 2, color: "white" }}>
           <Typography variant="h6">Resignations</Typography>
           <TextField
             label="Search Employee"
@@ -134,12 +149,58 @@ export default function ResignationTable() {
             size="small"
             value={search}
             onChange={handleSearch}
+            sx={{
+              "& .MuiInputBase-input": {
+                color: "white", // Text color
+              },
+              "& .MuiInputLabel-root": {
+                color: "white", // Label color
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white", // Border color
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white", // Border on hover
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white", // Border when focused
+              },
+            }}
           />
-          <Button variant="contained" onClick={handleOpen}>
+          <Button
+            variant="contained"
+            onClick={handleOpen}
+            sx={{
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             Create
           </Button>
         </Box>
-        <TableContainer sx={{ maxHeight: 400, overflowY: "auto" }}>
+        <TableContainer
+          sx={{
+            maxHeight: 400,
+            overflowY: "auto",
+            backgroundColor: "transparent",
+            "& .MuiTable-root": {
+              backgroundColor: "transparent",
+            },
+            "& .MuiTableCell-root": {
+              color: "white", // Text color
+              backgroundColor: "transparent", // Cell background
+              borderBottom: "1px solid rgba(255, 255, 255, 0.2)", // Optional: light white border
+            },
+            "& .MuiTableHead-root .MuiTableCell-root": {
+              fontWeight: "bold",
+              backgroundColor: "rgba(255, 255, 255, 0.1)", // Slightly visible header
+              backdropFilter: "blur(6px)",
+            },
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
               <TableRow>
@@ -153,7 +214,14 @@ export default function ResignationTable() {
                 <TableCell align="center">Status</TableCell>
                 <TableCell
                   align="center"
-                  sx={{ position: "sticky", right: 0, background: "white", zIndex: 2 }}
+                  sx={{
+                    position: "sticky",
+                    right: 0,
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "white",
+                    backdropFilter: "blur(6px)",
+                    zIndex: 2,
+                  }}
                 >
                   Confirmation
                 </TableCell>
@@ -172,9 +240,18 @@ export default function ResignationTable() {
                   <TableCell align="center">{row.Status}</TableCell>
                   <TableCell
                     align="center"
-                    sx={{ position: "sticky", right: 0, background: "white", zIndex: 1 }}
+                    sx={{
+                      position: "sticky",
+                      right: 0,
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      color: "white",
+                      backdropFilter: "blur(6px)",
+                      zIndex: 1,
+                    }}
                   >
-                    <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+                    <Box
+                      sx={{ display: "flex", gap: 1, justifyContent: "center" }}
+                    >
                       <Button
                         variant="contained"
                         sx={{ bgcolor: "green", minWidth: 80 }}
@@ -201,17 +278,45 @@ export default function ResignationTable() {
       </Paper>
 
       {/* Dialog */}
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-        <Card sx={{ p: 2 }}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent glass effect
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            border: "1px solid rgba(255, 255, 255, 0.18)",
+          },
+        }}
+      >
+        <Card  sx={{
+            p: 2,
+            background: "transparent",
+            boxShadow: "none",
+            color: "white",
+          }}>
           <CardContent sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-            <Typography variant="h6">Add Resignation</Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+            <Typography variant="h6" sx={{ color: "white" }}>Add Resignation</Typography>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}
+            >
               <TextField
                 name="employeeId"
                 label="Employee ID"
                 value={newEmployee.employeeId}
                 onChange={handleInputChange}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="reason"
@@ -219,6 +324,13 @@ export default function ResignationTable() {
                 value={newEmployee.reason}
                 onChange={handleInputChange}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="noticePeriodStart"
@@ -228,6 +340,13 @@ export default function ResignationTable() {
                 value={newEmployee.noticePeriodStart}
                 onChange={handleInputChange}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="lastWorkDay"
@@ -237,6 +356,13 @@ export default function ResignationTable() {
                 value={newEmployee.lastWorkDay}
                 onChange={handleInputChange}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="projectStatus"
@@ -244,6 +370,13 @@ export default function ResignationTable() {
                 value={newEmployee.projectStatus}
                 onChange={handleInputChange}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <Button variant="contained" onClick={handleAddEmployee}>
                 Add Resignation
