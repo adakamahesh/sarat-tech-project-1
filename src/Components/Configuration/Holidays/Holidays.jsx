@@ -29,8 +29,6 @@ export default function HolidayTable() {
   const [orderBy, setOrderBy] = React.useState("holidayName");
   const [search, setSearch] = React.useState("");
   const [filter, setFilter] = React.useState("");
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [open, setOpen] = React.useState(false);
   const [editId, setEditId] = React.useState(null);
   const [editData, setEditData] = React.useState({});
@@ -89,12 +87,51 @@ export default function HolidayTable() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ p: 2 }}>
-        <Typography variant="h5" sx={{ mb: 3 }}>
-          🗓️ Holidays
-        </Typography>
-
-        <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
+      <Paper
+        sx={{
+          p: 2,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: 5,
+            mb: 3,
+            flexWrap: "wrap",
+            color: "white", // Typography and other text
+            "& .MuiInputBase-input": {
+              color: "white", // Input text
+            },
+            "& .MuiInputLabel-root": {
+              color: "white", // Label text
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "white", // Input border
+            },
+            "& .MuiSvgIcon-root": {
+              color: "white", // Dropdown arrow
+            },
+            "& .MuiButton-contained": {
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              color: "black",
+              "&:hover": {
+                backgroundColor: "#e0e0e0",
+              },
+            },
+            "& .MuiMenuItem-root": {
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              color: "white",
+            },
+          }}
+        >
+          <Typography variant="h5" sx={{ mb: 3 }}>
+            🗓️ Holidays
+          </Typography>
           <TextField
             label="Search"
             value={search}
@@ -121,161 +158,169 @@ export default function HolidayTable() {
           </Button>
         </Box>
 
-        <TableContainer component={Paper} sx={{ mb: 3 }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            mb: 3,
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            color: "white",
+            "& .MuiTableCell-root": {
+              color: "white",
+            },
+            "& .MuiInputBase-input": {
+              color: "white",
+            },
+            "& .MuiInputLabel-root": {
+              color: "white",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "white",
+            },
+            "& .MuiSvgIcon-root": {
+              color: "white",
+            },
+          }}
+        >
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                    Holiday Name
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Start Date
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  End Date
-                </TableCell>
-                <TableCell
-                  align="center"
-                  sx={{
-                    fontSize: "18px",
-                    fontWeight: "bold",
-                    color: "#fff",
-                    backgroundColor: "#93A0B4",
-                  }}
-                >
-                  Action
-                </TableCell>
+              <TableRow
+                sx={{
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  color: "#fff",
+                  textAlign: "center",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  backdropFilter: "blur(12px)",
+                  borderRadius: 2,
+                  boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                }}
+              >
+                <TableCell align="center">Holiday Name</TableCell>
+                <TableCell align="center">Start Date</TableCell>
+                <TableCell align="center">End Date</TableCell>
+                <TableCell align="center">Action</TableCell>
               </TableRow>
             </TableHead>
 
             <TableBody>
-              {filteredRows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow key={row.holidayId}>
-                    <TableCell align="center">
-                      {editId === row.holidayId ? (
-                        <TextField
-                          value={editData.holidayName}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              holidayName: e.target.value,
-                            })
-                          }
-                        />
-                      ) : (
-                        row.holidayName
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      {editId === row.holidayId ? (
-                        <TextField
-                          type="date"
-                          value={editData.startDate}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              startDate: e.target.value,
-                            })
-                          }
-                        />
-                      ) : (
-                        row.startDate
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      {editId === row.holidayId ? (
-                        <TextField
-                          type="date"
-                          value={editData.endDate}
-                          onChange={(e) =>
-                            setEditData({
-                              ...editData,
-                              endDate: e.target.value,
-                            })
-                          }
-                        />
-                      ) : (
-                        row.endDate
-                      )}
-                    </TableCell>
-                    <TableCell align="center">
-                      {editId === row.holidayId ? (
-                        <Button
-                          variant="contained"
-                          color="success"
-                          size="small"
-                          onClick={handleSave}
+              {filteredRows.map((row) => (
+                <TableRow
+                  key={row.holidayId}
+                  hover
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "rgb(255, 2, 2)",
+                      cursor: "pointer",
+                    },
+                    transition: "background-color 0.3s ease",
+                  }}
+                >
+                  <TableCell align="center">
+                    {editId === row.holidayId ? (
+                      <TextField
+                        value={editData.holidayName}
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            holidayName: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      row.holidayName
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    {editId === row.holidayId ? (
+                      <TextField
+                        type="date"
+                        value={editData.startDate}
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            startDate: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      row.startDate
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    {editId === row.holidayId ? (
+                      <TextField
+                        type="date"
+                        value={editData.endDate}
+                        onChange={(e) =>
+                          setEditData({
+                            ...editData,
+                            endDate: e.target.value,
+                          })
+                        }
+                      />
+                    ) : (
+                      row.endDate
+                    )}
+                  </TableCell>
+                  <TableCell align="center">
+                    {editId === row.holidayId ? (
+                      <Button
+                        variant="contained"
+                        color="success"
+                        size="small"
+                        onClick={handleSave}
+                      >
+                        Save
+                      </Button>
+                    ) : (
+                      <>
+                        <IconButton
+                          onClick={() => {
+                            setEditId(row.holidayId);
+                            setEditData(row);
+                          }}
                         >
-                          Save
-                        </Button>
-                      ) : (
-                        <>
-                          <IconButton
-                            onClick={() => {
-                              setEditId(row.holidayId);
-                              setEditData(row);
-                            }}
-                          >
-                            <EditNoteIcon />
-                          </IconButton>
-                          <IconButton
-                            onClick={() => handleDelete(row.holidayId)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                          <EditNoteIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDelete(row.holidayId)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
-
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          count={filteredRows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(e, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => {
-            setRowsPerPage(parseInt(e.target.value, 10));
-            setPage(0);
-          }}
-        />
       </Paper>
 
       {/* Dialog for adding/editing holiday */}
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <Card sx={{ p: 2 }}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent glass effect
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            border: "1px solid rgba(255, 255, 255, 0.18)",
+          },
+        }}
+      >
+        <Card
+          sx={{
+            p: 2,
+            background: "transparent",
+            boxShadow: "none",
+            color: "white",
+          }}
+        >
           <CardContent>
-            <Typography variant="h6">Add Holiday</Typography>
+            <Typography variant="h6" sx={{ color: "white" }}>
+              Add Holiday
+            </Typography>
             <Box display="flex" flexDirection="column" gap={2} mt={2}>
               <TextField
                 name="holidayName"
@@ -285,6 +330,13 @@ export default function HolidayTable() {
                 onChange={(e) =>
                   setNewHoliday({ ...newHoliday, holidayName: e.target.value })
                 }
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="startDate"
@@ -295,6 +347,13 @@ export default function HolidayTable() {
                 onChange={(e) =>
                   setNewHoliday({ ...newHoliday, startDate: e.target.value })
                 }
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <TextField
                 name="endDate"
@@ -305,6 +364,13 @@ export default function HolidayTable() {
                 onChange={(e) =>
                   setNewHoliday({ ...newHoliday, endDate: e.target.value })
                 }
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "white",
+                  },
+                }}
               />
               <Button variant="contained" onClick={handleAddHoliday}>
                 Save
