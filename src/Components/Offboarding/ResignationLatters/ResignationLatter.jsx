@@ -141,7 +141,7 @@ export default function ResignationTable() {
           boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
         }}
       >
-        <Box sx={{ display: "flex", gap: 3, mb: 2, color: "white" }}>
+        <Box sx={{ display: "flex", gap: 3, mb: 2, color: "white",justifyContent: "space-between", }}>
           <Typography variant="h6">Resignations</Typography>
           <TextField
             label="Search Employee"

@@ -183,7 +183,18 @@ export default function CandidateViewTable() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box sx={{ width: "100%" }}>
-        <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
+        <Paper
+          sx={{
+            width: "100%",
+            mb: 2,
+            p: 2,
+            textAlign: "center",
+            backgroundColor: "rgba(255, 255, 255, 0.15)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -192,13 +203,31 @@ export default function CandidateViewTable() {
               mb: 2,
             }}
           >
-            <Typography variant="h6">Applicant Management</Typography>
+            <Typography variant="h6" sx={{ color: "white" }}>
+              Applicant Management
+            </Typography>
             <Box sx={{ display: "flex", gap: 2 }}>
               <TextField
                 label="Search Candidate"
                 value={search}
                 onChange={handleSearch}
                 size="small"
+                sx={{
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "transparent",
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white",
+                    },
+                  },
+                }}
               />
               <TextField
                 select
@@ -206,7 +235,31 @@ export default function CandidateViewTable() {
                 value={filter}
                 onChange={handleFilter}
                 size="small"
-                sx={{ width: "100%" }}
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  "& .MuiOutlinedInput-root": {
+                    backgroundColor: "transparent",
+                    color: "white",
+                    "& fieldset": {
+                      borderColor: "white",
+                    },
+                    "&:hover fieldset": {
+                      borderColor: "white",
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: "white",
+                    },
+                    "& svg": {
+                      color: "white", // Dropdown icon color
+                    },
+                  },
+                  "& .MuiMenuItem-root": {
+                    backgroundColor: "#333",
+                    color: "white",
+                  },
+                }}
               >
                 <MenuItem value="">All</MenuItem>
                 {[...new Set(rows.map((row) => row.JobPosition))]
@@ -220,45 +273,63 @@ export default function CandidateViewTable() {
             </Box>
           </Box>
 
-          <TableContainer sx={{ maxHeight: 400, overflow: "auto" }}>
+          <TableContainer
+            sx={{
+              maxHeight: 400,
+              overflow: "auto",
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             <Table>
               <TableHead>
-                <TableRow>
-                  <TableCell align="center">Candidate Id</TableCell>
-                  <TableCell>Candidate</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell align="center">Date of Joining</TableCell>
-                  <TableCell align="center">Probation Ends</TableCell>
-                  <TableCell>Job Position</TableCell>
-                  <TableCell>Offer Letter</TableCell>
-                  <TableCell align="center">Actions</TableCell>
+                <TableRow
+                  sx={{
+                    textAlign: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    backdropFilter: "blur(12px)",
+                    borderRadius: 2,
+                    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                  }}
+                >
+                  <TableCell align="center" sx={{ color: "white", fontWeight: "bold" }}>Candidate Id</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Candidate</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>
+                  <TableCell align="center" sx={{ color: "white", fontWeight: "bold" }}>Date of Joining</TableCell>
+                  <TableCell align="center" sx={{ color: "white", fontWeight: "bold" }}>Probation Ends</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Job Position</TableCell>
+                  <TableCell sx={{ color: "white", fontWeight: "bold" }}>Offer Letter</TableCell>
+                  <TableCell align="center" sx={{ color: "white", fontWeight: "bold" }}>Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
+                    <TableCell colSpan={8} align="center" sx={{ color: "white" }}>
                       Loading...
                     </TableCell>
                   </TableRow>
                 ) : filteredRows.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={8} align="center">
+                    <TableCell colSpan={8} align="center" sx={{ color: "white" }}>
                       No candidates found.
                     </TableCell>
                   </TableRow>
                 ) : (
                   filteredRows.map((row) => (
                     <TableRow key={row.id}>
-                      <TableCell align="center">{row.CandidateId}</TableCell>
-                      <TableCell>
+                      <TableCell align="center" sx={{ color: "white" }}>{row.CandidateId}</TableCell>
+                      <TableCell sx={{ color: "white" }}>
                         <Box display="flex" alignItems="center" gap={1}>
-                          <Avatar>{row.Employee.charAt(0)}</Avatar>
+                          <Avatar sx={{ bgcolor: "#555", color: "white" }}>{row.Employee.charAt(0)}</Avatar>
                           {row.Employee}
                         </Box>
                       </TableCell>
-                      <TableCell>{row.Email}</TableCell>
-                      <TableCell align="center">
+                      <TableCell sx={{ color: "white" }}>{row.Email}</TableCell>
+                      <TableCell align="center" sx={{ color: "white" }}>
                         {editId === row.id ? (
                           <DatePicker
                             value={dayjs(editData.DateOfJoining)}
@@ -271,7 +342,7 @@ export default function CandidateViewTable() {
                           row.DateOfJoining
                         )}
                       </TableCell>
-                      <TableCell align="center">
+                      <TableCell align="center" sx={{ color: "white" }}>
                         {editId === row.id ? (
                           <DatePicker
                             value={dayjs(editData.ProbationEnds)}
@@ -284,8 +355,8 @@ export default function CandidateViewTable() {
                           row.ProbationEnds
                         )}
                       </TableCell>
-                      <TableCell>{row.JobPosition}</TableCell>
-                      <TableCell>
+                      <TableCell sx={{ color: "white" }}>{row.JobPosition}</TableCell>
+                      <TableCell sx={{ color: "white" }}>
                         {editId === row.id ? (
                           <TextField
                             select
@@ -293,6 +364,25 @@ export default function CandidateViewTable() {
                             value={editData.OfferLetter}
                             onChange={handleEditChange}
                             size="small"
+                            sx={{
+                              input: { color: "white" },
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "transparent",
+                                color: "white",
+                                "& fieldset": {
+                                  borderColor: "white",
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "white",
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "white",
+                                },
+                                "& svg": {
+                                  color: "white",
+                                },
+                              },
+                            }}
                           >
                             {["Sent", "Pending", "Cancel"].map((status) => (
                               <MenuItem key={status} value={status}>

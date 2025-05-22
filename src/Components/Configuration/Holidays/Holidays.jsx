@@ -103,6 +103,7 @@ export default function HolidayTable() {
             gap: 5,
             mb: 3,
             flexWrap: "wrap",
+            justifyContent: "space-between",
             color: "white", // Typography and other text
             "& .MuiInputBase-input": {
               color: "white", // Input text
