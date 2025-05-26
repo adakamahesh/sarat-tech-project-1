@@ -10,7 +10,6 @@ import PersonIcon from "@mui/icons-material/Person";
 import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import HailIcon from "@mui/icons-material/Hail";
 import AttendanceBarGraph from "./AttendanceAnalytic";
-import OvertimeToApprove from "./OvertimeToApprove";
 
 const API_URL = process.env.REACT_APP_BASE_URL;
 
@@ -26,7 +25,7 @@ export default function HRMDashboard() {
       const absentRes = await axios.get(`${API_URL}attendance/today/absent`);
       const lateRes = await axios.get(`${API_URL}attendance/today/late`);
       const onTimeCount = await axios.get(`${API_URL}attendance/today/ontime`);
-  
+
       setPresentCount(presentRes.data);
       setAbsentCount(absentRes.data);
       setLateCount(lateRes.data);
@@ -46,28 +45,24 @@ export default function HRMDashboard() {
       icon: <PersonIcon />,
       title: "Today Attendances",
       description: presentCount,
-      backgroundColor: "#2196F3",
     },
     {
       id: 2,
       icon: <HailIcon />,
       title: "On Time",
       description: onTimeCount, // Adjust if needed based on "on-time" logic
-      backgroundColor: "#4CAF50",
     },
     {
       id: 3,
       icon: <WorkOutlineIcon />,
       title: "Late Come",
       description: lateCount,
-      backgroundColor: "#FF9800",
     },
     {
       id: 4,
       icon: <HailIcon />,
       title: "Today's Absent",
       description: absentCount,
-      backgroundColor: "red",
     },
   ];
 
@@ -77,82 +72,96 @@ export default function HRMDashboard() {
     <>
       <Box
         sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(4,1fr)",
-          gap: 2,
+          backgroundColor: "rgba(255, 255, 255, 0.18)", // Transparent background
+          backdropFilter: "blur(10px)",
+          p:3,
+          color: "white",
         }}
       >
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            sx={{ backgroundColor: card.backgroundColor, color: "white" }}
-          >
-            <CardActionArea
-              onClick={() =>
-                setSelectedCard((prev) => (prev === card.id ? null : card.id))
-              }
-              data-active={selectedCard === card.id ? "" : undefined}
+        <Box
+          sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "repeat(4,1fr)",
+            gap: 2,
+          }}
+        >
+          {cards.map((card) => (
+            <Card
+              key={card.id}
               sx={{
-                height: "100%",
-                "&[data-active]": {
-                  backgroundColor: "action.selected",
-                  "&:hover": { backgroundColor: "action.selectedHover" },
-                },
+                backgroundColor: "rgba(255, 255, 255, 0.15)", // Transparent background
+                backdropFilter: "blur(10px)",
+                color: "white",
               }}
             >
-              <CardContent
+              <CardActionArea
+                onClick={() =>
+                  setSelectedCard((prev) => (prev === card.id ? null : card.id))
+                }
+                data-active={selectedCard === card.id ? "" : undefined}
                 sx={{
                   height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
+                  "&[data-active]": {
+                    backgroundColor: "rgba(255,255,255,0.08)",
+                    "&:hover": {
+                      backgroundColor: "rgba(255,255,255,0.12)",
+                    },
+                  },
                 }}
               >
-                <Box
+                <CardContent
                   sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    backgroundColor: "rgb(236,239,253)",
+                    height: "100%",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    color: "#7C76E7",
+                    gap: 2,
                   }}
                 >
-                  {card.icon}
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ fontSize: "20px" }}
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      backgroundColor: "rgba(255,255,255,0.2)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                    }}
                   >
-                    {card.title}
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    color="black"
-                    sx={{ fontSize: "30px" }}
-                  >
-                    {card.description}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
-      </Box>
+                    {card.icon}
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{ fontSize: "20px", color: "white" }}
+                    >
+                      {card.title}
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      color="black"
+                      sx={{ fontSize: "30px", color: "white" }}
+                    >
+                      {card.description}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
+        </Box>
 
-      <Box
-        sx={{
-          mt: 4,
-          width: '100%',
-        }}
-      >
-        <AttendanceBarGraph />
-        {/* <OvertimeToApprove sx={{ height: "200px" }} /> */}
+        <Box
+          sx={{
+            mt: 4,
+            width: "100%",
+          }}
+        >
+          <AttendanceBarGraph />
+        </Box>
       </Box>
     </>
   );

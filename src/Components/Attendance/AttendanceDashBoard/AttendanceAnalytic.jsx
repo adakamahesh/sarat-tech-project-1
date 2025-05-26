@@ -56,7 +56,7 @@ const AttendanceAnalytics = () => {
       {
         label: "Attendance %",
         data: [onTimePercentage, latePercentage, absentPercentage],
-        backgroundColor: "rgba(54, 162, 235, 0.6)",
+        backgroundColor: "rgba(255, 255, 255, 0.5)",
       },
     ],
   };
@@ -76,6 +76,15 @@ const AttendanceAnalytics = () => {
         title: {
           display: true,
           text: "Percentage (%)",
+          color: "white", 
+        },
+      },
+      x: {
+        ticks: {
+          color: "white", // <-- White x-axis labels
+        },
+        grid: {
+          color: "rgba(255, 255, 255, 0.1)", // Optional: lighter white grid lines
         },
       },
     },
@@ -86,6 +95,8 @@ const AttendanceAnalytics = () => {
             return `${tooltipItem.raw}%`;
           },
         },
+        titleColor: "white",       // Tooltip title text
+        bodyColor: "white",
       },
       legend: {
         display: false,
@@ -94,8 +105,14 @@ const AttendanceAnalytics = () => {
   };
 
   return (
-    <Box sx={{ p: 2, border: "1px solid #ddd", borderRadius: 2 }}>
-      <Typography variant="h6" fontWeight="bold">
+    <Box sx={{
+      p: 2,
+      borderRadius: 2,
+      backgroundColor: "rgba(255, 255, 255, 0.15)", // transparent glass look
+      backdropFilter: "blur(10px)",
+      color: "white",
+    }}>
+      <Typography variant="h6" fontWeight="bold" sx={{ color: "white" }}>
         Attendance Analytic
       </Typography>
 
@@ -104,6 +121,16 @@ const AttendanceAnalytics = () => {
           value={timeRange}
           onChange={(e) => setTimeRange(e.target.value)}
           size="small"
+          sx={{
+            color: "white",
+            borderColor: "white",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "white",
+            },
+            "& .MuiSvgIcon-root": {
+              color: "white",
+            },
+          }}
         >
           <MenuItem value="Day">Day</MenuItem>
           <MenuItem value="Week">Week</MenuItem>
@@ -115,7 +142,17 @@ const AttendanceAnalytics = () => {
           size="small"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          sx={{ width: 150 }}
+          sx={{
+            width: 150,
+            input: { color: "white" },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "white",
+            },
+            "& label": {
+              color: "white",
+            },
+          }}
+          InputLabelProps={{ shrink: true }}
         />
       </Box>
 
