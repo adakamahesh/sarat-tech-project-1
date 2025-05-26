@@ -201,9 +201,23 @@ const LeaveTypeList = () => {
   };
 
   return (
-    <Box p={3}>
+    <Box
+      p={3}
+      sx={{
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        color: "white", // applies to children unless overridden
+      }}
+    >
       <Box display="flex" gap={2} flexWrap="wrap" mb={3}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          sx={{ color: "white" }}
+        >
           Leave Types
         </Typography>
         <TextField
@@ -212,12 +226,32 @@ const LeaveTypeList = () => {
           size="small"
           value={searchText}
           onChange={handleSearchChange}
-          sx={{ flex: 1, minWidth: 200 }}
+          sx={{
+            flex: 1,
+            minWidth: 200,
+            "& .MuiInputBase-root": {
+              color: "white",
+            },
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: "white",
+            },
+            "& .MuiInputLabel-root": {
+              color: "white",
+            },
+          }}
         />
         <Button
           variant="outlined"
           startIcon={<FilterList />}
           onClick={handleFilterClick}
+          sx={{
+            borderColor: "white",
+            color: "white",
+            "&:hover": {
+              borderColor: "white",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            },
+          }}
         >
           Filter
         </Button>
@@ -225,6 +259,12 @@ const LeaveTypeList = () => {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
+          MenuListProps={{
+            sx: {
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              color: "white",
+            },
+          }}
         >
           <MenuItem onClick={() => handleFilterSelect("")}>All</MenuItem>
           <MenuItem onClick={() => handleFilterSelect("Paid")}>Paid</MenuItem>
@@ -237,16 +277,38 @@ const LeaveTypeList = () => {
           color="error"
           startIcon={<Add />}
           onClick={handleCreateClick}
+          sx={{
+            color: "white",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            "&:hover": {
+              backgroundColor: "rgba(255, 255, 255, 0.5)",
+            },
+          }}
         >
           Create
         </Button>
       </Box>
 
-      <Dialog open={showCreateCard} onClose={handleCancelCreate} fullWidth maxWidth="sm">
+      <Dialog
+        open={showCreateCard}
+        onClose={handleCancelCreate}
+        fullWidth
+        maxWidth="sm"
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            color: "white",
+          },
+        }}
+      >
         <DialogTitle>
           {editIndex !== null ? "Edit Leave Type" : "Create Leave Type"}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ color: "white" }}>
           <TextField
             label="Leave Type"
             name="name"
@@ -254,6 +316,15 @@ const LeaveTypeList = () => {
             margin="dense"
             value={newLeave.name}
             onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white" },
+              sx: {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+              },
+            }}
           />
           <FormControl fullWidth margin="dense">
             <InputLabel>Payment</InputLabel>
@@ -262,6 +333,12 @@ const LeaveTypeList = () => {
               name="payment"
               value={newLeave.payment}
               onChange={handleInputChange}
+              sx={{
+                color: "white",
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+              }}
             >
               <MenuItem value="Paid">Paid</MenuItem>
               <MenuItem value="Unpaid">Unpaid</MenuItem>
@@ -275,9 +352,29 @@ const LeaveTypeList = () => {
             type="number"
             value={newLeave.days}
             onChange={handleInputChange}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{
+              style: { color: "white" },
+              sx: {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "white",
+                },
+              },
+            }}
           />
           <Box display="flex" gap={2} mt={2}>
-            <Button fullWidth variant="contained" onClick={handleCreateSubmit}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleCreateSubmit}
+              sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "rgba(255, 255, 255, 0.3)",
+                },
+              }}
+            >
               Save
             </Button>
             <Button
@@ -285,6 +382,14 @@ const LeaveTypeList = () => {
               variant="outlined"
               color="inherit"
               onClick={handleCancelCreate}
+              sx={{
+                borderColor: "white",
+                color: "white",
+                "&:hover": {
+                  borderColor: "white",
+                  backgroundColor: "rgba(255, 255, 255, 0.1)",
+                },
+              }}
             >
               Cancel
             </Button>
@@ -296,7 +401,15 @@ const LeaveTypeList = () => {
         {filteredLeaveTypes.length > 0 ? (
           filteredLeaveTypes.map((leave, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card variant="outlined">
+              <Card
+                variant="outlined"
+                sx={{
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(12px)",
+                  border: "1px solid rgba(255, 255, 255, 0.2)",
+                  color: "white", // Base text color
+                }}
+              >
                 <CardContent>
                   <Box display="flex" justifyContent="space-between">
                     <Box display="flex" alignItems="center" gap={2}>
@@ -309,17 +422,18 @@ const LeaveTypeList = () => {
                         justifyContent="center"
                         bgcolor={leave.color}
                         fontWeight="bold"
+                        color="white"
                       >
                         {leave.leaveTypeName?.[0] || "-"}
                       </Box>
                       <Box>
-                        <Typography fontWeight="bold">
+                        <Typography fontWeight="bold" sx={{ color: "white" }}>
                           {leave.leaveTypeName}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" sx={{ color: "white" }}>
                           Payment: {leave.payment}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body2" sx={{ color: "white" }}>
                           Total Days: {leave.totalDays}
                         </Typography>
                       </Box>
@@ -332,11 +446,19 @@ const LeaveTypeList = () => {
                         anchorEl={menuAnchorEl[index]}
                         open={Boolean(menuAnchorEl[index])}
                         onClose={() => handleMenuClose(index)}
+                        PaperProps={{
+                          sx: {
+                            backgroundColor: "rgba(255, 255, 255, 0.08)",
+                            backdropFilter: "blur(8px)",
+                            color: "white",
+                            border: "1px solid rgba(255, 255, 255, 0.2)",
+                          },
+                        }}
                       >
-                        <MenuItem onClick={() => handleEdit(index)}>
+                        <MenuItem onClick={() => handleEdit(index)} sx={{ color: "white" }}>
                           Edit
                         </MenuItem>
-                        <MenuItem onClick={() => handleDelete(index)}>
+                        <MenuItem onClick={() => handleDelete(index)} sx={{ color: "white" }}>
                           Delete
                         </MenuItem>
                       </Menu>
