@@ -183,7 +183,18 @@ export default function TotalLeaves() {
 
   return (
     <Box sx={{ width: "100%", overflowX: "auto" }}>
-      <Paper sx={{ width: "100%", mb: 2, p: 2 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+          p: 2,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -194,17 +205,26 @@ export default function TotalLeaves() {
             flexWrap: "wrap",
           }}
         >
-          <Typography variant="h6">Leave Requests</Typography>
+          <Typography variant="h6" sx={{ color: "white" }}>
+            Leave Requests
+          </Typography>
           <Button
             variant="contained"
-            color="primary"
+            sx={{
+              color: "white",
+              textAlign: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
             onClick={() => setOpen(true)}
           >
             New Request
           </Button>
         </Box>
 
-        <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+        <Divider sx={{ mb: 2, borderBottomWidth: 2, color: "white" }} />
         {error && (
           <Typography color="error" sx={{ mb: 2 }}>
             {error.message}
@@ -212,11 +232,19 @@ export default function TotalLeaves() {
         )}
         <TableContainer sx={{ overflowX: "auto" }}>
           {loading ? (
-            <Typography>Loading...</Typography>
+            <Typography sx={{ color: "white" }}>Loading...</Typography>
           ) : (
             <Table sx={{ minWidth: 1500 }}>
               <TableHead>
-                <TableRow>
+                <TableRow
+                  sx={{
+                    textAlign: "center",
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    backdropFilter: "blur(12px)",
+                    borderRadius: 2,
+                    boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                  }}
+                >
                   {[
                     "Sr No",
                     "Employee",
@@ -231,7 +259,11 @@ export default function TotalLeaves() {
                   ].map((headCell) => (
                     <TableCell
                       key={headCell}
-                      sx={{ fontWeight: "bold", textAlign: "center" }}
+                      sx={{
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        color: "white",
+                      }}
                     >
                       {headCell === "Employee" ? (
                         <TableSortLabel
@@ -251,32 +283,34 @@ export default function TotalLeaves() {
               <TableBody>
                 {filteredRows.map((row) => (
                   <TableRow key={row.id}>
-                    <TableCell sx={{ textAlign: "center" }}>{row.id}</TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
+                      {row.id}
+                    </TableCell>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.Employee}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.LeaveType}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.StartDate}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.EndDate}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.RequestedDays}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.RequestedDate}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.Reason}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.ActionDate}
                     </TableCell>
-                    <TableCell sx={{ textAlign: "center" }}>
+                    <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.Status}
                     </TableCell>
                   </TableRow>
@@ -288,10 +322,30 @@ export default function TotalLeaves() {
       </Paper>
 
       {/* Dialog for Create Leave Request */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-        <DialogTitle>Create Leave Request</DialogTitle>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent glass effect
+            backdropFilter: "blur(12px)",
+            borderRadius: 2,
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            border: "1px solid rgba(255, 255, 255, 0.18)", 
+            color: "white",
+          },
+        }}
+      >
+        <DialogTitle sx={{ color: "white" }}>Create Leave Request</DialogTitle>
         <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 1 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            mt: 1,
+            color: "white",
+          }}
         >
           <TextField
             name="employeeId"
@@ -299,15 +353,21 @@ export default function TotalLeaves() {
             value={formData.employeeId}
             fullWidth
             disabled
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
+            sx={{mt:1}}
           />
           <FormControl fullWidth error={!!(error && !formData.leaveType)}>
-            <InputLabel id="leave-type-label">Leave Type</InputLabel>
+            <InputLabel id="leave-type-label" sx={{ color: "white" }}>
+              Leave Type
+            </InputLabel>
             <Select
               labelId="leave-type-label"
               name="leaveType"
               value={formData.leaveType}
               onChange={handleFormChange}
               label="Leave Type"
+              sx={{ color: "white" }}
             >
               {leaveTypes.map((type) => (
                 <MenuItem key={type.leaveTypeId} value={type.leaveTypeName}>
@@ -320,7 +380,8 @@ export default function TotalLeaves() {
             name="startDate"
             type="date"
             label="Start Date"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: true, style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
             value={formData.startDate}
             onChange={handleFormChange}
             fullWidth
@@ -329,7 +390,8 @@ export default function TotalLeaves() {
             name="endDate"
             type="date"
             label="End Date"
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{ shrink: true, style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
             value={formData.endDate}
             onChange={handleFormChange}
             fullWidth
@@ -340,6 +402,8 @@ export default function TotalLeaves() {
             value={formData.reason}
             onChange={handleFormChange}
             fullWidth
+            InputLabelProps={{ shrink: true, style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
           />
           <TextField
             name="requestedDays"
@@ -348,14 +412,25 @@ export default function TotalLeaves() {
             value={formData.requestedDays}
             fullWidth
             disabled
+            InputLabelProps={{ shrink: true, style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button onClick={() => setOpen(false)} sx={{ color: "white" }}>
+            Cancel
+          </Button>
           <Button
-            variant="contained"
             onClick={handleFormSubmit}
             disabled={!formData.leaveType}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent glass effect
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              border: "1px solid rgba(255, 255, 255, 0.18)",
+              color: "white",
+            }}
           >
             Submit
           </Button>

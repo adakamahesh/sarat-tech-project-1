@@ -24,7 +24,7 @@ export default function HRMDashboard() {
       try {
         const pendingRes = await axios.get(
           "http://192.168.1.49:8084/leave-requests/count/pending"
-        );  
+        );
         const approvedRes = await axios.get(
           "http://192.168.1.49:8084/leave-requests/count/approved"
         );
@@ -51,21 +51,18 @@ export default function HRMDashboard() {
       icon: <PersonIcon />,
       title: "Requests to Approve",
       description: leaveCounts.pending,
-      backgroundColor: "#2196F3",
     },
     {
       id: 2,
       icon: <HailIcon />,
       title: "Approved Leaves",
       description: leaveCounts.approved,
-      backgroundColor: "#4CAF50",
     },
     {
       id: 3,
       icon: <WorkOutlineIcon />,
       title: "Rejected Leaves",
       description: leaveCounts.rejected,
-      backgroundColor: "red",
     },
   ];
 
@@ -73,71 +70,92 @@ export default function HRMDashboard() {
     <>
       <Box
         sx={{
-          width: "100%",
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: 2,
+          textAlign: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          p:2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
         }}
       >
-        {cards.map((card) => (
-          <Card
-            key={card.id}
-            sx={{ backgroundColor: card.backgroundColor, color: "white" }}
-          >
-            <CardActionArea
-              onClick={() =>
-                setSelectedCard((prev) => (prev === card.id ? null : card.id))
-              }
-              data-active={selectedCard === card.id ? "" : undefined}
+        <Box
+          sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: "repeat(3,1fr)",
+            gap: 2,
+          }}
+        >
+          {cards.map((card) => (
+            <Card
+              key={card.id}
               sx={{
-                height: "100%",
-                "&[data-active]": {
-                  backgroundColor: "action.selected",
-                  "&:hover": { backgroundColor: "action.selectedHover" },
-                },
+                color: "white",
+                textAlign: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                backdropFilter: "blur(12px)",
+                borderRadius: 2,
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
               }}
             >
-              <CardContent
+              <CardActionArea
+                onClick={() =>
+                  setSelectedCard((prev) => (prev === card.id ? null : card.id))
+                }
+                data-active={selectedCard === card.id ? "" : undefined}
                 sx={{
                   height: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 2,
+                  "&[data-active]": {
+                    backgroundColor: "action.selected",
+                    "&:hover": { backgroundColor: "action.selectedHover" },
+                  },
                 }}
               >
-                <Box
+                <CardContent
                   sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    backgroundColor: "rgb(236,239,253)",
+                    height: "100%",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    color: "#7C76E7",
+                    gap: 2,
                   }}
                 >
-                  {card.icon}
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="h6" sx={{ fontSize: "20px" }}>
-                    {card.title}
-                  </Typography>
-                  <Typography
-                    variant="h5"
-                    color="black"
-                    sx={{ fontSize: "30px" }}
+                  <Box
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: "50%",
+                      textAlign: "center",
+                      backgroundColor: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(12px)",
+                      boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                    }}
                   >
-                    {card.description}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </CardActionArea>
-          </Card>
-        ))}
-      </Box>
-      <Box sx={{ mt: 4, border: "1px solid rgb(237,237,237)" }}>
-        <TotalLeave />
+                    {card.icon}
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
+                    <Typography variant="h6" sx={{ fontSize: "20px" }}>
+                      {card.title}
+                    </Typography>
+                    <Typography
+                      variant="h5"
+                      color="white"
+                      sx={{ fontSize: "30px" }}
+                    >
+                      {card.description}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          ))}
+        </Box>
+        <Box sx={{ mt: 4}}>
+          <TotalLeave />
+        </Box>
       </Box>
     </>
   );
