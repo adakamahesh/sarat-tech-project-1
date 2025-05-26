@@ -79,6 +79,10 @@ export default function BankInformation() {
           maxWidth: 600,
           p: 3,
           boxShadow: 3,
+          borderRadius: 2,
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           position: "relative",
           mx: "auto",
           [theme => theme.breakpoints.down("sm")]: {
@@ -89,7 +93,7 @@ export default function BankInformation() {
       >
         {!isEditing && (
           <IconButton
-            sx={{ position: "absolute", top: 10, right: 10, color: "gray" }}
+            sx={{ position: "absolute", top: 10, right: 10, color: "white" }}
             onClick={() => setIsEditing(true)}
           >
             <EditNoteIcon />
@@ -97,7 +101,7 @@ export default function BankInformation() {
         )}
 
         <CardContent>
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
+          <Typography variant="h6" fontWeight="bold" gutterBottom sx={{color:'white'}}>
             Bank Information
           </Typography>
 
@@ -118,6 +122,16 @@ export default function BankInformation() {
                 value={bankDetails.bankName}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Account Number"
@@ -125,6 +139,16 @@ export default function BankInformation() {
                 value={bankDetails.accountNumber}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Branch"
@@ -132,6 +156,16 @@ export default function BankInformation() {
                 value={bankDetails.branch}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="IFSC"
@@ -139,6 +173,16 @@ export default function BankInformation() {
                 value={bankDetails.ifsc}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Bank Code"
@@ -146,6 +190,16 @@ export default function BankInformation() {
                 value={bankDetails.bankCode}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Bank Address"
@@ -153,6 +207,16 @@ export default function BankInformation() {
                 value={bankDetails.bankAddress}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Country"
@@ -160,6 +224,16 @@ export default function BankInformation() {
                 value={bankDetails.country}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Account Type"
@@ -167,6 +241,16 @@ export default function BankInformation() {
                 value={bankDetails.accountType}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
 
               <Box
@@ -184,6 +268,7 @@ export default function BankInformation() {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
+                  sx={{ backgroundColor: "white", color: "#000" }}
                 >
                   Save
                 </Button>
@@ -191,6 +276,7 @@ export default function BankInformation() {
                   variant="outlined"
                   color="secondary"
                   onClick={() => setIsEditing(false)}
+                  sx={{ color: "white", borderColor: "white" }}
                 >
                   Cancel
                 </Button>
@@ -253,9 +339,9 @@ export default function BankInformation() {
                     },
                   }}
                 >
-                  <Box sx={{ color: "gray" }}>{item.icon}</Box>
-                  <Typography sx={{ color: "gray" }}>{item.label}:</Typography>
-                  <Typography sx={{ color: "black" }}>{item.value}</Typography>
+                  <Box sx={{ color: "white" }}>{item.icon}</Box>
+                  <Typography sx={{ color: "white",fontWeight:'bold' }}>{item.label}:</Typography>
+                  <Typography sx={{ color: "white" }}>{item.value}</Typography>
                 </Box>
               ))}
             </Box>

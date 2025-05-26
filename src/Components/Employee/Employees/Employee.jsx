@@ -20,6 +20,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import CreateEmployee from "./CreateEmployee";
 
+const API_URL = process.env.REACT_APP_BASE_URL;
+
 export default function EmployeeTable() {
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("DateOfJoining");
@@ -37,8 +39,7 @@ export default function EmployeeTable() {
   const fetchEmployees = async () => {
     try {
       const { data } = await axios.get(
-        "http://192.168.1.49:8084/api/employees/active"
-      );
+        `${API_URL}api/employees/active`);
       const formatted = data.map((emp, index) => ({
         id: index + 1,
         Employee: `${emp.firstName} ${emp.lastName}`,
@@ -88,7 +89,17 @@ export default function EmployeeTable() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ width: "100%", mb: 2, p: 2, backgroundColor: "#f5f5f5" }}>
+      <Paper
+        sx={{
+          width: "100%",
+          mb: 2,
+          p: 2,
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -98,17 +109,56 @@ export default function EmployeeTable() {
             alignItems: "center",
           }}
         >
-          <Typography variant="h6">Employee List</Typography>
+          <Typography variant="h6" sx={{ color: "white" }}>
+            Employee List
+          </Typography>
           <TextField
             label="Search Employee"
             size="small"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            sx={{
+              mb: 2,
+              input: { color: "white" },
+              label: { color: "white" },
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white",
+                },
+                "&:hover fieldset": {
+                  borderColor: "white",
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white",
+                },
+              },
+            }}
+            InputLabelProps={{ style: { color: "white" } }}
+            InputProps={{ style: { color: "white" } }}
           />
           <TextField
             select
             label="Filter by Job Position"
-            sx={{ width: "30%" }}
+            sx={{
+              width: "30%",
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
           >
@@ -119,7 +169,16 @@ export default function EmployeeTable() {
               </MenuItem>
             ))}
           </TextField>
-          <Button variant="contained" onClick={() => setOpen(true)}>
+          <Button
+            variant="contained"
+            onClick={() => setOpen(true)}
+            sx={{
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             Create
           </Button>
         </Box>
@@ -150,8 +209,8 @@ export default function EmployeeTable() {
                     align="center"
                     sx={{
                       fontWeight: "bold",
-                      color: "#fff",
-                      backgroundColor: "#93A0B4",
+                      color: "white",
+                      backgroundColor: "rgba(255, 255, 255, 0.15)",
                     }}
                   >
                     {header === "Employee" ? (
@@ -159,7 +218,7 @@ export default function EmployeeTable() {
                         active={orderBy === "Employee"}
                         direction={order}
                         onClick={() => handleRequestSort("Employee")}
-                        sx={{ color: "white" }}
+                        sx={{ color: "white"}}
                       >
                         {header}
                       </TableSortLabel>
@@ -168,7 +227,21 @@ export default function EmployeeTable() {
                         active={orderBy === "DateOfJoining"}
                         direction={order}
                         onClick={() => handleRequestSort("DateOfJoining")}
-                        sx={{ color: "white" }}
+                        sx={{
+                          color: "white",
+                          "& .MuiTableSortLabel-icon": {
+                            color: "white !important",
+                          },
+                          "&.MuiTableSortLabel-root": {
+                            color: "white",
+                          },
+                          "&.Mui-active": {
+                            color: "white",
+                            "& .MuiTableSortLabel-icon": {
+                              color: "white",
+                            },
+                          },
+                        }}                        
                       >
                         {header}
                       </TableSortLabel>
@@ -188,24 +261,40 @@ export default function EmployeeTable() {
                     onClick={() => handleRowClick(row.EmployeeId)}
                     sx={{ cursor: "pointer" }}
                   >
-                    <TableCell align="center">{row.EmployeeId}</TableCell>
-                    <TableCell align="left">
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.EmployeeId}
+                    </TableCell>
+                    <TableCell align="left" sx={{ color: "white" }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Avatar>{row.Employee[0]}</Avatar>
                         {row.Employee}
                       </Box>
                     </TableCell>
-                    <TableCell align="center">{row.Email}</TableCell>
-                    <TableCell align="center">{row.Phone}</TableCell>
-                    <TableCell align="center">{row.JobPosition}</TableCell>
-                    <TableCell align="center">{row.Department}</TableCell>
-                    <TableCell align="center">{row.shift}</TableCell>
-                    <TableCell align="center">{row.DateOfJoining}</TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.Email}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.Phone}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.JobPosition}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.Department}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.shift}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "white" }}>
+                      {row.DateOfJoining}
+                    </TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={8} align="center">
+                  <TableCell colSpan={8} align="center" sx={{ color: "white" }}>
                     No data available
                   </TableCell>
                 </TableRow>
@@ -223,6 +312,16 @@ export default function EmployeeTable() {
         }}
         maxWidth="md"
         fullWidth
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            backdropFilter: "blur(12px)",
+            color: "white",
+            boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            borderRadius: 2,
+            p: 3,
+          },
+        }}
       >
         <CreateEmployee
           onClose={() => {

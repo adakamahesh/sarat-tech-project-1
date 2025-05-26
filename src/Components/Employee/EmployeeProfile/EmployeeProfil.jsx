@@ -22,7 +22,8 @@ export default function EmployeeCard() {
 
   useEffect(() => {
     const fetchEmployee = async () => {
-      const employeeId = localStorage.getItem("newEmyID") || localStorage.getItem("employeeId");
+      const employeeId =
+        localStorage.getItem("newEmyID") || localStorage.getItem("employeeId");
       if (!employeeId) return;
 
       try {
@@ -58,7 +59,8 @@ export default function EmployeeCard() {
     setIsEditing(false);
   };
 
-  if (!employee) return <Typography>Loading...</Typography>;
+  if (!employee)
+    return <Typography sx={{ color: "white" }}>Loading...</Typography>;
 
   return (
     <Box>
@@ -67,7 +69,9 @@ export default function EmployeeCard() {
           p: 3,
           boxShadow: 3,
           borderRadius: 2,
-          backgroundColor: "white",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           display: "flex",
           flexDirection: "column",
           gap: 2,
@@ -75,7 +79,7 @@ export default function EmployeeCard() {
         }}
       >
         <IconButton
-          sx={{ position: "absolute", top: 10, right: 10, color: "gray" }}
+          sx={{ position: "absolute", top: 10, right: 10, color: "white" }}
           onClick={() => setIsEditing(true)}
         >
           <EditNoteIcon />
@@ -85,6 +89,7 @@ export default function EmployeeCard() {
           sx={{
             display: "flex",
             gap: 5,
+            color: "white",
             flexDirection: { xs: "column", sm: "row" },
             alignItems: { xs: "center", sm: "flex-start" },
           }}
@@ -101,7 +106,11 @@ export default function EmployeeCard() {
             <Avatar
               src={employee.profileImage}
               alt={`${employee.firstName} ${employee.lastName}`}
-              sx={{ width: 80, height: 80 }}
+              sx={{
+                width: 80,
+                height: 80,
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+              }}
             />
             <Box>
               {isEditing ? (
@@ -110,10 +119,23 @@ export default function EmployeeCard() {
                     label="First Name"
                     value={editedData.firstName}
                     onChange={(e) =>
-                      setEditedData({ ...editedData, firstName: e.target.value })
+                      setEditedData({
+                        ...editedData,
+                        firstName: e.target.value,
+                      })
                     }
                     size="small"
-                    sx={{ mb: 1, width: "100%" }}
+                    sx={{
+                      mb:2,
+                      width: "100%",
+                      input: { color: "white" },
+                      label: { color: "white" },
+                      ".MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "white" },
+                        "&:hover fieldset": { borderColor: "white" },
+                        "&.Mui-focused fieldset": { borderColor: "white" },
+                      },
+                    }}
                   />
                   <TextField
                     label="Last Name"
@@ -122,21 +144,32 @@ export default function EmployeeCard() {
                       setEditedData({ ...editedData, lastName: e.target.value })
                     }
                     size="small"
-                    sx={{ width: "100%" }}
+                    sx={{
+                      mb:2,
+                      width: "100%",
+                      input: { color: "white" },
+                      label: { color: "white" },
+                      ".MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "white" },
+                        "&:hover fieldset": { borderColor: "white" },
+                        "&.Mui-focused fieldset": { borderColor: "white" },
+                      },
+                    }}
                   />
-                  <Typography variant="body2" color="textSecondary">
+                  <Typography variant="body2" color="white">
                     EmployeeId: {employee.employeeId}
                   </Typography>
                 </>
               ) : (
                 <>
-                  <Typography variant="h5">
-                    {employee.firstName} {employee.lastName} ({employee.employeeId})
+                  <Typography variant="h5" sx={{ color: "white" }}>
+                    {employee.firstName} {employee.lastName} (
+                    {employee.employeeId})
                   </Typography>
-                  <Typography variant="body1" color="textSecondary">
+                  <Typography variant="body1" sx={{ color: "white" }}>
                     {employee.designation}
                   </Typography>
-                  <Typography variant="body2">
+                  <Typography variant="body2" sx={{ color: "white" }}>
                     EmployeeId: {employee.employeeId}
                   </Typography>
                 </>
@@ -162,16 +195,37 @@ export default function EmployeeCard() {
                     setEditedData({ ...editedData, emailId: e.target.value })
                   }
                   size="small"
-                  sx={{ width: "100%" }}
+                  sx={{
+                    width: "100%",
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    ".MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "white" },
+                      "&.Mui-focused fieldset": { borderColor: "white" },
+                    },
+                  }}
                 />
                 <TextField
                   label="Phone"
                   value={editedData.phoneNumber}
                   onChange={(e) =>
-                    setEditedData({ ...editedData, phoneNumber: e.target.value })
+                    setEditedData({
+                      ...editedData,
+                      phoneNumber: e.target.value,
+                    })
                   }
                   size="small"
-                  sx={{ width: "100%" }}
+                  sx={{
+                    width: "100%",
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    ".MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "white" },
+                      "&.Mui-focused fieldset": { borderColor: "white" },
+                    },
+                  }}
                 />
                 <TextField
                   label="Alternate Phone"
@@ -183,24 +237,43 @@ export default function EmployeeCard() {
                     })
                   }
                   size="small"
-                  sx={{ width: "100%" }}
+                  sx={{
+                    width: "100%",
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    ".MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "white" },
+                      "&.Mui-focused fieldset": { borderColor: "white" },
+                    },
+                  }}
                 />
               </>
             ) : (
               <>
-                <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <MailOutlineIcon sx={{ color: "gray" }} />
-                  <span style={{ color: "gray", fontWeight: "bold" }}>Email:</span>{" "}
+                <Typography
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <MailOutlineIcon sx={{ color: "white" }} />
+                  <span style={{ color: "white", fontWeight: "bold" }}>
+                    Email:
+                  </span>{" "}
                   {employee.emailId}
                 </Typography>
-                <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <LocalPhoneIcon sx={{ color: "gray" }} />
-                  <span style={{ color: "gray", fontWeight: "bold" }}>Phone:</span>{" "}
+                <Typography
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <LocalPhoneIcon sx={{ color: "white" }} />
+                  <span style={{ color: "white", fontWeight: "bold" }}>
+                    Phone:
+                  </span>{" "}
                   {employee.phoneNumber}
                 </Typography>
-                <Typography sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <LocalPhoneIcon sx={{ color: "gray" }} />
-                  <span style={{ color: "gray", fontWeight: "bold" }}>
+                <Typography
+                  sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                >
+                  <LocalPhoneIcon sx={{ color: "white" }} />
+                  <span style={{ color: "white", fontWeight: "bold" }}>
                     Alternate Phone:
                   </span>{" "}
                   {employee.alternateNumber || "—"}
@@ -220,10 +293,10 @@ export default function EmployeeCard() {
               flexDirection: { xs: "column", sm: "row" },
             }}
           >
-            <Button variant="outlined" onClick={handleCancel} fullWidth={true}>
+            <Button variant="outlined" onClick={handleCancel} fullWidth={true} sx={{ color: "white", borderColor: "white" }}>
               Cancel
             </Button>
-            <Button variant="contained" onClick={handleSave} fullWidth={true}>
+            <Button variant="contained" onClick={handleSave} fullWidth={true} sx={{ backgroundColor: "white", color: "#000" }}>
               Save
             </Button>
           </Box>

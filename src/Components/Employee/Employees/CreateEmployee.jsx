@@ -38,7 +38,7 @@ const CreateEmployeeForm = () => {
     dob: "",
     dateOfJoining: "",
     workStatus: "Active",
-    startDate: new Date().toISOString().split('T')[0],
+    startDate: new Date().toISOString().split("T")[0],
     endDate: null,
   });
   const [departments, setDepartments] = useState([]);
@@ -95,7 +95,9 @@ const CreateEmployeeForm = () => {
             qualification: data.qualification || "",
             emergencyContactName: data.emergencyContactName || "",
             emergencyContactNumber: data.emergencyContactNumber || "",
-            dob: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split('T')[0] : "",
+            dob: data.dateOfBirth
+              ? new Date(data.dateOfBirth).toISOString().split("T")[0]
+              : "",
           }));
         } else if (response.status === 404) {
           setApplicantInfo(null);
@@ -161,11 +163,14 @@ const CreateEmployeeForm = () => {
     };
 
     try {
-      const employeeRes = await fetch("http://192.168.1.49:8084/api/employees", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const employeeRes = await fetch(
+        "http://192.168.1.49:8084/api/employees",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const employeeData = await employeeRes.json();
 
@@ -250,7 +255,7 @@ const CreateEmployeeForm = () => {
         dob: "",
         dateOfJoining: "",
         workStatus: "Active",
-        startDate: new Date().toISOString().split('T')[0],
+        startDate: new Date().toISOString().split("T")[0],
         endDate: null,
       });
       setApplicantInfo(null);
@@ -260,7 +265,13 @@ const CreateEmployeeForm = () => {
     }
   };
 
-  const renderInput = (label, field, type = "text", required = false, disabled = false) => (
+  const renderInput = (
+    label,
+    field,
+    type = "text",
+    required = false,
+    disabled = false
+  ) => (
     <TextField
       required={required}
       label={label}
@@ -271,8 +282,19 @@ const CreateEmployeeForm = () => {
       autoComplete="off"
       sx={{
         mb: 2,
-        "& .MuiInputLabel-root": { fontSize: 18 },
-        "& .MuiInputBase-root": { fontSize: 18, height: 60 },
+        input: { color: "white" }, // input text color
+        label: { color: "white" }, // label color
+        ".MuiOutlinedInput-root": {
+          "& fieldset": {
+            borderColor: "white", // normal border
+          },
+          "&:hover fieldset": {
+            borderColor: "white", // hover border
+          },
+          "&.Mui-focused fieldset": {
+            borderColor: "white", // focused border
+          },
+        },
       }}
       InputLabelProps={{
         shrink: formData[field] !== "",
@@ -289,9 +311,12 @@ const CreateEmployeeForm = () => {
       onSubmit={handleSubmit}
       sx={{
         p: 6,
-        boxShadow: 4,
-        borderRadius: 4,
-        backgroundColor: "white",
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        color: "white",
         width: "100%",
         mx: "auto",
         display: "flex",
@@ -299,7 +324,13 @@ const CreateEmployeeForm = () => {
         gap: 4,
       }}
     >
-      <Typography variant="h4" fontWeight={600} textAlign="center" mb={2}>
+      <Typography
+        variant="h4"
+        fontWeight={600}
+        textAlign="center"
+        mb={2}
+        sx={{ color: "white" }}
+      >
         Create New Employee
       </Typography>
 
@@ -309,16 +340,52 @@ const CreateEmployeeForm = () => {
           Employee Information
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Applicant ID (Optional)", "applicantId", "text", false, false)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
+          {renderInput(
+            "Applicant ID (Optional)",
+            "applicantId",
+            "text",
+            false,
+            false
+          )}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("First Name", "firstName", "text", true, applicantInfo !== null)}
-          {renderInput("Last Name", "lastName", "text", true, applicantInfo !== null)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
+          {renderInput(
+            "First Name",
+            "firstName",
+            "text",
+            true,
+            applicantInfo !== null
+          )}
+          {renderInput(
+            "Last Name",
+            "lastName",
+            "text",
+            true,
+            applicantInfo !== null
+          )}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           {renderInput("Designation", "designation")}
           <TextField
             required
@@ -328,7 +395,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("departmentId")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             InputProps={{ sx: { fontSize: 18, height: 60 } }}
             InputLabelProps={{ sx: { fontSize: 18 } }}
           >
@@ -340,9 +425,27 @@ const CreateEmployeeForm = () => {
           </TextField>
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Email", "emailId", "text", true, applicantInfo !== null)}
-          {renderInput("Phone", "phoneNumber", "text", true, applicantInfo !== null)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
+          {renderInput(
+            "Email",
+            "emailId",
+            "text",
+            true,
+            applicantInfo !== null
+          )}
+          {renderInput(
+            "Phone",
+            "phoneNumber",
+            "text",
+            true,
+            applicantInfo !== null
+          )}
         </Box>
       </Box>
 
@@ -352,7 +455,13 @@ const CreateEmployeeForm = () => {
           Personal Information
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           <TextField
             required
             select
@@ -361,7 +470,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("gender")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             InputProps={{ sx: { fontSize: 18, height: 60 } }}
             InputLabelProps={{ sx: { fontSize: 18 } }}
             disabled={applicantInfo !== null}
@@ -371,11 +498,29 @@ const CreateEmployeeForm = () => {
             <MenuItem value="Others">Others</MenuItem>
           </TextField>
 
-          {renderInput("Qualification", "qualification", "text", false, applicantInfo !== null)}
+          {renderInput(
+            "Qualification",
+            "qualification",
+            "text",
+            false,
+            applicantInfo !== null
+          )}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Address", "address", "text", false, applicantInfo !== null)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
+          {renderInput(
+            "Address",
+            "address",
+            "text",
+            false,
+            applicantInfo !== null
+          )}
           <TextField
             required
             select
@@ -384,7 +529,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("maritalStatus")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             InputProps={{ sx: { fontSize: 18, height: 60 } }}
             InputLabelProps={{ sx: { fontSize: 18 } }}
             disabled={applicantInfo !== null}
@@ -394,13 +557,37 @@ const CreateEmployeeForm = () => {
           </TextField>
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
-          {renderInput("Emergency Contact Name", "emergencyContactName", "text", false, applicantInfo !== null)}
-          {renderInput("Emergency Contact Number", "emergencyContactNumber", "text", false, applicantInfo !== null)}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
+          {renderInput(
+            "Emergency Contact Name",
+            "emergencyContactName",
+            "text",
+            false,
+            applicantInfo !== null
+          )}
+          {renderInput(
+            "Emergency Contact Number",
+            "emergencyContactNumber",
+            "text",
+            false,
+            applicantInfo !== null
+          )}
         </Box>
 
         {/* NEW FIELDS */}
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           <TextField
             required
             select
@@ -409,7 +596,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("shift")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             InputProps={{ sx: { fontSize: 18, height: 60 } }}
             InputLabelProps={{ sx: { fontSize: 18 } }}
           >
@@ -420,10 +625,22 @@ const CreateEmployeeForm = () => {
             ))}
           </TextField>
 
-          {renderInput("Alternate Number", "alternateNumber", "text", false, applicantInfo !== null)}
+          {renderInput(
+            "Alternate Number",
+            "alternateNumber",
+            "text",
+            false,
+            applicantInfo !== null
+          )}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           <TextField
             required
             label="Date of Birth"
@@ -432,7 +649,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dob")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             disabled={applicantInfo !== null}
           />
           <TextField
@@ -443,7 +678,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dateOfJoining")}
             fullWidth
             InputLabelProps={{ shrink: true }}
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
           />
         </Box>
       </Box>
@@ -454,22 +707,46 @@ const CreateEmployeeForm = () => {
           Bank Information
         </Typography>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           {renderInput("Bank Name", "bankName")}
           {renderInput("Account Number", "accountNumber")}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           {renderInput("Branch", "branch")}
           {renderInput("IFSC", "ifsc")}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           {renderInput("Bank Code", "bankCode")}
           {renderInput("Bank Address", "bankAddress")}
         </Box>
 
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           {renderInput("Country", "country")}
           <TextField
             required
@@ -479,7 +756,25 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("accountType")}
             fullWidth
             autoComplete="off"
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             InputProps={{ sx: { fontSize: 18, height: 60 } }}
             InputLabelProps={{ sx: { fontSize: 18 } }}
           >
@@ -494,7 +789,13 @@ const CreateEmployeeForm = () => {
         <Typography variant="h6" fontWeight={600} mb={2}>
           Shift Assignment
         </Typography>
-        <Box sx={{ display: "flex", gap: 2, flexDirection: isMobile ? "column" : "row" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexDirection: isMobile ? "column" : "row",
+          }}
+        >
           <TextField
             required
             label="Start Date"
@@ -502,17 +803,53 @@ const CreateEmployeeForm = () => {
             value={formData.startDate}
             InputLabelProps={{ shrink: true }}
             fullWidth
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
             disabled // Set to current date on load, so disable editing
           />
           <TextField
             label="End Date (Optional)"
             type="date"
-            value={formData.endDate || ''}
+            value={formData.endDate || ""}
             onChange={handleChange("endDate")}
             InputLabelProps={{ shrink: true }}
             fullWidth
-            sx={{ mb: 2 }}
+            sx={{
+              mb: 2,
+              input: { color: "white" }, // input text color
+              label: { color: "white" }, // label color
+              ".MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: "white", // default border
+                },
+                "&:hover fieldset": {
+                  borderColor: "white", // hover border
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "white", // focused border
+                },
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // dropdown arrow
+              },
+            }}
           />
         </Box>
       </Box>
@@ -522,7 +859,10 @@ const CreateEmployeeForm = () => {
         variant="contained"
         sx={{
           alignSelf: "center",
-          backgroundColor: "#1976d2",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           color: "white",
           fontSize: 18,
           mt: 4,

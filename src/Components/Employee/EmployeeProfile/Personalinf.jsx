@@ -76,6 +76,10 @@ export default function Personalinf() {
           p: 3,
           boxShadow: 3,
           position: "relative",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           mx: "auto",
           [theme => theme.breakpoints.down("sm")]: {
             p: 2,
@@ -85,7 +89,7 @@ export default function Personalinf() {
       >
         {!isEditing && (
           <IconButton
-            sx={{ position: "absolute", top: 10, right: 10, color: "gray" }}
+            sx={{ position: "absolute", top: 10, right: 10, color: "white" }}
             onClick={() => setIsEditing(true)}
           >
             <EditNoteIcon />
@@ -93,7 +97,7 @@ export default function Personalinf() {
         )}
 
         <CardContent>
-          <Typography variant="h6" fontWeight="bold" gutterBottom>
+          <Typography variant="h6" fontWeight="bold" gutterBottom sx={{color:'white'}}>
             Personal Information
           </Typography>
 
@@ -114,6 +118,16 @@ export default function Personalinf() {
                 value={personalDetails.dob}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Gender"
@@ -121,6 +135,16 @@ export default function Personalinf() {
                 value={personalDetails.gender}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Address"
@@ -128,6 +152,16 @@ export default function Personalinf() {
                 value={personalDetails.address}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Qualification"
@@ -135,6 +169,16 @@ export default function Personalinf() {
                 value={personalDetails.qualification}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Date Of Joining"
@@ -142,6 +186,16 @@ export default function Personalinf() {
                 value={personalDetails.dateOfJoining}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Marital Status"
@@ -149,6 +203,16 @@ export default function Personalinf() {
                 value={personalDetails.maritalStatus}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Emergency Contact Name"
@@ -156,6 +220,16 @@ export default function Personalinf() {
                 value={personalDetails.emergencyContactName}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
               <TextField
                 label="Emergency Contact"
@@ -163,6 +237,16 @@ export default function Personalinf() {
                 value={personalDetails.emergencyContactNumber}
                 onChange={handleChange}
                 fullWidth
+                sx={{
+                  width: "100%",
+                  input: { color: "white" },
+                  label: { color: "white" },
+                  ".MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "white" },
+                    "&:hover fieldset": { borderColor: "white" },
+                    "&.Mui-focused fieldset": { borderColor: "white" },
+                  },
+                }}
               />
 
               <Box
@@ -178,13 +262,14 @@ export default function Personalinf() {
                   },
                 }}
               >
-                <Button variant="contained" color="primary" onClick={handleSave}>
+                <Button variant="contained" color="primary" onClick={handleSave} sx={{ backgroundColor: "white", color: "#000" }}>
                   Save
                 </Button>
                 <Button
                   variant="outlined"
                   color="secondary"
                   onClick={() => setIsEditing(false)}
+                  sx={{ color: "white", borderColor: "white" }}
                 >
                   Cancel
                 </Button>
@@ -253,12 +338,13 @@ export default function Personalinf() {
                       flexDirection: "column",
                       alignItems: "flex-start",
                       gap: 0.5,
+                      color:'white'
                     },
                   }}
                 >
-                  <Box sx={{ color: "gray" }}>{item.icon}</Box>
-                  <Typography sx={{ color: "gray" }}>{item.label}:</Typography>
-                  <Typography sx={{ color: "black" }}>{item.value}</Typography>
+                  <Box sx={{ color: "white" }}>{item.icon}</Box>
+                  <Typography sx={{ color: "white",fontWeight:'bold' }}>{item.label}:</Typography>
+                  <Typography sx={{ color: "white" }}>{item.value}</Typography>
                 </Box>
               ))}
             </Box>

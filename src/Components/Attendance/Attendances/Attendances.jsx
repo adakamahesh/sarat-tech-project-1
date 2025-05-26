@@ -30,7 +30,9 @@ const ActionCell = ({ row, onCheckIn, onCheckOut, onAbsent }) => {
   const [status, setStatus] = useState(row.Status);
   const [isCheckInDisabled, setIsCheckInDisabled] = useState(!!row.checkIn);
   const [isCheckOutDisabled, setIsCheckOutDisabled] = useState(!!row.checkOut);
-  const [isAbsentDisabled, setIsAbsentDisabled] = useState(row.Status === "Absent");
+  const [isAbsentDisabled, setIsAbsentDisabled] = useState(
+    row.Status === "Absent"
+  );
 
   const handleCheckInClick = async () => {
     const now = dayjs();
@@ -96,7 +98,14 @@ const ActionCell = ({ row, onCheckIn, onCheckOut, onAbsent }) => {
   };
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "center", gap: 1, flexWrap: "wrap" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        gap: 1,
+        flexWrap: "wrap",
+      }}
+    >
       <IconButton
         sx={{
           backgroundColor: "green",
@@ -157,7 +166,9 @@ export default function AttendanceTable() {
 
   const fetchActiveEmployees = async () => {
     try {
-      const response = await axios.get("http://192.168.1.49:8084/api/employees/active");
+      const response = await axios.get(
+        "http://192.168.1.49:8084/api/employees/active"
+      );
       const employeeData = response.data;
       const today = dayjs().format("YYYY-MM-DD");
       const initialRows = employeeData.map((emp, index) => ({
@@ -179,8 +190,8 @@ export default function AttendanceTable() {
   };
 
   const handleCheckIn = (employeeId, checkInTime, status) => {
-    setRows(prevRows =>
-      prevRows.map(row =>
+    setRows((prevRows) =>
+      prevRows.map((row) =>
         row.EmpId === employeeId
           ? { ...row, checkIn: checkInTime, Status: status }
           : row
@@ -189,18 +200,16 @@ export default function AttendanceTable() {
   };
 
   const handleCheckOut = (employeeId, checkOutTime) => {
-    setRows(prevRows =>
-      prevRows.map(row =>
-        row.EmpId === employeeId
-          ? { ...row, checkOut: checkOutTime }
-          : row
+    setRows((prevRows) =>
+      prevRows.map((row) =>
+        row.EmpId === employeeId ? { ...row, checkOut: checkOutTime } : row
       )
     );
   };
 
   const handleAbsent = (employeeId, status) => {
-    setRows(prevRows =>
-      prevRows.map(row =>
+    setRows((prevRows) =>
+      prevRows.map((row) =>
         row.EmpId === employeeId
           ? { ...row, Status: status, checkIn: "", checkOut: "" }
           : row
@@ -214,15 +223,24 @@ export default function AttendanceTable() {
     setRows(updatedRows);
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
+  if (loading) return <div style={{ color: "white" }}>Loading...</div>;
+  if (error) return <div style={{ color: "white" }}>Error: {error.message}</div>;
 
   return (
-    <Paper sx={{ width: "100%", overflow: "auto" }}>
-      <Typography variant="h5" sx={{ p: 2 }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "auto",
+        backgroundColor: "rgba(255, 255, 255, 0.15)", // transparent paper
+        backdropFilter: "blur(12px)",
+        color: "white",
+      }}
+    >
+      <Typography variant="h5" sx={{ p: 2, color: "white" }}>
         Attendance
       </Typography>
-      <hr />
+      <hr style={{ borderColor: "rgba(255,255,255,0.2)" }}/>
+
       <TableContainer sx={{ maxHeight: 500 }}>
         <Table stickyHeader>
           <TableHead>
@@ -234,7 +252,8 @@ export default function AttendanceTable() {
                   style={{ minWidth: column.minWidth }}
                   sx={{
                     fontWeight: "bold",
-                    background: "white",
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    color: "white",
                     position: "sticky",
                     top: 0,
                     zIndex:
@@ -262,14 +281,15 @@ export default function AttendanceTable() {
                       sx={{
                         background:
                           column.id === "Employee" || column.id === "Action"
-                            ? "white"
-                            : undefined,
+                            ?  "rgba(255,255,255,0.08)"
+                            : "transparent",
+                            color: "white",
                         position:
                           column.id === "Employee"
                             ? "sticky"
                             : column.id === "Action"
-                            ? "sticky"
-                            : undefined,
+                              ? "sticky"
+                              : undefined,
                         left: column.id === "Employee" ? 0 : undefined,
                         right: column.id === "Action" ? 0 : undefined,
                         zIndex:
@@ -287,7 +307,8 @@ export default function AttendanceTable() {
                         />
                       ) : column.id === "Date" ? (
                         dayjs().format("YYYY-MM-DD")
-                      ) : column.id === "checkIn" || column.id === "checkOut" ? (
+                      ) : column.id === "checkIn" ||
+                        column.id === "checkOut" ? (
                         <TextField
                           type="time"
                           value={value}
@@ -295,6 +316,13 @@ export default function AttendanceTable() {
                           onChange={(e) =>
                             handleFieldChange(index, column.id, e.target.value)
                           }
+                          sx={{
+                            input: { color: "white" },
+                            "& .MuiInputBase-root": {
+                              backgroundColor: "rgba(255,255,255,0.1)",
+                            },
+                          }}
+                          InputLabelProps={{ style: { color: "white" } }}
                         />
                       ) : (
                         value
