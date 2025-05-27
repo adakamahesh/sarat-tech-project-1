@@ -27,8 +27,10 @@ export default function PayslipTable() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const employeeId = localStorage.getItem("employeeId");
                 const [employeeRes, payrollRes] = await Promise.all([
-                    axios.get('http://192.168.1.49:8084/api/employees/active'),
+                    
+                    axios.get(`http://192.168.1.49:8084/api/employees/${employeeId}`),
                     axios.get('http://192.168.1.49:8084/payroll')
                 ]);
 

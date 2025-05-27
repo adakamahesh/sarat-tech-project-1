@@ -27,8 +27,9 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 
-const API_BASE_URL = "http://192.168.1.49:8084/recruitment/applicant/hired";
-const JOB_POSTING_API_URL = "http://192.168.1.49:8084/recruitment/applicant";
+const API_URL = process.env.REACT_APP_BASE_URL;
+const API_BASE_URL = `${API_URL}recruitment/applicant/hired`;
+const JOB_POSTING_API_URL = `${API_URL}recruitment/applicant`;
 
 function createData(applicant) {
   return {
@@ -127,7 +128,9 @@ export default function CandidateViewTable() {
       const { id, DateOfJoining, ProbationEnds, OfferLetter } = editData;
 
       await axios.patch(
-        `http://192.168.1.49:8084/recruitment/applicant/update-joining-details/${id}`,
+        `${API_URL}recruitment/applicant/update-joining-details/${id}`, {
+          headers: { "ngrok-skip-browser-warning": "true" },
+        },
         {
           dateOfJoining: DateOfJoining
             ? new Date(DateOfJoining).getTime()

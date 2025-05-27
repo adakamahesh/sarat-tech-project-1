@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Card,
@@ -20,83 +20,414 @@ import {
   DialogContent,
   DialogActions,
   Button,
+  CircularProgress,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import EmailIcon from "@mui/icons-material/Email";
 import DownloadIcon from "@mui/icons-material/Download";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import RemoveIcon from "@mui/icons-material/Remove";
-import logo from "../../../assets/images/st_logo.png";
-import { Rows } from "lucide-react";
+import logo from "./../../../assets/images/st_logo.png"; // Adjust path as needed
+
+// Define your backend API base URL.
+// It's good practice to use an environment variable for this.
+// For local development, you might hardcode it like 'http://localhost:8084'
+// or 'http://192.168.1.49:8084' if you're using a specific local IP.
+const API_BASE_URL = "http://192.168.1.49:8084"; // Replace with your actual backend URL
 
 const Payslip = () => {
+  const [employee, setEmployee] = useState(null);
+  const [bankDetails, setBankDetails] = useState({
+    bankDetailId: null,
+    bankName: "",
+    accountNumber: "",
+    branch: "",
+    ifsc: "",
+    bankCode: "",
+    bankAddress: "",
+    country: "",
+    accountType: "",
+  });
+  const [payrollData, setPayrollData] = useState(null); // State to store payroll data
+  const [isPaid, setIsPaid] = useState(false); // State to track if payroll is paid
+
   const payslipRef = useRef();
   const [isDownloading, setIsDownloading] = useState(false);
+  const [loading, setLoading] = useState(true); // Loading state
 
-  const [allowances, setAllowances] = useState([
-    { label: "Basic Pay", amount: 10000 },
-  ]);
-  const [deductions, setDeductions] = useState([
-    { label: "Loss of Pay", amount: 0 },
-    { label: "Federal Tax", amount: 0 },
-    { label: "PAYE Upper Range", amount: 3030 },
-  ]);
+  // State to hold salary additions fetched from the backend, including their backend ID
+  const [allowances, setAllowances] = useState([]);
+  // State to hold all available allowance types from the backend (for the dropdown)
+  const [allAvailableAllowances, setAllAvailableAllowances] = useState([]);
 
+  // State for the "Add New Allowance" dialog
   const [openAllowanceDialog, setOpenAllowanceDialog] = useState(false);
-  const [newAllowanceLabel, setNewAllowanceLabel] = useState("");
-  const [newAllowanceAmount, setNewAllowanceAmount] = useState("");
+  const [selectedAllowanceId, setSelectedAllowanceId] = useState(""); // Stores the ID of the selected allowance type (initialized to empty string)
+  const [selectedAllowanceAmount, setSelectedAllowanceAmount] = useState(0); // Stores the amount of the selected allowance type
+
+  // Deductions are now connected to backend
+  const [deductions, setDeductions] = useState([]);
+  const [allAvailableDeductions, setAllAvailableDeductions] = useState([]);
 
   const [openDeductionDialog, setOpenDeductionDialog] = useState(false);
-  const [newDeductionLabel, setNewDeductionLabel] = useState("");
-  const [newDeductionAmount, setNewDeductionAmount] = useState("");
+  const [selectedDeductionId, setSelectedDeductionId] = useState("");
+  const [selectedDeductionAmount, setSelectedDeductionAmount] = useState(0); // Initialized to 0 (number)
 
-  const handleAddAllowance = () => {
-    if (newAllowanceLabel && newAllowanceAmount) {
-      setAllowances([
-        ...allowances,
-        { label: newAllowanceLabel, amount: parseFloat(newAllowanceAmount) },
-      ]);
-      setNewAllowanceLabel("");
-      setNewAllowanceAmount("");
-      setOpenAllowanceDialog(false);
+  // --- Data Fetching useEffect ---
+  useEffect(() => {
+    const employeeId = localStorage.getItem("employeeId");
+    if (!employeeId) {
+      console.warn("Employee ID not found in localStorage.");
+      setLoading(false);
+      return;
+    }
+
+    const fetchAllData = async () => {
+      setLoading(true);
+      try {
+        // Fetch Employee Details
+        const employeeResponse = await fetch(`${API_BASE_URL}/api/employees/${employeeId}`);
+        const employeeData = await employeeResponse.json();
+        setEmployee({
+          firstName: employeeData.firstName,
+          lastName: employeeData.lastName,
+          employeeId: employeeData.employeeId,
+          profileImage: "/default-profile.png",
+          designation: employeeData.designation,
+          phoneNumber: employeeData.phoneNumber,
+          alternateNumber: employeeData.alternateNumber || "",
+          emailId: employeeData.emailId,
+          dob: employeeData.dob,
+          dateOfJoining: employeeData.dateOfJoining,
+          salary: employeeData.salary,
+        });
+
+        // Fetch Bank Details
+        const bankResponse = await fetch(`${API_BASE_URL}/bank-details`);
+        const bankDetailsList = await bankResponse.json();
+        const employeeBankDetails = bankDetailsList.find((item) => item.employeeId === +employeeId);
+        if (employeeBankDetails) {
+          setBankDetails(employeeBankDetails);
+        }
+
+        // Fetch all available Allowance types
+        const allAllowancesResponse = await fetch(`${API_BASE_URL}/api/allowances`);
+        const allAllowancesData = await allAllowancesResponse.json();
+        setAllAvailableAllowances(allAllowancesData);
+
+        // Fetch Salary Additions (Allowances linked to this employee)
+        const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+        const salaryAdditionsData = await salaryAdditionsResponse.json();
+
+        // Filter salary additions for the current employee and map to frontend format
+        const employeeAllowances = salaryAdditionsData
+          .filter(sa => sa.employeeId === +employeeId)
+          .map((sa) => ({
+            salaryAdditionId: sa.salaryAdditionId, // Keep this for deletion
+            allowanceId: sa.allowanceId, // Keep this for sending back to backend
+            label: sa.allowanceLabel,
+            amount: sa.allowanceAmount,
+          }));
+        setAllowances(employeeAllowances);
+
+        // Fetch all available Deduction types (Assuming /api/deductions endpoint)
+        const allDeductionsResponse = await fetch(`${API_BASE_URL}/deduction`);
+        const allDeductionsData = await allDeductionsResponse.json();
+        setAllAvailableDeductions(allDeductionsData);
+
+        // Fetch Salary Deductions (Deductions linked to this employee)
+        const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+        const salaryDeductionsData = await salaryDeductionsResponse.json();
+
+        // Filter salary deductions for the current employee and map to frontend format
+        const employeeDeductions = salaryDeductionsData
+          .filter(sd => sd.employeeId === +employeeId)
+          .map((sd) => ({
+            salaryDeductionId: sd.salaryDeductionId, // Keep this for deletion
+            deductionId: sd.deductionId, // Keep this for sending back to backend
+            label: sd.deductionLabel, // Corrected to use deductionLabel from DTO
+            amount: sd.deductionAmount, // Corrected to use deductionAmount from DTO
+          }));
+        setDeductions(employeeDeductions);
+
+        // Fetch Payroll Data for the current employee and current month/year
+        const currentMonth = new Date().getMonth() + 1; // getMonth() is 0-indexed
+        const currentYear = new Date().getFullYear();
+
+        const payrollResponse = await fetch(`${API_BASE_URL}/payroll`);
+        if (payrollResponse.ok) {
+          const allPayrolls = await payrollResponse.json();
+          const employeePayroll = allPayrolls.find(
+            (p) => p.employeeId === +employeeId && p.month === currentMonth && p.year === currentYear
+          );
+
+          if (employeePayroll) {
+            setPayrollData(employeePayroll);
+            setIsPaid(employeePayroll.status === 'Paid');
+          } else {
+            console.warn("No payroll found for this employee for the current month/year.");
+            // Optionally, trigger payroll generation here if needed, or set a default state
+            // For now, if no payroll is found, payrollData remains null and editing is enabled by default.
+          }
+        } else {
+          console.error("Failed to fetch payroll data:", payrollResponse.statusText);
+        }
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllData();
+  }, []); // Empty dependency array means this runs once on mount
+
+  // --- Allowance Handlers ---
+  const handleAllowanceDialogClose = () => {
+    setOpenAllowanceDialog(false);
+    setSelectedAllowanceId("");
+    setSelectedAllowanceAmount(0);
+  };
+
+  const handleAllowanceSelectChange = (event) => {
+    const id = event.target.value;
+    setSelectedAllowanceId(id);
+    const selected = allAvailableAllowances.find(
+      (allowance) => allowance.allowanceId === id
+    );
+    if (selected) {
+      setSelectedAllowanceAmount(selected.amount);
+    } else {
+      setSelectedAllowanceAmount(0);
     }
   };
 
-  const handleAddDeduction = () => {
-    if (newDeductionLabel && newDeductionAmount) {
-      setDeductions([
-        ...deductions,
-        { label: newDeductionLabel, amount: parseFloat(newDeductionAmount) },
-      ]);
-      setNewDeductionLabel("");
-      setNewDeductionAmount("");
-      setOpenDeductionDialog(false);
+  const handleAddAllowance = async () => {
+    if (!selectedAllowanceId || !employee?.employeeId) {
+      console.error("Allowance not selected or Employee ID missing.");
+      return;
+    }
+
+    try {
+      const newSalaryAddition = {
+        employeeId: employee.employeeId,
+        allowanceId: selectedAllowanceId,
+        date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+      };
+
+      const response = await fetch(`${API_BASE_URL}/salary-addition`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSalaryAddition),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const addedSalaryAddition = await response.json();
+      console.log("Added Salary Addition:", addedSalaryAddition);
+
+      // Re-fetch all salary additions to update the list with the new entry and correct data
+      const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+      const salaryAdditionsData = await salaryAdditionsResponse.json();
+      const employeeAllowances = salaryAdditionsData
+        .filter(sa => sa.employeeId === +employee.employeeId)
+        .map((sa) => ({
+          salaryAdditionId: sa.salaryAdditionId,
+          allowanceId: sa.allowanceId,
+          label: sa.allowanceLabel,
+          amount: sa.allowanceAmount,
+        }));
+      setAllowances(employeeAllowances);
+
+      handleAllowanceDialogClose(); // Close dialog and reset state
+    } catch (error) {
+      console.error("Error adding allowance:", error);
+      // You might want to show an error message to the user here
     }
   };
 
-  const handleRemoveAllowance = (label) => {
-    const updatedAllowances = allowances.filter((item) => item.label !== label);
-    setAllowances(updatedAllowances);
+  const handleRemoveAllowance = async (salaryAdditionIdToRemove) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/salary-addition/${salaryAdditionIdToRemove}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log(`Allowance with ID ${salaryAdditionIdToRemove} deleted.`);
+
+      // Re-fetch all salary additions to update the list
+      const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+      const salaryAdditionsData = await salaryAdditionsResponse.json();
+      const employeeAllowances = salaryAdditionsData
+        .filter(sa => sa.employeeId === +employee.employeeId)
+        .map((sa) => ({
+          salaryAdditionId: sa.salaryAdditionId,
+          allowanceId: sa.allowanceId,
+          label: sa.allowanceLabel,
+          amount: sa.allowanceAmount,
+        }));
+      setAllowances(employeeAllowances);
+
+    } catch (error) {
+      console.error("Error removing allowance:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
-  const handleRemoveDeduction = (label) => {
-    const updatedDeductions = deductions.filter((item) => item.label !== label);
-    setDeductions(updatedDeductions);
+  // --- Deduction Handlers ---
+  const handleDeductionDialogClose = () => {
+    setOpenDeductionDialog(false);
+    setSelectedDeductionId("");
+    setSelectedDeductionAmount(0); // Reset to 0 (number)
   };
 
+  const handleDeductionSelectChange = (event) => {
+    const id = event.target.value;
+    setSelectedDeductionId(id);
+    const selected = allAvailableDeductions.find(
+      (deduction) => deduction.deductionId === id
+    );
+    if (selected) {
+      setSelectedDeductionAmount(selected.amount);
+    } else {
+      setSelectedDeductionAmount(0);
+    }
+  };
+
+  const handleAddDeduction = async () => {
+    if (!selectedDeductionId || !employee?.employeeId) {
+      console.error("Deduction not selected or Employee ID missing.");
+      return;
+    }
+
+    try {
+      const newSalaryDeduction = {
+        employeeId: employee.employeeId,
+        deductionId: selectedDeductionId,
+        date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+      };
+
+      const response = await fetch(`${API_BASE_URL}/salary-deduction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSalaryDeduction),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const addedSalaryDeduction = await response.json();
+      console.log("Added Salary Deduction:", addedSalaryDeduction);
+
+      // Re-fetch all salary deductions to update the list with the new entry and correct data
+      const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+      const salaryDeductionsData = await salaryDeductionsResponse.json();
+      const employeeDeductions = salaryDeductionsData
+        .filter(sd => sd.employeeId === +employee.employeeId)
+        .map((sd) => ({
+          salaryDeductionId: sd.salaryDeductionId,
+          deductionId: sd.deductionId,
+          label: sd.deductionLabel, // Corrected to use deductionLabel from DTO
+          amount: sd.deductionAmount, // Corrected to use deductionAmount from DTO
+        }));
+      setDeductions(employeeDeductions);
+
+      handleDeductionDialogClose(); // Close dialog and reset state
+    } catch (error) {
+      console.error("Error adding deduction:", error);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  const handleRemoveDeduction = async (salaryDeductionIdToRemove) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/salary-deduction/${salaryDeductionIdToRemove}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      console.log(`Deduction with ID ${salaryDeductionIdToRemove} deleted.`);
+
+      // Re-fetch all salary deductions to update the list
+      const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+      const salaryDeductionsData = await salaryDeductionsResponse.json();
+      const employeeDeductions = salaryDeductionsData
+        .filter(sd => sd.employeeId === +employee.employeeId)
+        .map((sd) => ({
+          salaryDeductionId: sd.salaryDeductionId,
+          deductionId: sd.deductionId,
+          label: sd.deductionLabel,
+          amount: sd.deductionAmount,
+        }));
+      setDeductions(employeeDeductions);
+
+    } catch (error) {
+      console.error("Error removing deduction:", error);
+      // You might want to show an error message to the user here
+    }
+  };
+
+  // --- Status Change Handler ---
+  const handleStatusChange = async (event) => {
+    const newStatus = event.target.value;
+    if (!payrollData || !payrollData.payrollId) {
+      console.error("Payroll data not available to update status.");
+      return;
+    }
+
+    try {
+      const updatedPayroll = { ...payrollData, status: newStatus };
+      const response = await fetch(`${API_BASE_URL}/payroll/${payrollData.payrollId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedPayroll),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setPayrollData(result); // Update local state with the new payroll data
+      setIsPaid(result.status === 'Paid'); // Update isPaid state
+      console.log("Payroll status updated successfully:", result);
+    } catch (error) {
+      console.error("Error updating payroll status:", error);
+      // Show error message to user
+    }
+  };
+
+  // --- Summary Calculation ---
   const summary = {
-    actualBasic: 15000,
-    paidDays: 16,
-    lopDays: 0,
-    updatedBasic: 10000,
-    grossPay: allowances.reduce((sum, row) => sum + row.amount, 0),
+    actualBasic: employee?.salary || 0, // Use employee's actual salary
+    paidDays: 16, // Static for now, can be dynamic
+    lopDays: 0, // Static for now, can be dynamic
+    updatedBasic: employee?.salary || 0, // Static for now, can be dynamic
+    grossPay: allowances.reduce((sum, row) => sum + row.amount, 0) + (employee?.salary || 0), // Gross pay includes basic salary
     deductions: deductions.reduce((sum, row) => sum + row.amount, 0),
     netPay:
-      allowances.reduce((sum, row) => sum + row.amount, 0) -
-      deductions.reduce((sum, row) => sum + row.amount, 0),
+      (employee?.salary || 0) + // Start with basic salary
+      allowances.reduce((sum, row) => sum + row.amount, 0) - // Add allowances
+      deductions.reduce((sum, row) => sum + row.amount, 0), // Subtract deductions
   };
 
+  // --- PDF Download Handler ---
   const handleDownloadPDF = () => {
     setIsDownloading(true);
     setTimeout(() => {
@@ -134,6 +465,20 @@ const Payslip = () => {
     }, 100);
   };
 
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading Payslip...</Typography>
+      </Box>
+    );
+  }
+
+  // Format the payslip date
+  const payslipDate = payrollData ?
+    new Date(payrollData.year, payrollData.month - 1).toLocaleString('en-US', { month: 'short', year: 'numeric' }) :
+    'N/A';
+
   return (
     <Box sx={{ p: 4 }}>
       {/* Header */}
@@ -143,9 +488,17 @@ const Payslip = () => {
           <IconButton color="primary" onClick={handleDownloadPDF}>
             <DownloadIcon />
           </IconButton>
-          <TextField select size="small" defaultValue="Draft">
+          <TextField
+            select
+            size="small"
+            value={payrollData?.status || "Pending"} // Use payrollData.status or default to "Pending"
+            onChange={handleStatusChange} // Handle status change
+            disabled={isPaid} // Disable if paid
+          >
+            <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="Draft">Draft</MenuItem>
-            <MenuItem value="Finalized">Finalized</MenuItem>
+            <MenuItem value="Confirmation">Confirmation</MenuItem>
+            <MenuItem value="Paid">Paid</MenuItem>
           </TextField>
         </Box>
       </Box>
@@ -164,7 +517,7 @@ const Payslip = () => {
           <Box>
             <Typography variant="h6">Sarat Tech PVT LTD.</Typography>
             <Typography variant="subtitle2" color="text.secondary">
-              Payslip of Apr. 10, 2025 to May. 9, 2025
+              Payslip of: {payslipDate}
             </Typography>
           </Box>
         </Box>
@@ -182,25 +535,25 @@ const Payslip = () => {
                   Employee Details
                 </Typography>
                 <Typography>
-                  Employee ID: <strong>30</strong>
+                  <span style={{ color: "gray", fontWeight: "bold" }}>EmployeeId:</span> {employee?.employeeId}
                 </Typography>
                 <Typography>
-                  Employee Name: <strong>Mahesh Babu Adaka</strong>
+                  Employee Name: <strong>{employee?.firstName + " " + employee?.lastName}</strong>
                 </Typography>
                 <Typography>
-                  Date of Birth: <strong>06-11-2002</strong>
+                  Date of Birth: <strong>{employee?.dob}</strong>
                 </Typography>
                 <Typography>
-                  Designation: <strong>Frontend Developer</strong>
+                  Designation: <strong>{employee?.designation}</strong>
                 </Typography>
                 <Typography>
-                  Date of Joining: <strong>25-1-2025</strong>
+                  Date of Joining: <strong>{employee?.dateOfJoining}</strong>
                 </Typography>
                 <Typography>
-                  Bank Acc No: <strong>-</strong>
+                  Bank Acc No: <strong>{bankDetails.accountNumber}</strong>
                 </Typography>
                 <Typography>
-                  Bank Name: <strong>-</strong>
+                  Bank Name: <strong>{bankDetails.bankName}</strong>
                 </Typography>
               </CardContent>
             </Card>
@@ -248,7 +601,7 @@ const Payslip = () => {
                   alignItems="center"
                 >
                   <Typography variant="subtitle1">Allowances</Typography>
-                  {!isDownloading && (
+                  {!isDownloading && !isPaid && ( // Disable if paid
                     <IconButton
                       size="small"
                       color="primary"
@@ -263,20 +616,20 @@ const Payslip = () => {
                     <TableRow>
                       <TableCell>Label</TableCell>
                       <TableCell>Amount</TableCell>
-                      {!isDownloading && <TableCell>Action</TableCell>}
+                      {!isDownloading && !isPaid && <TableCell>Action</TableCell>} {/* Disable if paid */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {allowances.map((row, i) => (
-                      <TableRow key={i}>
+                    {allowances.map((row) => (
+                      <TableRow key={row.salaryAdditionId}>
                         <TableCell>{row.label}</TableCell>
                         <TableCell>₹ {row.amount.toFixed(2)}</TableCell>
-                        {!isDownloading && (
+                        {!isDownloading && !isPaid && ( // Disable if paid
                           <TableCell>
                             <IconButton
                               color="error"
                               size="small"
-                              onClick={() => handleRemoveAllowance(row.label)}
+                              onClick={() => handleRemoveAllowance(row.salaryAdditionId)}
                             >
                               <RemoveIcon />
                             </IconButton>
@@ -291,6 +644,7 @@ const Payslip = () => {
                       <TableCell>
                         <b>₹ {summary.grossPay.toFixed(2)}</b>
                       </TableCell>
+                      <TableCell></TableCell> {/* Empty cell for alignment */}
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -308,7 +662,7 @@ const Payslip = () => {
                   alignItems="center"
                 >
                   <Typography variant="subtitle1">Deductions</Typography>
-                  {!isDownloading && (
+                  {!isDownloading && !isPaid && ( // Disable if paid
                     <IconButton
                       size="small"
                       color="primary"
@@ -323,20 +677,20 @@ const Payslip = () => {
                     <TableRow>
                       <TableCell>Label</TableCell>
                       <TableCell>Amount</TableCell>
-                      {!isDownloading && <TableCell>Action</TableCell>}
+                      {!isDownloading && !isPaid && <TableCell>Action</TableCell>} {/* Disable if paid */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {deductions.map((row, i) => (
-                      <TableRow key={i}>
+                    {deductions.map((row) => (
+                      <TableRow key={row.salaryDeductionId}>
                         <TableCell>{row.label}</TableCell>
                         <TableCell>₹ {row.amount.toFixed(2)}</TableCell>
-                        {!isDownloading && (
+                        {!isDownloading && !isPaid && ( // Disable if paid
                           <TableCell>
                             <IconButton
                               color="error"
                               size="small"
-                              onClick={() => handleRemoveDeduction(row.label)}
+                              onClick={() => handleRemoveDeduction(row.salaryDeductionId)}
                             >
                               <RemoveIcon />
                             </IconButton>
@@ -351,6 +705,7 @@ const Payslip = () => {
                       <TableCell>
                         <b>₹ {summary.deductions.toFixed(2)}</b>
                       </TableCell>
+                      <TableCell></TableCell> {/* Empty cell for alignment */}
                     </TableRow>
                   </TableBody>
                 </Table>
@@ -379,29 +734,38 @@ const Payslip = () => {
       {/* Allowance Dialog */}
       <Dialog
         open={openAllowanceDialog}
-        onClose={() => setOpenAllowanceDialog(false)}
+        onClose={handleAllowanceDialogClose}
       >
         <DialogTitle>Add New Allowance</DialogTitle>
         <DialogContent>
           <TextField
+            select
             autoFocus
             margin="dense"
-            label="Label"
+            label="Select Allowance Type"
             fullWidth
-            value={newAllowanceLabel}
-            onChange={(e) => setNewAllowanceLabel(e.target.value)}
-          />
+            value={selectedAllowanceId}
+            onChange={handleAllowanceSelectChange}
+          >
+            {allAvailableAllowances.map((allowance) => (
+              <MenuItem key={allowance.allowanceId} value={allowance.allowanceId}>
+                {allowance.allowance} (₹{allowance.amount.toFixed(2)})
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             margin="dense"
             label="Amount"
             type="number"
             fullWidth
-            value={newAllowanceAmount}
-            onChange={(e) => setNewAllowanceAmount(e.target.value)}
+            value={selectedAllowanceAmount.toFixed(2)}
+            InputProps={{
+              readOnly: true, // Amount is derived from selected allowance
+            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenAllowanceDialog(false)}>Cancel</Button>
+          <Button onClick={handleAllowanceDialogClose}>Cancel</Button>
           <Button variant="contained" onClick={handleAddAllowance}>
             Add
           </Button>
@@ -411,29 +775,39 @@ const Payslip = () => {
       {/* Deduction Dialog */}
       <Dialog
         open={openDeductionDialog}
-        onClose={() => setOpenDeductionDialog(false)}
+        onClose={handleDeductionDialogClose}
       >
         <DialogTitle>Add New Deduction</DialogTitle>
         <DialogContent>
           <TextField
+            select
             autoFocus
             margin="dense"
-            label="Label"
+            label="Select Deduction Type"
             fullWidth
-            value={newDeductionLabel}
-            onChange={(e) => setNewDeductionLabel(e.target.value)}
-          />
+            value={selectedDeductionId}
+            onChange={handleDeductionSelectChange}
+          >
+            {allAvailableDeductions.map((deduction) => (
+              <MenuItem key={deduction.deductionId} value={deduction.deductionId}>
+                {deduction.deduction} (₹{deduction.amount.toFixed(2)})
+              </MenuItem>
+            ))}
+          </TextField>
+
           <TextField
             margin="dense"
             label="Amount"
             type="number"
             fullWidth
-            value={newDeductionAmount}
-            onChange={(e) => setNewDeductionAmount(e.target.value)}
+            value={selectedDeductionAmount.toFixed(2)}
+            InputProps={{
+              readOnly: true, // Amount is derived from selected Deduction
+            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDeductionDialog(false)}>Cancel</Button>
+          <Button onClick={handleDeductionDialogClose}>Cancel</Button>
           <Button variant="contained" onClick={handleAddDeduction}>
             Add
           </Button>
