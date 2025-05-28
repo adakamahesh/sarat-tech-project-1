@@ -1,16 +1,30 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import Attendance from '../../Attendance/MyAttendances/MyAttendances';
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Attendance from "../../Attendance/MyAttendances/MyAttendances";
 
 export default function AccessibleTable() {
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="caption table">
+    <TableContainer
+      component={Paper}
+      sx={{
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+      }}
+    >
+      <Table
+        aria-label="caption table"
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell
@@ -18,24 +32,26 @@ export default function AccessibleTable() {
               colSpan={5}
               sx={{
                 fontSize: {
-                  xs: '16px',   // small screens
-                  sm: '18px',   // medium screens
-                  md: '22px',   // large screens
-                  lg: '25px',   // extra large
+                  xs: "16px", // small screens
+                  sm: "18px", // medium screens
+                  md: "22px", // large screens
+                  lg: "25px", // extra large
                 },
-                fontWeight: 'bold',
-                background:'#1976d2',
-                color: 'white',
+                fontWeight: "bold",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                backdropFilter: "blur(12px)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                color: "white",
                 textAlign: {
-                  xs: 'center',
-                  sm: 'left'
+                  xs: "center",
+                  sm: "left",
                 },
               }}
             >
               Attendance & Leave
             </TableCell>
           </TableRow>
-          <Attendance/>
+          <Attendance />
         </TableHead>
       </Table>
     </TableContainer>

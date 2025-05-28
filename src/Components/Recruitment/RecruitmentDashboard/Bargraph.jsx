@@ -20,7 +20,9 @@ export default function EmployeeJoiningGraph() {
 
   // Fetch data from backend when component mounts
   React.useEffect(() => {
-    fetch("http://192.168.1.49:8084/recruitment/applicant/joining-count-per-month")
+    fetch(
+      "http://192.168.1.49:8084/recruitment/applicant/joining-count-per-month"
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -41,7 +43,7 @@ export default function EmployeeJoiningGraph() {
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
+        <CircularProgress sx={{ color: "white" }} />
       </Box>
     );
   }
@@ -61,6 +63,10 @@ export default function EmployeeJoiningGraph() {
         mt: { xs: 2, sm: 4 },
         boxShadow: { xs: "none", sm: 3 },
         borderRadius: 2,
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(10px)",
+        color: "white",
+        boxShadow: "0 8px 32px rgba(31, 38, 135, 0.37)",
       }}
     >
       <Typography
@@ -69,6 +75,7 @@ export default function EmployeeJoiningGraph() {
           mb: { xs: 1, sm: 2 },
           fontSize: { xs: "16px", sm: "20px" },
           textAlign: { xs: "center", sm: "left" },
+          color: "white",
         }}
       >
         Employee Joining Per Month
@@ -81,15 +88,21 @@ export default function EmployeeJoiningGraph() {
         >
           <XAxis
             dataKey="month"
-            tick={{ fontSize: 10 }}
+            tick={{ fill: "white", fontSize: 10 }}
             interval={0}
             angle={-45}
             textAnchor="end"
             height={60}
           />
-          <YAxis />
-          <Tooltip />
-          <Legend />
+          <YAxis tick={{ fill: "white" }} />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "rgba(0, 0, 0, 0.7)",
+              border: "none",
+              color: "white",
+            }}
+          />
+          <Legend wrapperStyle={{ color: "white" }}/>
           <Bar dataKey="Joined" fill="#4caf50" name="Joined Employees" />
         </BarChart>
       </ResponsiveContainer>

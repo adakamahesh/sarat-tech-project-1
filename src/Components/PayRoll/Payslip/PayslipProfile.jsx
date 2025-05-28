@@ -86,7 +86,9 @@ const Payslip = () => {
       setLoading(true);
       try {
         // Fetch Employee Details
-        const employeeResponse = await fetch(`${API_BASE_URL}/api/employees/${employeeId}`);
+        const employeeResponse = await fetch(
+          `${API_BASE_URL}/api/employees/${employeeId}`
+        );
         const employeeData = await employeeResponse.json();
         setEmployee({
           firstName: employeeData.firstName,
@@ -105,23 +107,29 @@ const Payslip = () => {
         // Fetch Bank Details
         const bankResponse = await fetch(`${API_BASE_URL}/bank-details`);
         const bankDetailsList = await bankResponse.json();
-        const employeeBankDetails = bankDetailsList.find((item) => item.employeeId === +employeeId);
+        const employeeBankDetails = bankDetailsList.find(
+          (item) => item.employeeId === +employeeId
+        );
         if (employeeBankDetails) {
           setBankDetails(employeeBankDetails);
         }
 
         // Fetch all available Allowance types
-        const allAllowancesResponse = await fetch(`${API_BASE_URL}/api/allowances`);
+        const allAllowancesResponse = await fetch(
+          `${API_BASE_URL}/api/allowances`
+        );
         const allAllowancesData = await allAllowancesResponse.json();
         setAllAvailableAllowances(allAllowancesData);
 
         // Fetch Salary Additions (Allowances linked to this employee)
-        const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+        const salaryAdditionsResponse = await fetch(
+          `${API_BASE_URL}/salary-addition`
+        );
         const salaryAdditionsData = await salaryAdditionsResponse.json();
 
         // Filter salary additions for the current employee and map to frontend format
         const employeeAllowances = salaryAdditionsData
-          .filter(sa => sa.employeeId === +employeeId)
+          .filter((sa) => sa.employeeId === +employeeId)
           .map((sa) => ({
             salaryAdditionId: sa.salaryAdditionId, // Keep this for deletion
             allowanceId: sa.allowanceId, // Keep this for sending back to backend
@@ -136,12 +144,14 @@ const Payslip = () => {
         setAllAvailableDeductions(allDeductionsData);
 
         // Fetch Salary Deductions (Deductions linked to this employee)
-        const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+        const salaryDeductionsResponse = await fetch(
+          `${API_BASE_URL}/salary-deduction`
+        );
         const salaryDeductionsData = await salaryDeductionsResponse.json();
 
         // Filter salary deductions for the current employee and map to frontend format
         const employeeDeductions = salaryDeductionsData
-          .filter(sd => sd.employeeId === +employeeId)
+          .filter((sd) => sd.employeeId === +employeeId)
           .map((sd) => ({
             salaryDeductionId: sd.salaryDeductionId, // Keep this for deletion
             deductionId: sd.deductionId, // Keep this for sending back to backend
@@ -158,21 +168,28 @@ const Payslip = () => {
         if (payrollResponse.ok) {
           const allPayrolls = await payrollResponse.json();
           const employeePayroll = allPayrolls.find(
-            (p) => p.employeeId === +employeeId && p.month === currentMonth && p.year === currentYear
+            (p) =>
+              p.employeeId === +employeeId &&
+              p.month === currentMonth &&
+              p.year === currentYear
           );
 
           if (employeePayroll) {
             setPayrollData(employeePayroll);
-            setIsPaid(employeePayroll.status === 'Paid');
+            setIsPaid(employeePayroll.status === "Paid");
           } else {
-            console.warn("No payroll found for this employee for the current month/year.");
+            console.warn(
+              "No payroll found for this employee for the current month/year."
+            );
             // Optionally, trigger payroll generation here if needed, or set a default state
             // For now, if no payroll is found, payrollData remains null and editing is enabled by default.
           }
         } else {
-          console.error("Failed to fetch payroll data:", payrollResponse.statusText);
+          console.error(
+            "Failed to fetch payroll data:",
+            payrollResponse.statusText
+          );
         }
-
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -213,7 +230,7 @@ const Payslip = () => {
       const newSalaryAddition = {
         employeeId: employee.employeeId,
         allowanceId: selectedAllowanceId,
-        date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+        date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
       };
 
       const response = await fetch(`${API_BASE_URL}/salary-addition`, {
@@ -232,10 +249,12 @@ const Payslip = () => {
       console.log("Added Salary Addition:", addedSalaryAddition);
 
       // Re-fetch all salary additions to update the list with the new entry and correct data
-      const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+      const salaryAdditionsResponse = await fetch(
+        `${API_BASE_URL}/salary-addition`
+      );
       const salaryAdditionsData = await salaryAdditionsResponse.json();
       const employeeAllowances = salaryAdditionsData
-        .filter(sa => sa.employeeId === +employee.employeeId)
+        .filter((sa) => sa.employeeId === +employee.employeeId)
         .map((sa) => ({
           salaryAdditionId: sa.salaryAdditionId,
           allowanceId: sa.allowanceId,
@@ -253,9 +272,12 @@ const Payslip = () => {
 
   const handleRemoveAllowance = async (salaryAdditionIdToRemove) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/salary-addition/${salaryAdditionIdToRemove}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/salary-addition/${salaryAdditionIdToRemove}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -264,10 +286,12 @@ const Payslip = () => {
       console.log(`Allowance with ID ${salaryAdditionIdToRemove} deleted.`);
 
       // Re-fetch all salary additions to update the list
-      const salaryAdditionsResponse = await fetch(`${API_BASE_URL}/salary-addition`);
+      const salaryAdditionsResponse = await fetch(
+        `${API_BASE_URL}/salary-addition`
+      );
       const salaryAdditionsData = await salaryAdditionsResponse.json();
       const employeeAllowances = salaryAdditionsData
-        .filter(sa => sa.employeeId === +employee.employeeId)
+        .filter((sa) => sa.employeeId === +employee.employeeId)
         .map((sa) => ({
           salaryAdditionId: sa.salaryAdditionId,
           allowanceId: sa.allowanceId,
@@ -275,7 +299,6 @@ const Payslip = () => {
           amount: sa.allowanceAmount,
         }));
       setAllowances(employeeAllowances);
-
     } catch (error) {
       console.error("Error removing allowance:", error);
       // You might want to show an error message to the user here
@@ -312,7 +335,7 @@ const Payslip = () => {
       const newSalaryDeduction = {
         employeeId: employee.employeeId,
         deductionId: selectedDeductionId,
-        date: new Date().toISOString().split('T')[0], // Current date in YYYY-MM-DD format
+        date: new Date().toISOString().split("T")[0], // Current date in YYYY-MM-DD format
       };
 
       const response = await fetch(`${API_BASE_URL}/salary-deduction`, {
@@ -331,10 +354,12 @@ const Payslip = () => {
       console.log("Added Salary Deduction:", addedSalaryDeduction);
 
       // Re-fetch all salary deductions to update the list with the new entry and correct data
-      const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+      const salaryDeductionsResponse = await fetch(
+        `${API_BASE_URL}/salary-deduction`
+      );
       const salaryDeductionsData = await salaryDeductionsResponse.json();
       const employeeDeductions = salaryDeductionsData
-        .filter(sd => sd.employeeId === +employee.employeeId)
+        .filter((sd) => sd.employeeId === +employee.employeeId)
         .map((sd) => ({
           salaryDeductionId: sd.salaryDeductionId,
           deductionId: sd.deductionId,
@@ -352,9 +377,12 @@ const Payslip = () => {
 
   const handleRemoveDeduction = async (salaryDeductionIdToRemove) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/salary-deduction/${salaryDeductionIdToRemove}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/salary-deduction/${salaryDeductionIdToRemove}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -363,10 +391,12 @@ const Payslip = () => {
       console.log(`Deduction with ID ${salaryDeductionIdToRemove} deleted.`);
 
       // Re-fetch all salary deductions to update the list
-      const salaryDeductionsResponse = await fetch(`${API_BASE_URL}/salary-deduction`);
+      const salaryDeductionsResponse = await fetch(
+        `${API_BASE_URL}/salary-deduction`
+      );
       const salaryDeductionsData = await salaryDeductionsResponse.json();
       const employeeDeductions = salaryDeductionsData
-        .filter(sd => sd.employeeId === +employee.employeeId)
+        .filter((sd) => sd.employeeId === +employee.employeeId)
         .map((sd) => ({
           salaryDeductionId: sd.salaryDeductionId,
           deductionId: sd.deductionId,
@@ -374,7 +404,6 @@ const Payslip = () => {
           amount: sd.deductionAmount,
         }));
       setDeductions(employeeDeductions);
-
     } catch (error) {
       console.error("Error removing deduction:", error);
       // You might want to show an error message to the user here
@@ -391,13 +420,16 @@ const Payslip = () => {
 
     try {
       const updatedPayroll = { ...payrollData, status: newStatus };
-      const response = await fetch(`${API_BASE_URL}/payroll/${payrollData.payrollId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedPayroll),
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/payroll/${payrollData.payrollId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedPayroll),
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -405,7 +437,7 @@ const Payslip = () => {
 
       const result = await response.json();
       setPayrollData(result); // Update local state with the new payroll data
-      setIsPaid(result.status === 'Paid'); // Update isPaid state
+      setIsPaid(result.status === "Paid"); // Update isPaid state
       console.log("Payroll status updated successfully:", result);
     } catch (error) {
       console.error("Error updating payroll status:", error);
@@ -419,7 +451,9 @@ const Payslip = () => {
     paidDays: 16, // Static for now, can be dynamic
     lopDays: 0, // Static for now, can be dynamic
     updatedBasic: employee?.salary || 0, // Static for now, can be dynamic
-    grossPay: allowances.reduce((sum, row) => sum + row.amount, 0) + (employee?.salary || 0), // Gross pay includes basic salary
+    grossPay:
+      allowances.reduce((sum, row) => sum + row.amount, 0) +
+      (employee?.salary || 0), // Gross pay includes basic salary
     deductions: deductions.reduce((sum, row) => sum + row.amount, 0),
     netPay:
       (employee?.salary || 0) + // Start with basic salary
@@ -467,26 +501,58 @@ const Payslip = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <CircularProgress />
-        <Typography sx={{ ml: 2 }}>Loading Payslip...</Typography>
+        <Typography sx={{ ml: 2, color: "white" }}>
+          Loading Payslip...
+        </Typography>
       </Box>
     );
   }
 
   // Format the payslip date
-  const payslipDate = payrollData ?
-    new Date(payrollData.year, payrollData.month - 1).toLocaleString('en-US', { month: 'short', year: 'numeric' }) :
-    'N/A';
+  const payslipDate = payrollData
+    ? new Date(payrollData.year, payrollData.month - 1).toLocaleString(
+        "en-US",
+        { month: "short", year: "numeric" }
+      )
+    : "N/A";
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box
+      sx={{
+        p: 4,
+        backgroundColor: "rgba(255, 255, 255, 0.15)", // Transparent
+        backdropFilter: "blur(8px)", // Optional blur effect
+        padding: 1,
+        borderRadius: 1,
+        color: "white",
+      }}
+    >
       {/* Header */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-        <Typography variant="h6">Payslip</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          mb: 2,
+          backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent
+          backdropFilter: "blur(8px)", // Optional blur effect
+          padding: 1,
+          borderRadius: 1,
+          color: "white",
+        }}
+      >
+        <Typography variant="h6" sx={{ color: "white" }}>Payslip</Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton color="primary" onClick={handleDownloadPDF}>
-            <DownloadIcon />
+            <DownloadIcon sx={{ color: "white" }} />
           </IconButton>
           <TextField
             select
@@ -494,6 +560,25 @@ const Payslip = () => {
             value={payrollData?.status || "Pending"} // Use payrollData.status or default to "Pending"
             onChange={handleStatusChange} // Handle status change
             disabled={isPaid} // Disable if paid
+            sx={{
+              minWidth: 120,
+              color: "white",
+              ".MuiInputBase-root": {
+                color: "white",
+              },
+              ".MuiOutlinedInput-notchedOutline": {
+                borderColor: "rgba(255,255,255,0.3)",
+              },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                borderColor: "white",
+              },
+              ".MuiSvgIcon-root": {
+                color: "white", // Dropdown arrow
+              },
+            }}
           >
             <MenuItem value="Pending">Pending</MenuItem>
             <MenuItem value="Draft">Draft</MenuItem>
@@ -535,10 +620,16 @@ const Payslip = () => {
                   Employee Details
                 </Typography>
                 <Typography>
-                  <span style={{ color: "gray", fontWeight: "bold" }}>EmployeeId:</span> {employee?.employeeId}
+                  <span style={{ color: "gray", fontWeight: "bold" }}>
+                    EmployeeId:
+                  </span>{" "}
+                  {employee?.employeeId}
                 </Typography>
                 <Typography>
-                  Employee Name: <strong>{employee?.firstName + " " + employee?.lastName}</strong>
+                  Employee Name:{" "}
+                  <strong>
+                    {employee?.firstName + " " + employee?.lastName}
+                  </strong>
                 </Typography>
                 <Typography>
                   Date of Birth: <strong>{employee?.dob}</strong>
@@ -601,22 +692,26 @@ const Payslip = () => {
                   alignItems="center"
                 >
                   <Typography variant="subtitle1">Allowances</Typography>
-                  {!isDownloading && !isPaid && ( // Disable if paid
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpenAllowanceDialog(true)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  )}
+                  {!isDownloading &&
+                    !isPaid && ( // Disable if paid
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpenAllowanceDialog(true)}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    )}
                 </Box>
                 <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>Label</TableCell>
                       <TableCell>Amount</TableCell>
-                      {!isDownloading && !isPaid && <TableCell>Action</TableCell>} {/* Disable if paid */}
+                      {!isDownloading && !isPaid && (
+                        <TableCell>Action</TableCell>
+                      )}{" "}
+                      {/* Disable if paid */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -624,17 +719,20 @@ const Payslip = () => {
                       <TableRow key={row.salaryAdditionId}>
                         <TableCell>{row.label}</TableCell>
                         <TableCell>₹ {row.amount.toFixed(2)}</TableCell>
-                        {!isDownloading && !isPaid && ( // Disable if paid
-                          <TableCell>
-                            <IconButton
-                              color="error"
-                              size="small"
-                              onClick={() => handleRemoveAllowance(row.salaryAdditionId)}
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                          </TableCell>
-                        )}
+                        {!isDownloading &&
+                          !isPaid && ( // Disable if paid
+                            <TableCell>
+                              <IconButton
+                                color="error"
+                                size="small"
+                                onClick={() =>
+                                  handleRemoveAllowance(row.salaryAdditionId)
+                                }
+                              >
+                                <RemoveIcon />
+                              </IconButton>
+                            </TableCell>
+                          )}
                       </TableRow>
                     ))}
                     <TableRow>
@@ -662,22 +760,26 @@ const Payslip = () => {
                   alignItems="center"
                 >
                   <Typography variant="subtitle1">Deductions</Typography>
-                  {!isDownloading && !isPaid && ( // Disable if paid
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      onClick={() => setOpenDeductionDialog(true)}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  )}
+                  {!isDownloading &&
+                    !isPaid && ( // Disable if paid
+                      <IconButton
+                        size="small"
+                        color="primary"
+                        onClick={() => setOpenDeductionDialog(true)}
+                      >
+                        <AddIcon />
+                      </IconButton>
+                    )}
                 </Box>
                 <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>Label</TableCell>
                       <TableCell>Amount</TableCell>
-                      {!isDownloading && !isPaid && <TableCell>Action</TableCell>} {/* Disable if paid */}
+                      {!isDownloading && !isPaid && (
+                        <TableCell>Action</TableCell>
+                      )}{" "}
+                      {/* Disable if paid */}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -685,17 +787,20 @@ const Payslip = () => {
                       <TableRow key={row.salaryDeductionId}>
                         <TableCell>{row.label}</TableCell>
                         <TableCell>₹ {row.amount.toFixed(2)}</TableCell>
-                        {!isDownloading && !isPaid && ( // Disable if paid
-                          <TableCell>
-                            <IconButton
-                              color="error"
-                              size="small"
-                              onClick={() => handleRemoveDeduction(row.salaryDeductionId)}
-                            >
-                              <RemoveIcon />
-                            </IconButton>
-                          </TableCell>
-                        )}
+                        {!isDownloading &&
+                          !isPaid && ( // Disable if paid
+                            <TableCell>
+                              <IconButton
+                                color="error"
+                                size="small"
+                                onClick={() =>
+                                  handleRemoveDeduction(row.salaryDeductionId)
+                                }
+                              >
+                                <RemoveIcon />
+                              </IconButton>
+                            </TableCell>
+                          )}
                       </TableRow>
                     ))}
                     <TableRow>
@@ -732,10 +837,7 @@ const Payslip = () => {
       </div>
 
       {/* Allowance Dialog */}
-      <Dialog
-        open={openAllowanceDialog}
-        onClose={handleAllowanceDialogClose}
-      >
+      <Dialog open={openAllowanceDialog} onClose={handleAllowanceDialogClose}>
         <DialogTitle>Add New Allowance</DialogTitle>
         <DialogContent>
           <TextField
@@ -748,7 +850,10 @@ const Payslip = () => {
             onChange={handleAllowanceSelectChange}
           >
             {allAvailableAllowances.map((allowance) => (
-              <MenuItem key={allowance.allowanceId} value={allowance.allowanceId}>
+              <MenuItem
+                key={allowance.allowanceId}
+                value={allowance.allowanceId}
+              >
                 {allowance.allowance} (₹{allowance.amount.toFixed(2)})
               </MenuItem>
             ))}
@@ -773,10 +878,7 @@ const Payslip = () => {
       </Dialog>
 
       {/* Deduction Dialog */}
-      <Dialog
-        open={openDeductionDialog}
-        onClose={handleDeductionDialogClose}
-      >
+      <Dialog open={openDeductionDialog} onClose={handleDeductionDialogClose}>
         <DialogTitle>Add New Deduction</DialogTitle>
         <DialogContent>
           <TextField
@@ -789,7 +891,10 @@ const Payslip = () => {
             onChange={handleDeductionSelectChange}
           >
             {allAvailableDeductions.map((deduction) => (
-              <MenuItem key={deduction.deductionId} value={deduction.deductionId}>
+              <MenuItem
+                key={deduction.deductionId}
+                value={deduction.deductionId}
+              >
                 {deduction.deduction} (₹{deduction.amount.toFixed(2)})
               </MenuItem>
             ))}
@@ -816,5 +921,4 @@ const Payslip = () => {
     </Box>
   );
 };
-
 export default Payslip;

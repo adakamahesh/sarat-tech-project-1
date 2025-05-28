@@ -55,7 +55,17 @@ export default function StickyHeadTable() {
 
   return (
     <>
-      <Paper sx={{ width: "100%", overflow: "hidden", mb: 3 }}>
+      <Paper
+        sx={{
+          width: "100%",
+          overflow: "hidden",
+          mb: 3,
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          backdropFilter: "blur(10px)",
+          color: "white",
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
         <Box
           display="flex"
           flexDirection={isMobile ? "column" : "row"}
@@ -63,29 +73,48 @@ export default function StickyHeadTable() {
           alignItems={isMobile ? "flex-start" : "center"}
           p={2}
           gap={isMobile ? 1 : 0}
-          sx={{ padding: '16px 24px', backgroundColor: '#f5f5f5' }}
+          sx={{
+            padding: "16px 24px",
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            color: "white",
+          }}
         >
-          <Typography variant="h5" sx={{ fontSize: '25px', fontWeight: 'bold' }}>
+          <Typography
+            variant="h5"
+            sx={{ fontSize: "25px", fontWeight: "bold" }}
+          >
             Announcements
           </Typography>
         </Box>
 
         <TableContainer
           sx={{
-            height: 500,           // Fixed height
-            overflowY: "auto",     // Enables vertical scrolling
-            overflowX: "hidden",   // Avoids horizontal scrolling
+            height: 500, // Fixed height
+            overflowY: "auto", // Enables vertical scrolling
+            overflowX: "hidden", // Avoids horizontal scrolling
           }}
         >
           <Table stickyHeader>
             <TableHead>
-              <TableRow sx={{ borderTop: '1px solid #ccc', borderBottom: '1px solid #ccc' }}>
+              <TableRow
+                sx={{
+                  borderTop: "1px solid #ccc",
+                  borderBottom: "1px solid #ccc",
+                }}
+              >
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
                     style={{ minWidth: column.minWidth }}
-                    sx={{ fontSize: '20px', fontWeight: 'bold', color: "#fff", backgroundColor: '#93A0B4' }}
+                    sx={{
+                      fontSize: "20px",
+                      fontWeight: "bold",
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      backdropFilter: "blur(10px)",
+                      color: "white",
+                      boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                    }}
                   >
                     {column.label}
                   </TableCell>
@@ -96,11 +125,11 @@ export default function StickyHeadTable() {
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => (
-                  <TableRow hover key={index}>
+                  <TableRow hover key={index}  sx={{ color: "white" }}>
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell key={column.id} align={column.align} sx={{ color: "white" }}>
                           {column.id === "date"
                             ? new Date(value).toDateString()
                             : value}

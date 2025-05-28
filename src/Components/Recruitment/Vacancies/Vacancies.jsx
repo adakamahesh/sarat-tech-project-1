@@ -1,9 +1,24 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-  Paper, TextField, Button, Card, CardContent, Typography, Dialog,
-  MenuItem, Select, InputLabel, FormControl
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TextField,
+  Button,
+  Card,
+  CardContent,
+  Typography,
+  Dialog,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
 export default function VacanciesTable() {
@@ -75,33 +90,87 @@ export default function VacanciesTable() {
   );
 
   const headers = [
-    "Job ID", "Job Title", "Job Description", "Closing Date",
-    "Salary Range", "Status", "Vacancies", "Employment Type", "Job Location", "Action",
+    "Job ID",
+    "Job Title",
+    "Job Description",
+    "Closing Date",
+    "Salary Range",
+    "Status",
+    "Vacancies",
+    "Employment Type",
+    "Job Location",
+    "Action",
   ];
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Paper sx={{ p: 2 }}>
-        <Box sx={{ display: "flex", gap: 2, mb: 3, flexWrap: "wrap" }}>
-          <Typography variant="h5">Job Vacancies</Typography>
+      <Paper
+        sx={{
+          p: 2,
+          backgroundColor: "rgba(255,255,255,0.15)",
+          backdropFilter: "blur(10px)",
+          color: "white",
+          boxShadow: "0 8px 32px rgba(31, 38, 135, 0.37)",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            mb: 3,
+            flexWrap: "wrap",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography variant="h5" sx={{ color: "white" }}>
+            Job Vacancies
+          </Typography>
           <TextField
             label="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             size="small"
+            sx={{
+              input: { color: "white" },
+              label: { color: "white" },
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "white" },
+                "&:hover fieldset": { borderColor: "white" },
+              },
+            }}
           />
-          <Button variant="contained" onClick={() => setOpen(true)}>
+          <Button
+            onClick={() => setOpen(true)}
+            sx={{
+              backgroundColor: "rgba(255,255,255,0.05)",
+              color: "white",
+            }}
+          >
             Add Job
           </Button>
         </Box>
 
-        <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+        <TableContainer
+          component={Paper}
+          sx={{
+            maxHeight: 400,
+            backgroundColor: "rgba(255,255,255,0.02)",
+            backdropFilter: "blur(8px)",
+            color: "white",
+          }}
+        >
           <Table stickyHeader>
             <TableHead>
               <TableRow>
                 {headers.map((head) => (
-                  <TableCell key={head} align="center"
-                    sx={{ fontWeight: "bold", backgroundColor: "#93A0B4", color: "#fff" }}
+                  <TableCell
+                    key={head}
+                    align="center"
+                    sx={{
+                      fontWeight: "bold",
+                      backgroundColor: "rgba(255,255,255,0.1)",
+                      color: "white",
+                    }}
                   >
                     {head}
                   </TableCell>
@@ -111,18 +180,40 @@ export default function VacanciesTable() {
             <TableBody>
               {filteredRows.map((row) => (
                 <TableRow key={row.jobId}>
-                  <TableCell align="center">{row.jobId}</TableCell>
-                  <TableCell align="center">{row.jobTitle}</TableCell>
-                  <TableCell align="center">{row.jobDescription}</TableCell>
-                  <TableCell align="center">{row.closingDate}</TableCell>
-                  <TableCell align="center">{row.salaryRange}</TableCell>
-                  <TableCell align="center">{row.status}</TableCell>
-                  <TableCell align="center">{row.jobVacancy}</TableCell>
-                  <TableCell align="center">{row.employmentType}</TableCell>
-                  <TableCell align="center">{row.jobLocation}</TableCell>
-                  <TableCell align="center">
-                    <Button variant="outlined" color="error" size="small"
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.jobId}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.jobTitle}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.jobDescription}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.closingDate}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.salaryRange}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.status}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.jobVacancy}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.employmentType}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    {row.jobLocation}
+                  </TableCell>
+                  <TableCell align="center" sx={{ color: "white" }}>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
                       onClick={() => handleDelete(row.jobId)}
+                      sx={{ color: "white" }}
                     >
                       Delete
                     </Button>
@@ -134,10 +225,31 @@ export default function VacanciesTable() {
         </TableContainer>
       </Paper>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <Card sx={{ p: 3, minWidth: 500 }}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(10px)",
+            boxShadow: "0 8px 32px rgba(31, 38, 135, 0.37)",
+            color: "white",
+          },
+        }}
+      >
+        <Card
+          sx={{
+            p: 3,
+            minWidth: 500,
+            backgroundColor: "rgba(255,255,255,0.05)",
+            backdropFilter: "blur(10px)",
+            color: "white",
+          }}
+        >
           <CardContent>
-            <Typography variant="h6" gutterBottom>Add Job</Typography>
+            <Typography variant="h6" gutterBottom sx={{ color: "white" }}>
+              Add Job
+            </Typography>
             <Box
               sx={{
                 display: "grid",
@@ -145,28 +257,70 @@ export default function VacanciesTable() {
                 gap: 2,
               }}
             >
-              {["jobTitle", "jobDescription", "closingDate", "salaryRange", "jobVacancy", "jobLocation"].map((field) => (
+              {[
+                "jobTitle",
+                "jobDescription",
+                "closingDate",
+                "salaryRange",
+                "jobVacancy",
+                "jobLocation",
+              ].map((field) => (
                 <TextField
                   key={field}
                   name={field}
-                  label={field.replace(/([A-Z])/g, " $1").replace(/^./, str => str.toUpperCase())}
-                  type={field.includes("Date") ? "date" : (field === "jobVacancy" ? "number" : "text")}
+                  label={field
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}
+                  type={
+                    field.includes("Date")
+                      ? "date"
+                      : field === "jobVacancy"
+                        ? "number"
+                        : "text"
+                  }
                   value={newJob[field]}
                   onChange={handleChange}
                   InputLabelProps={{ shrink: true }}
                   fullWidth
+                  sx={{
+                    input: { color: "white" },
+                    label: { color: "white" },
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "white" },
+                      "&:hover fieldset": { borderColor: "white" },
+                    },
+                  }}
                 />
               ))}
             </Box>
 
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" }, gap: 2, mt: 2 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
+                gap: 2,
+                mt: 2,
+              }}
+            >
               <FormControl fullWidth size="small">
-                <InputLabel>Employment Type</InputLabel>
+                <InputLabel sx={{ color: "white" }}>Employment Type</InputLabel>
                 <Select
                   name="employmentType"
                   value={newJob.employmentType}
                   onChange={handleChange}
                   label="Employment Type"
+                  sx={{
+                    color: "white",
+                    ".MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    ".MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
                 >
                   <MenuItem value="Full-time">Full-time</MenuItem>
                   <MenuItem value="Part-time">Part-time</MenuItem>
@@ -174,13 +328,25 @@ export default function VacanciesTable() {
                 </Select>
               </FormControl>
 
-              <FormControl fullWidth size="small">
-                <InputLabel>Status</InputLabel>
+              <FormControl fullWidth size="small" sx={{ color: "white" }}>
+                <InputLabel sx={{ color: "white" }}>Status</InputLabel>
                 <Select
                   name="status"
                   value={newJob.status}
                   onChange={handleChange}
                   label="Status"
+                  sx={{
+                    color: "white",
+                    ".MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "white",
+                    },
+                    ".MuiSvgIcon-root": {
+                      color: "white",
+                    },
+                  }}
                 >
                   <MenuItem value="Open">Open</MenuItem>
                   <MenuItem value="Closed">Closed</MenuItem>
@@ -188,7 +354,15 @@ export default function VacanciesTable() {
               </FormControl>
             </Box>
 
-            <Button fullWidth variant="contained" sx={{ mt: 2 }} onClick={handleSave}>
+            <Button
+              fullWidth
+              onClick={handleSave}
+              sx={{
+                mt: 2,
+                color: "white",
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+              }}
+            >
               Save
             </Button>
           </CardContent>

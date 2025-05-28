@@ -32,38 +32,66 @@ export default function AccessibleTable() {
       component={Paper}
       sx={{
         mb: 3,
-        height: 500,           // Fixed height for the container
-        overflowY: "auto",     // Enables vertical scrolling
-        overflowX: "hidden",   // Prevents horizontal scroll
+        height: 500, // Fixed height for the container
+        overflowY: "auto", // Enables vertical scrolling
+        overflowX: "hidden", // Prevents horizontal scroll
+        backgroundColor: "rgba(255, 255, 255, 0.15)",
+        backdropFilter: "blur(12px)",
+        borderRadius: 2,
+        boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
       }}
     >
-      <Table stickyHeader aria-label="meeting schedule table">
+      <Table
+        stickyHeader
+        aria-label="meeting schedule table"
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          color: "white",
+        }}
+      >
         <TableHead>
           <TableRow>
             <TableCell
               colSpan={3}
-              sx={{ padding: "16px 24px", backgroundColor: "#f5f5f5" }}
+              sx={{
+                padding: "16px 24px",
+                backgroundColor: "rgba(255, 255, 255, 0.15)",
+                backdropFilter: "blur(12px)",
+                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              }}
             >
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="center"
               >
-                <span style={{ fontSize: "25px", fontWeight: "bold" }}>
+                <span
+                  style={{
+                    fontSize: "25px",
+                    fontWeight: "bold",
+                    color: "white",
+                  }}
+                >
                   Meeting Schedule
                 </span>
               </Box>
             </TableCell>
           </TableRow>
           <TableRow
-            sx={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}
+            sx={{
+              borderTop: "1px solid #ccc",
+              borderBottom: "1px solid #ccc",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+              color: "white",
+            }}
           >
             <TableCell
               sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                color: "#fff",
-                backgroundColor: "#A7B0CA",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "white",
+                fontWeight:'bold',
               }}
             >
               Meeting Title
@@ -71,10 +99,9 @@ export default function AccessibleTable() {
             <TableCell
               align="center"
               sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                color: "#fff",
-                backgroundColor: "#A7B0CA",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "white",
+                fontWeight:'bold',
               }}
             >
               Meeting Date
@@ -82,10 +109,9 @@ export default function AccessibleTable() {
             <TableCell
               align="center"
               sx={{
-                fontSize: "20px",
-                fontWeight: "bold",
-                color: "#fff",
-                backgroundColor: "#A7B0CA",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                color: "white",
+                fontWeight:'bold',
               }}
             >
               Meeting Time
@@ -94,12 +120,16 @@ export default function AccessibleTable() {
         </TableHead>
         <TableBody>
           {meetingData.map((row) => (
-            <TableRow key={row.meetingId}>
-              <TableCell component="th" scope="row">
+            <TableRow key={row.meetingId} sx={{ color: "white" }}>
+              <TableCell component="th" scope="row" sx={{ color: "white" }}>
                 {row.meetingTitle}
               </TableCell>
-              <TableCell align="center">{row.meetingDate}</TableCell>
-              <TableCell align="center">{row.meetingTime}</TableCell>
+              <TableCell align="center" sx={{ color: "white" }}>
+                {row.meetingDate}
+              </TableCell>
+              <TableCell align="center" sx={{ color: "white" }}>
+                {row.meetingTime}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

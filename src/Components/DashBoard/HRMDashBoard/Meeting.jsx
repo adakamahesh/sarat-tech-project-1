@@ -80,6 +80,10 @@ export default function AccessibleTable() {
           height: 600,
           overflowY: "auto",
           overflowX: "auto",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           [theme.breakpoints.down("sm")]: {
             maxWidth: "100%",
           },
@@ -94,13 +98,20 @@ export default function AccessibleTable() {
             backdropFilter: "blur(12px)",
             borderRadius: 2,
             boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            color: "white",
           }}
         >
           <TableHead>
             <TableRow>
               <TableCell
                 colSpan={5}
-                sx={{ padding: "16px 24px", backgroundColor: "rgba(255, 255, 255, 0.15)" }}
+                sx={{
+                  fontSize: { xs: "16px", sm: "20px" },
+                  fontWeight: "bold",
+                  color: "white",
+                  backgroundColor: "rgba(255, 255, 255, 0.15)",
+                  borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+                }}
               >
                 <Box
                   display="flex"
@@ -112,10 +123,15 @@ export default function AccessibleTable() {
                   </span>
                   <Button
                     variant="contained"
-                    color="primary"
                     onClick={handleOpen}
                     size="small"
-                    sx={{ "@media (max-width: 600px)": { fontSize: "12px" } }}
+                    sx={{
+                      "@media (max-width: 600px)": { fontSize: "12px" },
+                      backgroundColor: "rgba(255, 255, 255, 0.15)",
+                      backdropFilter: "blur(12px)",
+                      borderRadius: 2,
+                      boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                    }}
                   >
                     New Meeting
                   </Button>
@@ -164,7 +180,14 @@ export default function AccessibleTable() {
           </TableHead>
           <TableBody>
             {meetingData.map((row) => (
-              <TableRow hover key={row.meetingId}>
+              <TableRow
+                hover
+                key={row.meetingId}
+                sx={{
+                  color: "white",
+                  borderBottom: "1px solid rgba(255,255,255,0.2)",
+                }}
+              >
                 <TableCell component="th" scope="row">
                   {row.meetingTitle}
                 </TableCell>

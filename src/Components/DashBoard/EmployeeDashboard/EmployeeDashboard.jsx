@@ -19,16 +19,23 @@ export default function EmployeeDashboard() {
   return (
     <>
       {/* Top Grid */}
-      <Typography variant="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
+      <Typography variant="h3" sx={{ fontWeight: "bold", color: "white" }}>
         Employee Dashboard
       </Typography>
+      <Box
+        sx={{
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+        }}
+      >
       <Box
         sx={{
           width: { xs: "100%" },
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          border: "1px solid rgb(237,237,237)",
           p: 2,
         }}
       >
@@ -41,10 +48,26 @@ export default function EmployeeDashboard() {
             gap: 2,
           }}
         >
-          <Box sx={{ flex: 1, border: "1px solid rgb(237,237,237)" }}>
+          <Box
+            sx={{
+              flex: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             <AttendanceLeave />
           </Box>
-          <Box sx={{ flex: 1, border: "1px solid rgb(237,237,237)" }}>
+          <Box
+            sx={{
+              flex: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
+              backdropFilter: "blur(12px)",
+              borderRadius: 2,
+              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            }}
+          >
             <Meeting />
           </Box>
         </Box>
@@ -58,21 +81,19 @@ export default function EmployeeDashboard() {
           display: "flex",
           flexDirection: "column",
           gap: 2,
-          border: "1px solid rgb(237,237,237)",
           p: 2,
         }}
       >
-        <Box sx={{ mt: 2, border: "1px solid rgb(237,237,237)" }}>
+        <Box sx={{ mt: 2}}>
           <Announcement />
         </Box>
-        <Box
-          sx={{ mt: 2, pr: { xs: 0 }, border: "1px solid rgb(237,237,237)" }}
-        >
+        <Box sx={{ mt: 2, pr: { xs: 0 } }}>
           <Calender />
         </Box>
         <Box sx={{ mt: 4 }}>
           <Leavereq />
         </Box>
+      </Box>
       </Box>
     </>
   );
