@@ -110,6 +110,7 @@ export default function DashboardLayoutBasic() {
         case "ProfileUser":
           return <EmployeeProfile />;
         case "PayslipProfile":
+          localStorage.removeItem("newEmyID");
           return <PayslipProfile/>
         case "RecruitmentDashboard":
           return <RecruitmentDashboard />;
