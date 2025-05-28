@@ -19,6 +19,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { format } from "date-fns";
@@ -35,6 +36,8 @@ export default function PayslipTable() {
   const [editData, setEditData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,6 +96,11 @@ export default function PayslipTable() {
     setRows(rows.filter((row) => row.id !== id));
   };
 
+  const handleRowClick = (employeeId) => {
+    localStorage.setItem("newEmyID", employeeId);
+    navigate(`/PayRoll/Payslips/PayslipProfile`);
+  };
+
   const handleSave = () => {
     setRows(rows.map((row) => (row.id === editId ? editData : row)));
     setEditId(null);
@@ -140,8 +148,8 @@ export default function PayslipTable() {
           width: "100%",
           mb: 2,
           p: 2,
-          backgroundColor: "rgba(255, 255, 255, 0.05)",
-          backdropFilter: "blur(8px)",
+          backgroundColor: "rgba(255, 255, 255, 0.15)",
+          backdropFilter: "blur(12px)",
           color: "white",
         }}
       >
@@ -247,7 +255,10 @@ export default function PayslipTable() {
               {filteredRows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row) => (
-                  <TableRow key={row.id}>
+                  <TableRow
+                    key={row.id}
+                    onClick={() => handleRowClick(row.EmployeeId)}
+                  >
                     <TableCell sx={{ textAlign: "center", color: "white" }}>
                       {row.id}
                     </TableCell>

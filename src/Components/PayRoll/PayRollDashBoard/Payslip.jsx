@@ -137,8 +137,8 @@ export default function PayslipTable() {
           width: "100%",
           mb: 2,
           p: 2,
-          backgroundColor: "rgba(255, 255, 255, 0.05)", // transparent white tint
-          backdropFilter: "blur(8px)",
+          backgroundColor: "rgba(255, 255, 255, 0.15)", // transparent white tint
+          backdropFilter: "blur(12px)",
           color: "white", // default text color inside Paper
         }}
       >
@@ -158,6 +158,7 @@ export default function PayslipTable() {
               ".MuiOutlinedInput-root": {
                 "& fieldset": {
                   borderColor: "rgba(255,255,255,0.3)",
+                  color:'white',
                 },
                 "&:hover fieldset": {
                   borderColor: "white",

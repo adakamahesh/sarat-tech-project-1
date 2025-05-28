@@ -49,43 +49,67 @@ const Payslip = ({ payrollData, selectedStatus }) => {
 
   return (
     <Box sx={{ mt: 4 }}>
-      <Typography variant="h5" component="h2" gutterBottom>
+      <Typography
+        variant="h5"
+        component="h2"
+        gutterBottom
+        sx={{ color: "white" }}
+      >
         Payroll Details{" "}
         {selectedStatus ? `(${selectedStatus} Status)` : "(All Except Paid)"}
       </Typography>
       {filteredPayrollData.length === 0 ? (
-        <Typography variant="body1" color="text.secondary">
+        <Typography variant="body1" sx={{ color: "white" }}>
           No payroll entries found for the selected status.
         </Typography>
       ) : (
         <TableContainer
           component={Paper}
           elevation={3}
-          sx={{ borderRadius: "8px" }}
+          sx={{
+            borderRadius: "8px",
+            backgroundColor: "rgba(255, 255, 255, 0.15)", // Transparent paper
+            backdropFilter: "blur(12px)", // Optional glassmorphism effect
+            color: "white",
+          }}
         >
           <Table sx={{ minWidth: 650 }} aria-label="payroll table">
-            <TableHead sx={{ backgroundColor: "#e0e0e0" }}>
+            <TableHead sx={{ backgroundColor: "rgba(255, 255, 255, 0.15)" }}>
               <TableRow>
-                <TableCell sx={{ fontWeight: "bold" }}>Payroll ID</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Employee ID</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Employee Name</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Basic Salary</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Payroll ID
+                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Employee ID
+                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Employee Name
+                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Basic Salary
+                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                   Total Addition
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                   Total Deduction
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Net Pay</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Net Pay
+                </TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                   Date of Calculation
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Payslip Of</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Payslip Of
+                </TableCell>
                 {/* Added Payslip Of column */}
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
                   Payment Status
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Action</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>
+                  Action
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -94,27 +118,48 @@ const Payslip = ({ payrollData, selectedStatus }) => {
                   key={row.payrollId}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
+                  <TableCell component="th" scope="row" sx={{ color: "white" }}>
                     {row.payrollId}
                   </TableCell>
-                  <TableCell>{row.employeeId}</TableCell>
-                  <TableCell>{`${row.firstName} ${row.lastName}`}</TableCell>
-                  <TableCell>{row.basicSalary?.toFixed(2) || "N/A"}</TableCell>
-                  <TableCell>{row.totalGross.toFixed(2)}</TableCell>
-                  <TableCell>{row.totalDeduction.toFixed(2)}</TableCell>
-                  <TableCell>{row.netPay.toFixed(2)}</TableCell>
-                  <TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {row.employeeId}
+                  </TableCell>
+                  <TableCell
+                    sx={{ color: "white" }}
+                  >{`${row.firstName} ${row.lastName}`}</TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {row.basicSalary?.toFixed(2) || "N/A"}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {row.totalGross.toFixed(2)}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {row.totalDeduction.toFixed(2)}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {row.netPay.toFixed(2)}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
                     {new Date(row.dateOfCalculation).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>
+                  <TableCell sx={{ color: "white" }}>
                     {row.payslipOf
                       ? new Date(row.payslipOf).toLocaleDateString()
                       : "N/A"}
                   </TableCell>
                   {/* Display Payslip Of */}
-                  <TableCell>{row.paymentStatus}</TableCell>
-                  <TableCell>
-                    <Button variant="outlined" size="small">
+                  <TableCell sx={{ color: "white" }}>
+                    {row.paymentStatus}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    <Button
+                      size="small"
+                      sx={{
+                        backgroundColor: "rgba(255, 255, 255, 0.05)", // Transparent paper
+                        backdropFilter: "blur(4px)", // Optional glassmorphism effect
+                        color: "white",
+                      }}
+                    >
                       Action
                     </Button>
                   </TableCell>
@@ -128,7 +173,7 @@ const Payslip = ({ payrollData, selectedStatus }) => {
   );
 };
 
-export default function HRMDashboard() {
+export default function PayRollDashboard() {
   const [payrollData, setPayrollData] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -315,6 +360,10 @@ export default function HRMDashboard() {
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
           gap: 3,
           mb: 4,
+          backgroundColor: "rgba(255, 255, 255, 0.15)", // transparent white
+          color: "white",
+          borderRadius: "12px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
         }}
       >
         {cards.map((card) => (
