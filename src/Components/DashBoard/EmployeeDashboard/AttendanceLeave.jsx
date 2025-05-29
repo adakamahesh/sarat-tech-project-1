@@ -20,10 +20,6 @@ export default function AccessibleTable() {
     >
       <Table
         aria-label="caption table"
-        sx={{
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-        }}
       >
         <TableHead>
           <TableRow>
@@ -38,9 +34,6 @@ export default function AccessibleTable() {
                   lg: "25px", // extra large
                 },
                 fontWeight: "bold",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                backdropFilter: "blur(12px)",
-                boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
                 color: "white",
                 textAlign: {
                   xs: "center",

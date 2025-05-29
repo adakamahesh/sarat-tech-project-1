@@ -52,10 +52,14 @@ export default function AccessibleTable() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+
+    if (name === "meetingTitle") {
+      // Allow only letters and spaces
+      const onlyChars = value.replace(/[^a-zA-Z\s]/g, "");
+      setFormData({ ...formData, [name]: onlyChars });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleFormSubmit = (e) => {
@@ -109,8 +113,8 @@ export default function AccessibleTable() {
                   fontSize: { xs: "16px", sm: "20px" },
                   fontWeight: "bold",
                   color: "white",
-                  backgroundColor: "rgba(255, 255, 255, 0.15)",
-                  borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
+                  backgroundColor: "rgba(255, 255, 255, 0.14)",
+                  backdropFilter: "blur(12px)",
                 }}
               >
                 <Box
@@ -209,7 +213,11 @@ export default function AccessibleTable() {
                 label="Meeting Title"
                 name="meetingTitle"
                 value={formData.meetingTitle}
-                onChange={handleInputChange}
+                // onChange={handleInputChange}
+                onChange={(e) => {
+                  const onlyChars = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                  setFormData({ ...formData, meetingTitle: onlyChars });
+                }}
                 fullWidth
                 required
               />
@@ -223,6 +231,9 @@ export default function AccessibleTable() {
                 value={formData.meetingDate}
                 onChange={handleInputChange}
                 InputLabelProps={{ shrink: true }}
+                inputProps={{
+                  min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+                }}
                 fullWidth
                 required
               />

@@ -61,8 +61,15 @@ export default function StickyHeadTable() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  
+    if (name === "title"|| name === "description") {
+      // Allow only alphabetic characters (A-Z, a-z)
+      const onlyLetters = value.replace(/[^a-zA-Z\s]/g, '');
+      setFormData({ ...formData, [name]: onlyLetters });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+  };  
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -107,7 +114,11 @@ export default function StickyHeadTable() {
         >
           <Typography
             variant="h5"
-            sx={{ fontSize: { xs: "18px", sm: "25px" }, fontWeight: "bold", color: "white" }}
+            sx={{
+              fontSize: { xs: "18px", sm: "25px" },
+              fontWeight: "bold",
+              color: "white",
+            }}
           >
             Announcements
           </Typography>
@@ -117,7 +128,7 @@ export default function StickyHeadTable() {
               fontSize: { xs: "12px", sm: "14px" },
               padding: { xs: "6px 12px", sm: "8px 16px" },
               mt: isMobile ? 1 : 0,
-              backgroundColor:"rgba(255, 255, 255, 0.15)",
+              backgroundColor: "rgba(255, 255, 255, 0.15)",
             }}
             onClick={handleNewAnnouncementClick}
             size="small"
@@ -138,7 +149,12 @@ export default function StickyHeadTable() {
         >
           <Table stickyHeader>
             <TableHead>
-              <TableRow sx={{ borderTop: "1px solid #ccc", borderBottom: "1px solid #ccc" }}>
+              <TableRow
+                sx={{
+                  borderTop: "1px solid #ccc",
+                  borderBottom: "1px solid #ccc",
+                }}
+              >
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
@@ -148,7 +164,7 @@ export default function StickyHeadTable() {
                       fontSize: { xs: "12px", sm: "16px" },
                       fontWeight: "bold",
                       color: "#fff",
-                      backgroundColor:"rgba(255, 255, 255, 0.15)",
+                      backgroundColor: "rgba(255, 255, 255, 0.15)",
                       padding: { xs: "6px", sm: "10px" },
                       whiteSpace: "nowrap",
                     }}
@@ -167,9 +183,15 @@ export default function StickyHeadTable() {
                       <TableCell
                         key={column.id}
                         align={column.align}
-                        sx={{ fontSize: { xs: "12px", sm: "14px" }, padding: { xs: "6px", sm: "10px" },color:'white' }}
+                        sx={{
+                          fontSize: { xs: "12px", sm: "14px" },
+                          padding: { xs: "6px", sm: "10px" },
+                          color: "white",
+                        }}
                       >
-                        {column.id === "date" ? new Date(value).toDateString() : value}
+                        {column.id === "date"
+                          ? new Date(value).toDateString()
+                          : value}
                       </TableCell>
                     );
                   })}
@@ -181,10 +203,18 @@ export default function StickyHeadTable() {
       </Paper>
 
       {/* Popup Dialog for Form */}
-      <Dialog open={showForm} onClose={handleCloseForm} maxWidth="sm" fullWidth >
+      <Dialog open={showForm} onClose={handleCloseForm} maxWidth="sm" fullWidth>
         <DialogTitle>Create New Announcement</DialogTitle>
         <DialogContent>
-          <TextField fullWidth label="Title" name="title" value={formData.title} onChange={handleInputChange} required />
+          <TextField
+            fullWidth
+            label="Title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            required
+            sx={{mt:2}}
+          />
           <TextField
             fullWidth
             label="Date"
@@ -193,6 +223,9 @@ export default function StickyHeadTable() {
             value={formData.date}
             onChange={handleInputChange}
             InputLabelProps={{ shrink: true }}
+            inputProps={{
+              min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+            }}
             required
             sx={{ mt: 2 }}
           />

@@ -678,6 +678,9 @@ const CreateEmployeeForm = () => {
             onChange={handleChange("dateOfJoining")}
             fullWidth
             InputLabelProps={{ shrink: true }}
+            inputProps={{
+              min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+            }}
             sx={{
               mb: 2,
               input: { color: "white" }, // input text color
@@ -830,6 +833,9 @@ const CreateEmployeeForm = () => {
             value={formData.endDate || ""}
             onChange={handleChange("endDate")}
             InputLabelProps={{ shrink: true }}
+            inputProps={{
+              min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+            }}
             fullWidth
             sx={{
               mb: 2,

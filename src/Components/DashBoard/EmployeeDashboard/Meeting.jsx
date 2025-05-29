@@ -44,10 +44,6 @@ export default function AccessibleTable() {
       <Table
         stickyHeader
         aria-label="meeting schedule table"
-        sx={{
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          color: "white",
-        }}
       >
         <TableHead>
           <TableRow>
@@ -55,8 +51,8 @@ export default function AccessibleTable() {
               colSpan={3}
               sx={{
                 padding: "16px 24px",
-                backgroundColor: "rgba(255, 255, 255, 0.15)",
-                backdropFilter: "blur(12px)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                backdropFilter: "blur(8px)",
                 boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
               }}
             >
@@ -78,14 +74,14 @@ export default function AccessibleTable() {
             </TableCell>
           </TableRow>
           <TableRow
-            sx={{
-              borderTop: "1px solid #ccc",
-              borderBottom: "1px solid #ccc",
-              backgroundColor: "rgba(255, 255, 255, 0.15)",
-              backdropFilter: "blur(12px)",
-              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
-              color: "white",
-            }}
+            // sx={{
+            //   borderTop: "1px solid #ccc",
+            //   borderBottom: "1px solid #ccc",
+            //   backgroundColor: "rgba(255, 255, 255, 0.15)",
+            //   backdropFilter: "blur(12px)",
+            //   boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+            //   color: "white",
+            // }}
           >
             <TableCell
               sx={{

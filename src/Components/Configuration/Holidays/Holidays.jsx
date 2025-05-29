@@ -344,6 +344,9 @@ export default function HolidayTable() {
                 label="Start Date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
+                inputProps={{
+                  min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+                }}
                 value={newHoliday.startDate}
                 onChange={(e) =>
                   setNewHoliday({ ...newHoliday, startDate: e.target.value })
@@ -361,6 +364,9 @@ export default function HolidayTable() {
                 label="End Date"
                 type="date"
                 InputLabelProps={{ shrink: true }}
+                inputProps={{
+                  min: new Date().toISOString().split("T")[0], // Sets today as the minimum date
+                }}
                 value={newHoliday.endDate}
                 onChange={(e) =>
                   setNewHoliday({ ...newHoliday, endDate: e.target.value })

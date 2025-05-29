@@ -36,7 +36,7 @@ import MyAttendances from "../Components/Attendance/MyAttendances/MyAttendances"
 import Holidays from "../Components/Configuration/Holidays/Holidays";
 import CompanyLeaves from "../Components/Configuration/CompanyLeaves/CompanyLeaves";
 import Contract from "../Components/PayRoll/Contract/Contract";
-import ResignationLater from "../Components/Offboarding/ResignationLatters/ResignationLatter";
+import Resignation from "../Components/Offboarding/ResignationLatters/ResignationLatter";
 import Payslips from "../Components/PayRoll/Payslip/Payslip";
 import LeaveRequest from "../Components/Leaves/LeaveRequest/LeaveRequest";
 import Allowances from "../Components/PayRoll/Allowances/Allowances";
@@ -140,8 +140,8 @@ export default function DashboardLayoutBasic() {
           return <NewRegister />;
         case "CompanyLeaves":
           return <CompanyLeaves />;
-        case "ResignationLater":
-          return <ResignationLater />;
+        case "Resignation":
+          return <Resignation />;
         case "Contract":
           return <Contract />;
         case "Vacancies":
@@ -211,8 +211,8 @@ export default function DashboardLayoutBasic() {
           return <Holidays />;
         case "CompanyLeaves":
           return <CompanyLeaves />;
-        case "ResignationLater":
-          return <ResignationLater />;
+        case "Resignation":
+          return <Resignation />;
         case "Contract":
           return <Contract />;
         case "Payslips":
@@ -436,8 +436,8 @@ export default function DashboardLayoutBasic() {
               icon: <HorizontalRuleIcon />,
             },
             {
-              segment: "ResignationLater",
-              title: "Resignation Later",
+              segment: "Resignation",
+              title: "Resignation",
               icon: <HorizontalRuleIcon />,
             },
           ],
@@ -557,8 +557,8 @@ export default function DashboardLayoutBasic() {
             icon: <HorizontalRuleIcon />,
           },
           {
-            segment: "ResignationLater",
-            title: "Resignation Later",
+            segment: "Resignation",
+            title: "Resignation",
             icon: <HorizontalRuleIcon />,
           },
         ],

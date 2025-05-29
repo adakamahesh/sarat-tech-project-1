@@ -341,7 +341,7 @@ const App = () => {
         }
       />
       <Route
-        path="/OffBoarding/ResignationLater"
+        path="/OffBoarding/Resignation"
         element={
           <ProtectedRoute>
             <Home />
