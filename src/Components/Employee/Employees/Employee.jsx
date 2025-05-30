@@ -48,9 +48,9 @@ export default function EmployeeTable() {
         EmployeeId: emp.employeeId,
         JobPosition: emp.designation,
         Department: emp.departmentName || "—",
-        shift: emp.shiftType
-          ? `${emp.shiftType} (${emp.shiftStartTime} - ${emp.shiftEndTime})`
-          : "—",
+        // shift: emp.shiftType
+        //   ? `${emp.shiftType} (${emp.shiftStartTime} - ${emp.shiftEndTime})`
+        //   : "—",
         DateOfJoining: emp.dateOfJoining,
       }));
       setRows(formatted);
@@ -201,7 +201,7 @@ export default function EmployeeTable() {
                   "Phone",
                   "Job Position",
                   "Department",
-                  "Shift",
+                  // "Shift",
                   "Date of Joining",
                 ].map((header, index) => (
                   <TableCell
@@ -284,9 +284,9 @@ export default function EmployeeTable() {
                     <TableCell align="center" sx={{ color: "white" }}>
                       {row.Department}
                     </TableCell>
-                    <TableCell align="center" sx={{ color: "white" }}>
+                    {/* <TableCell align="center" sx={{ color: "white" }}>
                       {row.shift}
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell align="center" sx={{ color: "white" }}>
                       {row.DateOfJoining}
                     </TableCell>

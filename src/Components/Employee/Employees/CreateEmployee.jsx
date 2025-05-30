@@ -267,19 +267,46 @@ const CreateEmployeeForm = () => {
 
   const renderInput = (
     label,
-    field,
+    name,
     type = "text",
     required = false,
     disabled = false
   ) => (
     <TextField
-      required={required}
-      label={label}
-      type={type}
-      value={formData[field]}
-      onChange={handleChange(field)}
       fullWidth
-      autoComplete="off"
+      label={label}
+      name={name}
+      type={type}
+      required={required}
+      disabled={disabled}
+      value={formData[name]}
+      onChange={(e) => {
+        let value = e.target.value;
+
+        // Only letters for name fields
+        if (["firstName", "lastName", "designation"].includes(name)) {
+          value = value.replace(/[^a-zA-Z\s]/g, "");
+        }
+
+        // Only numbers for phone
+        if (name === "phoneNumber") {
+          value = value.replace(/[^0-9]/g, "");
+        }
+         // Allow only letters and spaces for emergencyContactName
+      if (["emergencyContactName"].includes(name)) {
+        value = value.replace(/[^a-zA-Z\s]/g, "");
+      }
+
+      // Allow only digits for emergencyContactNumber and alternateNumber
+      if (["emergencyContactNumber", "alternateNumber"].includes(name)) {
+        value = value.replace(/[^0-9]/g, "");
+      }
+
+        setFormData((prev) => ({
+          ...prev,
+          [name]: value,
+        }));
+      }}
       sx={{
         mb: 2,
         input: { color: "white" }, // input text color
@@ -296,12 +323,6 @@ const CreateEmployeeForm = () => {
           },
         },
       }}
-      InputLabelProps={{
-        shrink: formData[field] !== "",
-        sx: { fontSize: 18 },
-      }}
-      InputProps={{ sx: { fontSize: 18, height: 60 }, disabled: disabled }}
-      disabled={disabled}
     />
   );
 
@@ -588,7 +609,7 @@ const CreateEmployeeForm = () => {
             flexDirection: isMobile ? "column" : "row",
           }}
         >
-          <TextField
+          {/* <TextField
             required
             select
             label="Shift"
@@ -623,7 +644,7 @@ const CreateEmployeeForm = () => {
                 {shift.shiftType}
               </MenuItem>
             ))}
-          </TextField>
+          </TextField> */}
 
           {renderInput(
             "Alternate Number",
@@ -788,7 +809,7 @@ const CreateEmployeeForm = () => {
       </Box>
 
       {/* Shift Assignment - Added UI for startDate and endDate */}
-      <Box>
+      {/* <Box>
         <Typography variant="h6" fontWeight={600} mb={2}>
           Shift Assignment
         </Typography>
@@ -858,7 +879,7 @@ const CreateEmployeeForm = () => {
             }}
           />
         </Box>
-      </Box>
+      </Box> */}
 
       <Button
         type="submit"
